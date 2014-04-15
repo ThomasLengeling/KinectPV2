@@ -150,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKinect.h" />
-    <ClInclude Include="pKinect_PKinect.h" />
+    <ClInclude Include="JNIKinect_PKinectV2.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -170,7 +170,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PKinect.cpp" />
-    <ClCompile Include="pKinect_PKinect.cpp" />
+    <ClCompile Include="JNIKinect_PKinectV2.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

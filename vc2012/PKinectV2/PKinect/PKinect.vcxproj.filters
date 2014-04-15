@@ -27,7 +27,7 @@
     <ClInclude Include="PKinect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pKinect_PKinect.h">
+    <ClInclude Include="JNIKinect_PKinectV2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pKinect_PKinect.cpp">
+    <ClCompile Include="JNIKinect_PKinectV2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -44,159 +44,44 @@
 #include "ole2.h"
 #include "Kinect.h"
 
-#if defined( _DEBUG )
-#pragma comment( lib, "comsuppwd.lib" )
-#else
-#pragma comment( lib, "comsuppw.lib" )
-#endif
-#pragma comment( lib, "wbemuuid.lib" )
-
-static const int        cDepthWidth  = 512;
-static const int        cDepthHeight = 424;
+static const int        cDepthWidth  = 1920;
+static const int        cDepthHeight = 1080;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-
-class DeviceOptions
-{
-public:
-	DeviceOptions();
-	
-	DeviceOptions&								enableAudio( bool enable = true );
-	DeviceOptions&								enableBody( bool enable = true );
-	DeviceOptions&								enableBodyIndex( bool enable = true );
-	DeviceOptions&								enableColor( bool enable = true );
-	DeviceOptions&								enableDepth( bool enable = true );
-	DeviceOptions&								enableInfrared( bool enable = true );
-	DeviceOptions&								enableInfraredLongExposure( bool enable = true );
-	DeviceOptions&								setDeviceId( const std::string& id = "" ); 
-	DeviceOptions&								setDeviceIndex( int32_t index = 0 );
-
-	const std::string&							getDeviceId() const;
-	int32_t										getDeviceIndex() const;
-	bool										isAudioEnabled() const;
-	bool										isBodyEnabled() const;
-	bool										isBodyIndexEnabled() const;
-	bool										isColorEnabled() const;
-	bool										isDepthEnabled() const;
-	bool										isInfraredEnabled() const;
-	bool										isInfraredLongExposureEnabled() const;
-protected:
-	std::string									mDeviceId;
-	int32_t										mDeviceIndex;
-
-	bool										mEnabledAudio;
-	bool										mEnabledBody;
-	bool										mEnabledBodyIndex;
-	bool										mEnabledColor;
-	bool										mEnabledDepth;
-	bool										mEnabledInfrared;
-	bool										mEnabledInfraredLongExposure;
-};
 
 class PKinect
 {
 private:
-	HANDLE	m_hNextImageFrameEvent;
-	HANDLE	m_hNextDepthFrameEvent;
-	HANDLE	m_hNextSkeletonEvent;
 
-	HANDLE	m_pImageStreamHandle;
-	HANDLE	m_pDepthStreamHandle;
-	HANDLE	m_pSkeletonStreamHandle;
-
-	HANDLE	m_hEvNuiProcessStop;
-	HANDLE	m_hThNuiProcess;
-
-	int		frame_size;
+	int			frame_size;
 	uint8_t *	pixels;
 	uint16_t *	depth;
 	uint16_t *	mask;
 
-	LONG*	col_info;
-	USHORT*	m_depth;
-	
-protected:
+	std::string  version;
 
-	ICoordinateMapper*			kCoordinateMapper;
+protected:
 	IMultiSourceFrameReader*	kFrameReader;
+	IColorFrameReader*			kColorFrameReader;
 	IKinectSensor*				kSensor;
 
-	DeviceOptions				kDeviceOptions;
-
 public:
-	PKinect(const DeviceOptions & deviceOptions = DeviceOptions() );
-	~PKinect(void);
+	PKinect( void );
+	~PKinect( void );
+
+	void init();
 
 	void stop();
 
 	void update();
 
-	const DeviceOptions&			getDeviceOptions() const;
 	ICoordinateMapper*				getCoordinateMapper() const;
 
-	uint8_t *						Nui_GetImage();
-	uint16_t *						Nui_GetDepth();
-	uint16_t *						Nui_GetMask();
+	uint8_t *						JNI_GetImage();
+	uint16_t *						JNI_GetDepth();
+	uint16_t *						JNI_GetMask();
 
+	std::string						JNI_version() { return version; }
 
-	std::string wcharToString( wchar_t* v ){
-			std::string str = "";
-			wchar_t* id = ::SysAllocString( v );
-			_bstr_t idStr( id );
-			if ( idStr.length() > 0 ) {
-				str = std::string( idStr );
-			}
-			::SysFreeString( id );
-			return str;
-	}
-
-	public:
-
-	//////////////////////////////////////////////////////////////////////////////////////////////
-
-	class Exception : public std::exception
-	{
-	public:
-		const char* what() const throw();
-	protected:
-		char									mMessage[ 2048 ];
-		friend class							Device;
-	};
-	
-	class ExcDeviceEnumerationFailed : public Exception 
-	{
-	public:
-		ExcDeviceEnumerationFailed( long hr ) throw();
-	};
-
-	class ExcDeviceInitFailed : public Exception 
-	{
-	public:
-		ExcDeviceInitFailed( long hr, const std::string& id ) throw();
-	};
-	
-	class ExcDeviceNotAvailable : public Exception 
-	{
-	public:
-		ExcDeviceNotAvailable( long hr ) throw();
-	};
-
-	class ExcDeviceOpenFailed : public Exception 
-	{
-	public:
-		ExcDeviceOpenFailed( long hr, const std::string& id ) throw();
-	};
-
-	class ExcGetCoordinateMapperFailed : public Exception 
-	{
-	public:
-		ExcGetCoordinateMapperFailed( long hr, const std::string& id ) throw();
-	};
-
-	class ExcOpenFrameReaderFailed : public Exception 
-	{
-	public:
-		ExcOpenFrameReaderFailed( long hr, const std::string& id ) throw();
-	};
 };
 
