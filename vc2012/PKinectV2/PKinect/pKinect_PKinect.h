@@ -41,6 +41,14 @@ JNIEXPORT jintArray JNICALL Java_pKinect_PKinect_Nui_1GetDepth
 JNIEXPORT jintArray JNICALL Java_pKinect_PKinect_Nui_1GetMask
   (JNIEnv *, jobject);
 
+/*
+ * Class:     pKinect_PKinect
+ * Method:    getFigure
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_pKinect_PKinect_getFigure
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

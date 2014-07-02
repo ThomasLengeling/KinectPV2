@@ -7,25 +7,10 @@
 
 #include "targetver.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-#endif
-
+// Windows Header Files:
 #include <windows.h>
 
 // TODO: reference additional headers your program requires here
 #include <ShlObj.h>
-#include <Kinect.h>
-
-
-
-// Safe release for interfaces
-template<class Interface>
-inline void SafeRelease(Interface *& pInterfaceToRelease)
-{
-    if (pInterfaceToRelease != NULL)
-    {
-        pInterfaceToRelease->Release();
-        pInterfaceToRelease = NULL;
-    }
-}
+#include <NuiApi.h>

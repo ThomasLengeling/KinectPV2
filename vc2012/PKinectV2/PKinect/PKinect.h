@@ -1,87 +1,45 @@
-/*
-* 
-* Copyright (c) 2013, Thomas Sanchez Lengeling
-* All rights reserved.
-* 
-* Redistribution and use in source and binary forms, with or 
-* without modification, are permitted provided that the following 
-* conditions are met:
-* 
-* Redistributions of source code must retain the above copyright 
-* notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright 
-* notice, this list of conditions and the following disclaimer in 
-* the documentation and/or other materials provided with the 
-* distribution.
-* 
-* Neither the name of the Ban the Rewind nor the names of its 
-* contributors may be used to endorse or promote products 
-* derived from this software without specific prior written 
-* permission.
-* 
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-* COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-* 
-*/
-
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <exception>
-#include <comutil.h>
-
-#include "ole2.h"
-#include "Kinect.h"
-
-static const int        cDepthWidth  = 1920;
-static const int        cDepthHeight = 1080;
-
-//////////////////////////////////////////////////////////////////////////////////////////////
+#define WIDTH  640
+#define HEIGHT 480
 
 class PKinect
 {
 private:
+	HANDLE	m_hNextImageFrameEvent;
+	HANDLE	m_hNextDepthFrameEvent;
+	HANDLE	m_hNextSkeletonEvent;
 
-	int			frame_size;
-	uint8_t *	pixels;
-	uint16_t *	depth;
-	uint16_t *	mask;
+	HANDLE	m_pImageStreamHandle;
+	HANDLE	m_pDepthStreamHandle;
+	HANDLE	m_pSkeletonStreamHandle;
 
-	std::string  version;
+	HANDLE	m_hEvNuiProcessStop;
+	HANDLE	m_hThNuiProcess;
 
-protected:
-	IMultiSourceFrameReader*	kFrameReader;
-	IColorFrameReader*			kColorFrameReader;
-	IKinectSensor*				kSensor;
+	int		frame_size;
+	int*	pixels;
+	int*	depth;
+	int*	mask;
+
+	LONG*	col_info;
+	USHORT*	m_depth;
+	
+	INuiSensor*	m_pNuiSensor;
 
 public:
-	PKinect( void );
-	~PKinect( void );
+	PKinect(void);
+	~PKinect(void);
 
-	void init();
+	float	joints[NUI_SKELETON_COUNT][NUI_SKELETON_POSITION_COUNT+1][5];
+	HRESULT Nui_Init();
+	static DWORD WINAPI Nui_ProcessThread(LPVOID);
+	DWORD WINAPI Nui_ProcessThread();
+	void Nui_GotImageAlert();
+	void Nui_GotDepthAlert();
+	void Nui_GotSkeletonAlert();
 
-	void stop();
-
-	void update();
-
-	ICoordinateMapper*				getCoordinateMapper() const;
-
-	uint8_t *						JNI_GetImage();
-	uint16_t *						JNI_GetDepth();
-	uint16_t *						JNI_GetMask();
-
-	std::string						JNI_version() { return version; }
-
+	int * Nui_GetImage();
+	int * Nui_GetDepth();
+	int * Nui_GetMask();
 };
-
