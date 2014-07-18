@@ -120,7 +120,6 @@ JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableColorFrame
 	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
 	kinect->enableColorImage();
 	env->DeleteLocalRef(cls);
-	std::cout << "color enable" << std::endl;
 }
 JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableDepthFrame
 (JNIEnv * env, jobject obj)

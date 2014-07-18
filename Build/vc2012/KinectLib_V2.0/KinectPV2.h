@@ -1,11 +1,10 @@
 /*
-*
-* Copyright (c) 2014, Thomas Sanchez Lengeling
-* All rights reserved.
-*
+KinectV2.0 library for Processing
+Copyright (c) 2014 Thomas Sanchez Lengeling
+
 * Redistribution and use in source and binary forms, with or
 * without modification, are permitted provided that the following
-* conditions are met:
+* conditions are met:st
 *
 * Redistributions of source code must retain the above copyright
 * notice, this list of conditions and the following disclaimer.
@@ -14,24 +13,20 @@
 * the documentation and/or other materials provided with the
 * distribution.
 *
-* Neither the name of Thomas Sanchez Lengeling nor the names of its
-* contributors may be used to endorse or promote products
-* derived from this software without specific prior written
-* permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-* COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-* STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-* ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
+
+KinectfV2.0 library  library for Processing is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+KinectfV2.0 library for Processing is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with KinectfV2.0 library for Processing.  If not, see
+<http://www.gnu.org/licenses/>.
 */
 
 #pragma once
@@ -45,6 +40,8 @@
 
 #include "ole2.h"
 #include <Kinect.h>
+
+#define VERSION			"0.3"
 
 static const int        cColorWidth = 1920;
 static const int        cColorHeight = 1080;
@@ -105,8 +102,6 @@ namespace KinectPV2{
 		uint32_t *	 infraredData;
 		//uint32_t *   inFraredFrameData;
 
-		std::string  version;
-
 		int			appWidth;
 		int         appHeight;
 
@@ -139,7 +134,7 @@ namespace KinectPV2{
 		uint32_t *						JNI_GetDepthSha();
 		uint32_t *						JNI_GetInfrared();
 		float *							JNI_getBody();
-		std::string						JNI_version() { return version; }
+		std::string						JNI_version() { return VERSION; }
 
 		float							joints[BODY_COUNT][JointType_Count][5];
 

@@ -6,18 +6,14 @@ import processing.core.PImage;
 
 
 public class Image{
-	private float fps;
-	
-	
-	private    PApplet parent;
+	private   float fps;
+	private   int imgPixelSize;
+	private   PApplet parent;
 	
 	protected  PImage img;
-	
-	private int imgPixelSize;
-
-	private boolean processImage = true;
-	private byte []  rawByteData;
-	private int  []  rawIntData;
+	protected  boolean processRawData;
+	protected  byte  []  rawByteData;
+	protected  int   []  rawIntData;
 	
 	public Image(PApplet p, int width, int height, int MODE){
 		parent = p;
@@ -25,7 +21,9 @@ public class Image{
 		imgPixelSize = width * height;
 		rawByteData = new byte[imgPixelSize];
 		rawIntData  = new int[imgPixelSize];
+		processRawData= false;
 	}
+	
 	
 	public int getImgSize(){
 		return imgPixelSize;

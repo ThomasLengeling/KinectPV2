@@ -62,6 +62,9 @@ public class Device implements Constants, Runnable {
 		//if(rawData.length == depthImg.getImgSize() && rawData != null){
 			PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
 			depthImg.updatePixels();
+			//if(depthImg.processRawData)
+			//	PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
+			
 		//}
 	}
 	
@@ -76,6 +79,7 @@ public class Device implements Constants, Runnable {
 		jniSetWindowSize(width, height);
 	}
 	
+	//IAMGES
 	public PImage getColorImage(){
 		return colorImg.img;
 	}
@@ -88,6 +92,15 @@ public class Device implements Constants, Runnable {
 		return infraredImg.img;
 	}
 	
+	//RAW DATA
+	public int [] getRawDepth(){
+		return depthImg.rawIntData;
+	}
+	
+	public void activateRawDepth(boolean toggle){
+		depthImg.processRawData = toggle;
+	}
+	
 	public boolean updateDevice(){
 		boolean result =  jniUpdate();
 		return result;
@@ -95,7 +108,6 @@ public class Device implements Constants, Runnable {
 	
 	public void enableColorImg(){
 		jniEnableColorFrame();
-		System.out.println("enable color");
 	}
 	
 	public void enableDepthImg(){

@@ -10,8 +10,6 @@ namespace KinectPV2{
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	Device::Device()
 	{
-		version = "0.1";
-
 		pixelsData = (uint8_t  *)malloc(BUFFER_SIZE_COLOR);
 		depthData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 		infraredData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
