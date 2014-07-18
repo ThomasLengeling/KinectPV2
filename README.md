@@ -49,3 +49,12 @@ Eclipse project for creating the .jar file
 - PointCloud Example
 - Skeleton
 - Tracking example
+- 
+
+---
+
+###### Required notification
+
+The K4W2 hardware is currently pre-release. Per the K4W2 developer program agreement, all public demonstrations and code should display this notice:
+
+"This is preliminary software and/or hardware and APIs are preliminary and subject to change."
