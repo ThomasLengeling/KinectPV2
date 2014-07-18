@@ -16,7 +16,6 @@ Version 0.3
 - depthTest, how to obtain depth information
 - color1920, color image 1920 x 1080
 - imageTest,  color image, depth image and infrared image 
-- 
 
 #### Folders:
 
