@@ -5,7 +5,6 @@ KinectPV2
 
 Version 0.3
 
-
 Only works for Windows 64bits
 
 Library is curretly in develop, and only tested on my PC, with the DevPreview1406
@@ -21,6 +20,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - depthTest, how to obtain depth information
 - color1920, color image 1920 x 1080
 - imageTest,  color image, depth image and infrared image 
+
 
 #### Folders:
 
@@ -49,7 +49,6 @@ Eclipse project for creating the .jar file
 - PointCloud Example
 - Skeleton
 - Tracking example
-- 
 
 ---
 
