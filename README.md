@@ -3,12 +3,17 @@ KinectPV2
 
 ### Kinect4W 2.0 library for Processing
 
+Version 0.3
+
 
 Only works for Windows 64bits
 
-Library is curretly in develop, and only tested on my PC
+Library is curretly in develop, and only tested on my PC, with the DevPreview1406
 
-Version 0.3
+
+First install KinectSDK v2.0
+
+Copy KinectPV2 folder to your processing libraries sketch folder. 
 
 
 #### Examples
