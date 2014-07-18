@@ -1,7 +1,14 @@
-mKinect2P5
+KinectPV2
 ==========
 
 
-Processing library for Kinect V2.0
+Kinect 2.0 for library for Processing
+
+
+Only works for Windows.
 
 Library is on develop.
+
+
+Folders:
+
