@@ -10,10 +10,9 @@ Only works for Windows 64bits
 
 Library is curretly in develop, and only tested on my PC, with the DevPreview1406
 
-
 #### Install 
 
-- First install KinectSDK v2.0
+- Install KinectSDK v2.0 for Windows 
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
 
 
