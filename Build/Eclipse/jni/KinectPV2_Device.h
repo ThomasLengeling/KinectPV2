@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     KinectPV2_Device
+ * Method:    jniDevice
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniDevice
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     KinectPV2_Device
  * Method:    jniInit
  * Signature: ()Z
  */
@@ -50,49 +58,57 @@ JNIEXPORT void JNICALL Java_KinectPV2_Device_jniStopDevice
 /*
  * Class:     KinectPV2_Device
  * Method:    jniEnableColorFrame
- * Signature: ()V
+ * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableColorFrame
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     KinectPV2_Device
  * Method:    jniEnableDepthFrame
- * Signature: ()V
+ * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableDepthFrame
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     KinectPV2_Device
  * Method:    jniEnableInfraredFrame
- * Signature: ()V
+ * Signature: (Z)V
  */
 JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableInfraredFrame
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     KinectPV2_Device
- * Method:    jniDisableColorFrame
- * Signature: ()V
+ * Method:    jniEnableBodyTrackFrame
+ * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_KinectPV2_Device_jniDisableColorFrame
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableBodyTrackFrame
+  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     KinectPV2_Device
- * Method:    jniDisableDepthFrame
- * Signature: ()V
+ * Method:    jniEnableLongExposureInfrared
+ * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_KinectPV2_Device_jniDisableDepthFrame
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableLongExposureInfrared
+  (JNIEnv *, jobject, jboolean);
 
 /*
  * Class:     KinectPV2_Device
- * Method:    jniDisableInfraredFrame
+ * Method:    jniEnableSkeleton
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableSkeleton
+  (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     KinectPV2_Device
+ * Method:    jniGetSkeleton
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_KinectPV2_Device_jniDisableInfraredFrame
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniGetSkeleton
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

@@ -2,14 +2,13 @@ import KinectPV2.*;
 
 KinectV2 kinect;
 
-
 void setup() {
-  size(900, 768);
+  size(512*2, 424);
 
   kinect = new KinectV2(this);
-  kinect.enableColorImg(true);
+  
   kinect.enableDepthImg(true);
-  kinect.enableInfraredImg(true);
+  kinect.enableBodyTrackImg(true);
 
   kinect.init();
 }
@@ -17,10 +16,8 @@ void setup() {
 void draw() {
   background(0);
 
-  image(kinect.getColorImage(), 0, 0, 854, 480);
-  image(kinect.getDepthImage(), 70, 480, 320, 240);
-  image(kinect.getInfraredImage(), 460, 480, 320, 240);
-
+  image(kinect.getDepthImage(), 0, 0);
+  image(kinect.getBodyTrackImage(), 512, 0);
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);

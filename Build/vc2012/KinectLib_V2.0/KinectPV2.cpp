@@ -10,13 +10,18 @@ namespace KinectPV2{
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	Device::Device()
 	{
-		pixelsData = (uint8_t  *)malloc(BUFFER_SIZE_COLOR);
-		depthData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-		infraredData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		pixelsData       = (uint8_t  *)malloc(BUFFER_SIZE_COLOR);
+		colorFrameData   = (uint8_t *)malloc(BUFFER_SIZE_COLOR);
 
-		//inFraredFrameData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-		//depthFrameData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-		colorFrameData = (uint8_t *)malloc(BUFFER_SIZE_COLOR);
+		depthData        = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		infraredData     = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		bodyTrackData    = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		longExposureData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		skeletonData     = (float *)malloc(JOINTSIZE * sizeof(float));
+		
+		for (int i = 0; i < JOINTSIZE; i++){
+			skeletonData[i] = 0.0;
+		}
 
 		appWidth  = 1024;
 		appHeight = 768;
@@ -38,7 +43,7 @@ namespace KinectPV2{
 			// Initialize the Kinect and get the color reader
 			hr = kSensor->Open();
 
-			if (DeviceOptions::isAnableColorFrame())
+			if (DeviceOptions::isEnableColorFrame())
 			{
 				std::cout << "PASSING COLOR FRAME" << std::endl;
 				IColorFrameSource* pColorFrameSource = NULL;
@@ -56,7 +61,7 @@ namespace KinectPV2{
 				SafeRelease(pColorFrameSource);
 			}
 
-			if (DeviceOptions::isAnableDepthFrame())
+			if (DeviceOptions::isEnableDepthFrame())
 			{
 				std::cout << "PASSING DEPTH FRAME" << std::endl;
 				IDepthFrameSource* pDepthFrameSource = NULL;
@@ -73,7 +78,7 @@ namespace KinectPV2{
 
 				SafeRelease(pDepthFrameSource);
 			}
-			if (DeviceOptions::isAnableInFraredFrame())
+			if (DeviceOptions::isEnableInFraredFrame())
 			{
 				std::cout << "PASSING INFRARED FRAME" << std::endl;
 				IInfraredFrameSource* pInfraredFrameSource = NULL;
@@ -90,9 +95,9 @@ namespace KinectPV2{
 
 				SafeRelease(pInfraredFrameSource);
 			}
-			if (DeviceOptions::isAnableBody())
+			if (DeviceOptions::isEnableSkeleton())
 			{
-				std::cout << "SETTING BODY" << std::endl;
+				std::cout << "SETTING SKELETON"<<std::endl;
 				IBodyFrameSource* pBodyFrameSource = NULL;
 
 				if (SUCCEEDED(hr))
@@ -111,6 +116,40 @@ namespace KinectPV2{
 				}
 
 				SafeRelease(pBodyFrameSource);
+			}
+			if (DeviceOptions::isEnableBodyTrack())
+			{
+				std::cout << "SETTING BODY TRACK" << std::endl;
+				IBodyIndexFrameSource * pBodyIndexFrameSource = NULL;
+
+				if (SUCCEEDED(hr))
+				{
+					hr = kSensor->get_BodyIndexFrameSource(&pBodyIndexFrameSource);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyIndexFrameSource->OpenReader(&kBodyIndexFrameReader);
+				}
+
+				SafeRelease(pBodyIndexFrameSource);
+			}
+			if (DeviceOptions::isEnableInfraredExposureFrame())
+			{
+				std::cout << "SETTING LONG EXPOSURE INFRARED" << std::endl;
+				ILongExposureInfraredFrameSource * pLongExposureInFraredSource = NULL;
+
+				if (SUCCEEDED(hr))
+				{
+					hr = kSensor->get_LongExposureInfraredFrameSource(&pLongExposureInFraredSource);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pLongExposureInFraredSource->OpenReader(&kLongExposureFrameReader);
+				}
+
+				SafeRelease(pLongExposureInFraredSource);
 			}
 		}
 		else{
@@ -139,37 +178,56 @@ namespace KinectPV2{
 
 	Device::~Device(void)
 	{
+		/*
 		free(pixelsData);
 		free(depthData);
 		free(infraredData);
+		free(colorFrameData);
+		free(skeletonData);
+		free(longExposureData);
+		free(bodyTrackData);
 
+		
 		delete[] pixelsData;
 		delete[] depthData;
 		delete[] infraredData;
+		delete[] skeletonData;
+		delete[] longExposureData;
+		delete[] bodyTrackData;
+		delete[] colorFrameData;
+		*/
 	}
 
 
 	void Device::stop()
 	{
 		cout << "Clossing kinect V2" << std::endl;
-		if (DeviceOptions::isAnableColorFrame())
+		if (DeviceOptions::isEnableColorFrame())
 			SafeRelease(kColorFrameReader);
 
-		if (DeviceOptions::isAnableBody()){
+		if (DeviceOptions::isEnableSkeleton()){
 			SafeRelease(kBodyFrameReader);
 			SafeRelease(kCoordinateMapper);
 		}
 
-		if (DeviceOptions::isAnableDepthFrame())
+		if (DeviceOptions::isEnableBodyTrack())
+			SafeRelease(kBodyIndexFrameReader);
+
+		if (DeviceOptions::isEnableInfraredExposureFrame())
+			SafeRelease(kLongExposureFrameReader);
+
+		if (DeviceOptions::isEnableDepthFrame())
 			SafeRelease(kDepthFrameReader);
 
-		if (DeviceOptions::isAnableInFraredFrame())
+		if (DeviceOptions::isEnableInFraredFrame())
 			SafeRelease(kInfraredFrameReader);
 
-		DeviceOptions::disabeInfraredImage();
-		DeviceOptions::disableColorImage();
-		DeviceOptions::disableDepthImage();
-		DeviceOptions::disableBody();
+		DeviceOptions::enableInFraredImage(false);
+		DeviceOptions::enableColorImage(false);
+		DeviceOptions::enableDepthImage(false);
+		DeviceOptions::enableInFraredExposureImage(false);
+		DeviceOptions::enableBodyTrack(false);
+		DeviceOptions::enableSkeleton(false);
 
 		if (kFrameReader != 0) {
 			kFrameReader->Release();
@@ -182,11 +240,27 @@ namespace KinectPV2{
 				kSensor = 0;
 			}
 		}
+
+		free(pixelsData);
+		free(depthData);
+		free(infraredData);
+		free(colorFrameData);
+		free(skeletonData);
+		free(longExposureData);
+		free(bodyTrackData);
+		 
+		(pixelsData)   = NULL;
+		(depthData)    = NULL;
+		(infraredData) = NULL;
+		(colorFrameData) = NULL;
+		(skeletonData) = NULL;
+		(longExposureData) = NULL;
+		(bodyTrackData) = NULL;
 	}
 
 	bool Device::update()
 	{
-		if (DeviceOptions::isAnableColorFrame())
+		if (DeviceOptions::isEnableColorFrame())
 		{
 			if (!kColorFrameReader)
 			{
@@ -248,7 +322,7 @@ namespace KinectPV2{
 			SafeRelease(pColorFrame);
 		}
 
-		if (DeviceOptions::isAnableDepthFrame())
+		if (DeviceOptions::isEnableDepthFrame())
 		{
 			if (!kDepthFrameReader)
 			{
@@ -328,7 +402,74 @@ namespace KinectPV2{
 			SafeRelease(pDepthFrame);
 		}
 
-		if (DeviceOptions::isAnableInFraredFrame())
+		if (DeviceOptions::isEnableInfraredExposureFrame())
+		{
+			if (!kLongExposureFrameReader)
+			{
+				std::cout << "ERROR READING DEPTH FRAME" << std::endl;
+				longExposureReady = false;
+				return false;
+			}
+			ILongExposureInfraredFrame * pLongExposureFrame = NULL;
+			HRESULT hr = kLongExposureFrameReader->AcquireLatestFrame(&pLongExposureFrame);
+
+			if (SUCCEEDED(hr))
+			{
+				INT64 nTime = 0;
+				IFrameDescription* pFrameDescription = NULL;
+				int nWidth = 0;
+				int nHeight = 0;
+				USHORT nDepthMinReliableDistance = 0;
+				USHORT nDepthMaxReliableDistance = 0;
+				UINT nBufferSize = 0;
+				UINT16 *pBuffer = NULL;
+
+				hr = pLongExposureFrame->get_RelativeTime(&nTime);
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pLongExposureFrame->get_FrameDescription(&pFrameDescription);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pFrameDescription->get_Width(&nWidth);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pFrameDescription->get_Height(&nHeight);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pLongExposureFrame->AccessUnderlyingBuffer(&nBufferSize, &pBuffer);
+					if (SUCCEEDED(hr) && nWidth == cDepthWidth && nHeight == cDepthHeight && pBuffer){
+						//uint32_t * depthFrameDataTemp = depthFrameData;
+						const UINT16* pBufferEnd = pBuffer + (frame_size_depth);
+						int longExposureIndex = 0;
+
+						while (pBuffer < pBufferEnd)
+						{
+							USHORT ir = *pBuffer;
+							BYTE intensity =  static_cast<BYTE>(ir >> 4);
+							longExposureData[longExposureIndex] = colorByte2Int((uint32_t)intensity);
+							++pBuffer; //unsigned int
+							++longExposureIndex;
+						}
+						//memcpy(depthData, depthFrameDataTemp, frame_size_depth * sizeof(uint32_t));
+						longExposureReady = true;
+					}
+				}
+				SafeRelease(pFrameDescription);
+			}
+			else{
+				longExposureReady = false;
+			}
+			SafeRelease(pLongExposureFrame);
+		}
+
+		if (DeviceOptions::isEnableInFraredFrame())
 		{
 
 			if (!kInfraredFrameReader)
@@ -399,77 +540,167 @@ namespace KinectPV2{
 			SafeRelease(pInfraredFrame);
 		}
 
-
-		/*
-		if (DeviceOptions::isAnableBody())
+		if (DeviceOptions::isEnableBodyTrack())
 		{
 
-		if (!kBodyFrameReader)
-		{
-		return;
+			if (!kBodyIndexFrameReader)
+			{
+				std::cout << "ERROR LOADING BODY TRACK FRAME" << std::endl;
+				return false;
+			}
+			IBodyIndexFrame * pBodyIndexFrame = NULL;
+
+			HRESULT hr = kBodyIndexFrameReader->AcquireLatestFrame(&pBodyIndexFrame);
+
+			if (SUCCEEDED(hr))
+			{
+
+				IFrameDescription* pBodyIndexFrameDescription = NULL;
+				int nBodyIndexWidth = 0;
+				int nBodyIndexHeight = 0;
+				UINT nBodyIndexBufferSize = 0;
+				BYTE *pBodyIndexBuffer = NULL;
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyIndexFrame->get_FrameDescription(&pBodyIndexFrameDescription);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyIndexFrameDescription->get_Width(&nBodyIndexWidth);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyIndexFrameDescription->get_Height(&nBodyIndexHeight);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyIndexFrame->AccessUnderlyingBuffer(&nBodyIndexBufferSize, &pBodyIndexBuffer);
+				}
+
+				if (SUCCEEDED(hr))
+				{
+					if (SUCCEEDED(hr) && pBodyIndexBuffer != NULL && nBodyIndexWidth == cDepthWidth && nBodyIndexHeight == cDepthHeight)
+					{
+						//uint32_t * inFraredFrameDataTemp = inFraredFrameData;
+						const BYTE* pBufferEnd = pBodyIndexBuffer + (frame_size_depth);
+						int depthIndex = 0;
+						while (pBodyIndexBuffer < pBufferEnd)
+						{
+							BYTE ir = *pBodyIndexBuffer;
+							int irC = uint32_t(ir);
+							uint32_t intensity;
+							if (ir == 0)
+								intensity = 0x00000000; //->black
+							else if (ir == 1)
+								intensity = 0xff000000 | 0x00 | 0x00 | 0xFF;
+							else if (ir == 2)
+								intensity = 0xff000000 | 0x00 | 0xFF | 0x00;
+							else if (ir == 3)
+								intensity = 0xff000000 | 0xFF | 0x00 | 0x00;
+							else
+								intensity = 0xFFFFFFFF;
+								//uint32_t color = ((ir / 32) << 5) + ((ir / 32) << 2) + (ir / 64);
+							bodyTrackData[depthIndex] = intensity;// colorByte2Int((uint32_t)intensity);
+							
+							++pBodyIndexBuffer; //(unsigned int)
+							++depthIndex;
+						}
+						//memcpy(infraredData, inFraredFrameDataTemp, frame_size_depth * sizeof(uint32_t));
+						bodyIndexReady = true;
+					}
+				}
+				SafeRelease(pBodyIndexFrameDescription);
+			}
+			else{
+				bodyIndexReady = false;
+			}
+
+			SafeRelease(pBodyIndexFrame);
 		}
 
-		IBodyFrame* pBodyFrame = NULL;
 
-		HRESULT hr = kBodyFrameReader->AcquireLatestFrame(&pBodyFrame);
+		if (DeviceOptions::isEnableSkeleton())
+		{
 
-		if (SUCCEEDED(hr))
-		{
-		INT64 nTime = 0;
-		hr = pBodyFrame->get_RelativeTime(&nTime);
-		IBody* ppBodies[BODY_COUNT] = { 0 };
+			if (!kBodyFrameReader)
+			{
+				return false;
+			}
 
-		if (SUCCEEDED(hr))
-		{
-		hr = pBodyFrame->GetAndRefreshBodyData(_countof(ppBodies), ppBodies);
-		}
+			IBodyFrame* pBodyFrame = NULL;
 
-		if (SUCCEEDED(hr) && kCoordinateMapper)
-		{
-		for (int i = 0; i < BODY_COUNT; ++i)
-		{
-		IBody* pBody = ppBodies[i];
-		if (pBody)
-		{
-		BOOLEAN bTracked = false;
-		hr = pBody->get_IsTracked(&bTracked);
-		//[6][25][3]
-		if (SUCCEEDED(hr) && bTracked)
-		{
-		Joint jointsTracked[JointType_Count];
-		HandState leftHandState = HandState_Unknown;
-		HandState rightHandState = HandState_Unknown;
+			HRESULT hr = kBodyFrameReader->AcquireLatestFrame(&pBodyFrame);
 
-		pBody->get_HandLeftState(&leftHandState);
-		pBody->get_HandRightState(&rightHandState);
+			if (SUCCEEDED(hr))
+			{
+				INT64 nTime = 0;
+				hr = pBodyFrame->get_RelativeTime(&nTime);
+				IBody* ppBodies[BODY_COUNT] = { 0 };
 
-		hr = pBody->GetJoints(_countof(jointsTracked), jointsTracked);
-		if (SUCCEEDED(hr))
-		{
-		for (int j = 0; j < _countof(jointsTracked); ++j)
-		{
-		float * pointScreen = BodyToScreen(jointsTracked[j].Position);
-		joints[i][j][0] = pointScreen[0];
-		joints[i][j][1] = pointScreen[1];
-		joints[i][j][2] = 0;
-		joints[i][j][3] = 0;
-		joints[i][j][4] = 0.0f;
-		}
-		}
-		}
-		}
-		}
-		}
+				if (SUCCEEDED(hr))
+				{
+					hr = pBodyFrame->GetAndRefreshBodyData(_countof(ppBodies), ppBodies);
+				}
 
-		for (int i = 0; i < _countof(ppBodies); ++i)
-		{
-		SafeRelease(ppBodies[i]);
+				if (SUCCEEDED(hr) && kCoordinateMapper)
+				{
+					for (int i = 0; i < BODY_COUNT; ++i)
+					{
+						IBody* pBody = ppBodies[i];
+						if (pBody) //[6][25][3]
+						{
+							BOOLEAN bTracked = false;
+							hr = pBody->get_IsTracked(&bTracked);
+							
+							if (SUCCEEDED(hr) && bTracked)
+							{
+								skeletonData[i*(JointType_Count)* 5 + JointType_Count * 5 + 0] = 1.0;
+								Joint jointsTracked[JointType_Count];
+								HandState leftHandState = HandState_Unknown;
+								HandState rightHandState = HandState_Unknown;
+
+								pBody->get_HandLeftState(&leftHandState);
+								pBody->get_HandRightState(&rightHandState);
+
+								hr = pBody->GetJoints(_countof(jointsTracked), jointsTracked);
+								if (SUCCEEDED(hr))
+								{
+									int stateHand;
+									for (int j = 0; j < _countof(jointsTracked); ++j)
+									{
+										float * pointScreen = BodyToScreen(jointsTracked[j].Position);
+										skeletonData[i*(JointType_Count)*5 + j*5 + 0] = pointScreen[0];
+										skeletonData[i*(JointType_Count)*5 + j*5 + 1] = pointScreen[1];
+										skeletonData[i*(JointType_Count)*5 + j*5 + 2] = 0;
+
+										if (j == JointType_HandLeft)
+											skeletonData[i*(JointType_Count)* 5 + j * 5 + 3] = leftHandState;
+										else if (j == JointType_HandRight)
+											skeletonData[i*(JointType_Count)* 5 + j * 5 + 3] = rightHandState;
+										else
+											skeletonData[i*(JointType_Count)* 5 + j * 5 + 3] = jointsTracked[j].TrackingState;
+										skeletonData[i*(JointType_Count)* 5 + j * 5 + 4] = jointsTracked[j].JointType;
+									}
+								}
+							}
+							else{
+								skeletonData[i*(JointType_Count)* 5 + JointType_Count * 5 + 0] = 0.0;
+							}
+						}
+					}
+				}
+
+				for (int i = 0; i < _countof(ppBodies); ++i)
+				{
+					SafeRelease(ppBodies[i]);
+				}
+			}
+			SafeRelease(pBodyFrame);
 		}
-		}
-		SafeRelease(pBodyFrame);
-		}
-		}
-		*/
 		return true;
 	}
 
@@ -511,5 +742,20 @@ namespace KinectPV2{
 	uint32_t * Device::JNI_GetInfrared()
 	{
 		return infraredData;
+	}
+
+	uint32_t *	Device::JNI_GetLongExposureInfrared()
+	{
+		return longExposureData;
+	}
+
+	uint32_t * Device::JNI_GetBodyTrack()
+	{
+		return bodyTrackData;
+	}
+
+	float * Device::JNI_getSkeletonRawData()
+	{
+		return skeletonData;
 	}
 }

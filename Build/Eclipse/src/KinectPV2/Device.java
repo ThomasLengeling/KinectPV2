@@ -19,9 +19,13 @@ public class Device implements Constants, Runnable {
 		}
 	}
 	
-	public  Image colorImg;
-	public  Image depthImg;
-	public  Image infraredImg;
+	private  Image colorImg;
+	private  Image depthImg;
+	private  Image infraredImg;
+	private  Image longExposureImg;
+	private  Image bodyTrackImg;
+	
+	private Skeleton [] skeleton;
 	
 	protected boolean runningKinect;
 	
@@ -30,9 +34,16 @@ public class Device implements Constants, Runnable {
 	
 	public Device(PApplet _p){
 		parent = _p;
-		colorImg    =   new Image(parent, WIDTHColor, HEIGHTColor, parent.ARGB);
-		depthImg    =   new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
-		infraredImg =   new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, parent.ARGB);
+		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.RGB);
+		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		
+		skeleton 		= new Skeleton[BODY_COUNT];
+		for(int i = 0; i < BODY_COUNT; i++){
+			skeleton[i] = new Skeleton(parent);
+		}
 		
 		jniDevice();
 		runningKinect = true;
@@ -62,8 +73,8 @@ public class Device implements Constants, Runnable {
 		//if(rawData.length == depthImg.getImgSize() && rawData != null){
 			PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
 			depthImg.updatePixels();
-			//if(depthImg.processRawData)
-			//	PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
+			if(depthImg.processRawData)
+				PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
 			
 		//}
 	}
@@ -75,11 +86,32 @@ public class Device implements Constants, Runnable {
 		//}
 	}
 	
-	public void setWindowSize(int width, int height){
-		jniSetWindowSize(width, height);
+	void copyBodyTrackImg(int [] rawData){
+		PApplet.arrayCopy(rawData, 0, bodyTrackImg.pixels(), 0, bodyTrackImg.getImgSize());
+		bodyTrackImg.updatePixels();
 	}
 	
-	//IAMGES
+	void copyLongExposureImg(int [] rawData){
+		PApplet.arrayCopy(rawData, 0, longExposureImg.pixels(), 0, longExposureImg.getImgSize());
+		longExposureImg.updatePixels();
+	}
+	
+	void copySkeletonRawData(float [] rawData){
+		//PApplet.arrayCopy(rawData, 0, skeleton.getData(), 0, skeleton.skeletonSize);
+		for(int i = 0; i < BODY_COUNT; i++){
+			skeleton[i].createSkeletons(rawData, i);
+		}
+	}
+	
+	public Skeleton [] getSkeleton(){
+		return skeleton;
+	}
+	
+	public void windowSizeSkeleton(int width, int height){
+		jniSetWindowSizeSkeleton(width, height);
+	}
+	
+	//IMAGES
 	public PImage getColorImage(){
 		return colorImg.img;
 	}
@@ -92,11 +124,36 @@ public class Device implements Constants, Runnable {
 		return infraredImg.img;
 	}
 	
+	public PImage getBodyTrackImage(){
+		return bodyTrackImg.img;
+	}
+	
+	public PImage getLongExposureInfrared(){
+		return longExposureImg.img;
+	}
+	
 	//RAW DATA
 	public int [] getRawDepth(){
 		return depthImg.rawIntData;
 	}
 	
+	public int [] getRawColor(){
+		return colorImg.rawIntData;
+	}
+	
+	public int [] getRawInfrared(){
+		return infraredImg.rawIntData;
+	}
+	
+	public int [] getRawBodyTrack(){
+		return bodyTrackImg.rawIntData;
+	}
+	
+	public int [] getRawLongExposure(){
+		return longExposureImg.rawIntData;
+	}
+	
+	//ACTIVATE RAW DATA
 	public void activateRawDepth(boolean toggle){
 		depthImg.processRawData = toggle;
 	}
@@ -106,30 +163,38 @@ public class Device implements Constants, Runnable {
 		return result;
 	}
 	
-	public void enableColorImg(){
-		jniEnableColorFrame();
+	public void enableColorImg(boolean toggle){
+		jniEnableColorFrame(toggle);
 	}
 	
-	public void enableDepthImg(){
-		jniEnableDepthFrame();
+	public void enableDepthImg(boolean toggle){
+		jniEnableDepthFrame(toggle);
 	}
 	
-	public void enableInfraredImg(){
-		jniEnableInfraredFrame();
+	public void enableInfraredImg(boolean toggle){
+		jniEnableInfraredFrame(toggle);
 	}
 	
-	public void disableColorImg(){
-		jniDisableColorFrame();
+	public void enableBodyTrackImg(boolean toggle){
+		jniEnableBodyTrackFrame(toggle);
 	}
 	
-	public void disableDepthImg(){
-		jniDisableDepthFrame();
+	public void enableLongExposureInfrared(boolean toggle){
+		jniEnableLongExposureInfrared(toggle);
 	}
-	public void disableInfraredImg(){
-		jniDisableInfraredFrame();
+	
+	public void enableSkeleton(boolean toggle){
+		jniEnableSkeleton(toggle);
 	}
+	
 
 	public void stopDevice(){
+		skeleton = null;
+		colorImg = null;
+		depthImg = null;
+		infraredImg = null;
+		longExposureImg = null;
+		bodyTrackImg= null;
 		jniStopDevice();
 	}
 	
@@ -138,7 +203,8 @@ public class Device implements Constants, Runnable {
 	
 	private native boolean jniInit();
 	
-	private native void jniSetWindowSize(int width, int height);
+	//for Skeleton
+	private native void jniSetWindowSizeSkeleton(int width, int height);
 	
 	private native String jniVersion();
 	
@@ -146,17 +212,19 @@ public class Device implements Constants, Runnable {
 	
 	private native void jniStopDevice();
 	
-	private native void jniEnableColorFrame();
+	private native void jniEnableColorFrame(boolean toggle);
 	
-	private native void jniEnableDepthFrame();
+	private native void jniEnableDepthFrame(boolean toggle);
 	
-	private native void jniEnableInfraredFrame();
+	private native void jniEnableInfraredFrame(boolean toggle);
 	
-	private native void jniDisableColorFrame();
+	private native void jniEnableBodyTrackFrame(boolean toggle);
 	
-	private native void jniDisableDepthFrame();
+	private native void jniEnableLongExposureInfrared(boolean toggle);
 	
-	private native void jniDisableInfraredFrame();
+	private native void jniEnableSkeleton(boolean toggle);
+	
+	private native void jniGetSkeleton();
 
 
 	public void run() {

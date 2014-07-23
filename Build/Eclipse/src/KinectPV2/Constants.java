@@ -46,4 +46,10 @@ public interface Constants {
 	public final static int Activity_MouthMoved		= 3;
 	public final static int Activity_LookingAway	= 4;
 	public final static int Activity_Count	= ( Activity_LookingAway + 1 );
+	
+	public final static int HandState_Unknown		= 0;
+    public final static int HandState_NotTracked	= 1;
+    public final static int HandState_Open			= 2;
+    public final static int HandState_Closed		= 3;
+    public final static int HandState_Lasso			= 4;
 }

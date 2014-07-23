@@ -55,7 +55,7 @@ static const int        cDepthHeight = 424;
 static const int BUFFER_SIZE_COLOR = frame_size_color * 4;
 
 //SKELETON
-static const int JOINTSSIZE = BODY_COUNT * (JointType_Count)* 5;
+static const int JOINTSIZE = BODY_COUNT * (JointType_Count + 1) * 5;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 namespace KinectPV2{
@@ -65,28 +65,27 @@ namespace KinectPV2{
 		DeviceOptions(){}
 		~DeviceOptions(){}
 
-		void			enableColorImage(){ toggleColorFrame = true; }
-		void			enableDepthImage(){ toggleDepthFrame = true;  }
-		void            enableInFraredImage(){ toggleInFraredFrame = true; }
-		void            enableBody(){ toggleBody = true; }
+		void			enableColorImage(bool toggle){ toggleColorFrame = toggle; }
+		void			enableDepthImage(bool toggle){ toggleDepthFrame = toggle; }
+		void            enableInFraredImage(bool toggle){ toggleInFraredFrame = toggle; }
+		void            enableSkeleton(bool toggle){ toggleSkeleton = toggle; }
+		void            enableBodyTrack(bool toggle){ toggleBodyTrack = toggle; }
+		void			enableInFraredExposureImage(bool toggle){ toggleInFraredLongExposure = toggle; }
 
-		void			disableColorImage(){ toggleColorFrame = true; }
-		void			disableDepthImage(){ toggleDepthFrame = true; }
-		void			disabeInfraredImage(){ toggleInFraredFrame = true; }
-		void			disableBody(){ toggleBody = true; }
-
-		inline bool		isAnableColorFrame(){ return toggleColorFrame; }
-		inline bool     isAnableDepthFrame(){ return toggleDepthFrame; }
-		inline bool		isAnableInFraredFrame(){ return toggleInFraredFrame; }
-		inline bool     isAnableBody(){ return toggleBody; }
+		inline bool		isEnableColorFrame(){ return toggleColorFrame; }
+		inline bool     isEnableDepthFrame(){ return toggleDepthFrame; }
+		inline bool		isEnableInFraredFrame(){ return toggleInFraredFrame; }
+		inline bool		isEnableInfraredExposureFrame(){ return toggleInFraredLongExposure; }
+		inline bool     isEnableSkeleton(){ return toggleSkeleton; }
+		inline bool		isEnableBodyTrack(){ return toggleBodyTrack; }
 
 	private:
 		bool		toggleColorFrame;
 		bool		toggleDepthFrame;
 		bool		toggleInFraredFrame;
 
-		bool        toggleBody;
-		bool		toggleBodyIndex;
+		bool        toggleBodyTrack;
+		bool		toggleSkeleton;
 		bool        toggleInFraredLongExposure;
 	};
 
@@ -97,10 +96,11 @@ namespace KinectPV2{
 		uint8_t *    colorFrameData;
 
 		uint32_t *	 depthData;
-		// *   depthFrameData;
-
 		uint32_t *	 infraredData;
-		//uint32_t *   inFraredFrameData;
+		uint32_t *	 longExposureData;
+
+		float    *   skeletonData;
+		uint32_t *   bodyTrackData;
 
 		int			appWidth;
 		int         appHeight;
@@ -109,12 +109,14 @@ namespace KinectPV2{
 
 		IMultiSourceFrameReader*	kFrameReader;
 
-		IColorFrameReader*			kColorFrameReader;
-		IDepthFrameReader*			kDepthFrameReader;
+		IColorFrameReader				 *	kColorFrameReader;
+		IDepthFrameReader				 *	kDepthFrameReader;
+		ILongExposureInfraredFrameReader *  kLongExposureFrameReader;
+		IInfraredFrameReader			 *	kInfraredFrameReader;
 
-		IInfraredFrameReader*		kInfraredFrameReader;
-		IBodyFrameReader*			kBodyFrameReader;
-		ICoordinateMapper*			kCoordinateMapper;
+		IBodyFrameReader         *	kBodyFrameReader;
+		IBodyIndexFrameReader    *	kBodyIndexFrameReader;
+		ICoordinateMapper	     *	kCoordinateMapper;
 
 		IKinectSensor*				kSensor;
 
@@ -133,10 +135,13 @@ namespace KinectPV2{
 		uint32_t *						JNI_GetDepth();
 		uint32_t *						JNI_GetDepthSha();
 		uint32_t *						JNI_GetInfrared();
-		float *							JNI_getBody();
+		uint32_t *						JNI_GetBodyTrack();
+		uint32_t *						JNI_GetLongExposureInfrared();
+
+		float *						    JNI_getSkeletonRawData();
 		std::string						JNI_version() { return VERSION; }
 
-		float							joints[BODY_COUNT][JointType_Count][5];
+		float							joints[BODY_COUNT][JointType_Count + 1][5];
 
 		float *							BodyToScreen(const CameraSpacePoint& bodyPoint);
 		int								colorByte2Int(int gray);
@@ -144,6 +149,8 @@ namespace KinectPV2{
 		bool							infraredFrameReady;
 		bool							colorFrameReady;
 		bool							depthFrameReady;
+		bool							bodyIndexReady;
+		bool							longExposureReady;
 
 		//
 		//uint32_t						depthJNI[frame_size_depth];
