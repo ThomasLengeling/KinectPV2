@@ -38,7 +38,7 @@ The actual processing library, just copy the folder KinectPV2 into the libraries
 
 ---
 
-To build the library form source, the repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
+To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
 
 #### Todo
