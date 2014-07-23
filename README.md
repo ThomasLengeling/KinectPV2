@@ -23,7 +23,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - color1920, color image 1920 x 1080
 - imageTest,  color image, depth image and infrared image
 - skeleton, how to track up to 6 skeletons 
-- mask, how to oobrain bodyIndex of the users.
+- mask, obrain bodyIndex of the users.
 
 
 #### Folders:
