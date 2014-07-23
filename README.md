@@ -3,11 +3,13 @@ KinectPV2
 
 ### Kinect4W 2.0 library for Processing
 
-Version 0.3
+Version 0.4
 
 Only works for Windows 64bits
 
 Library is curretly in develop, and only tested on my PC, with the DevPreview1406
+
+#### webpage comming soon 
 
 #### Install 
 
@@ -19,7 +21,8 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 
 - depthTest, how to obtain depth information
 - color1920, color image 1920 x 1080
-- imageTest,  color image, depth image and infrared image 
+- imageTest,  color image, depth image and infrared image
+- skeleton, how to track up to 6 skeletons 
 
 
 #### Folders:
