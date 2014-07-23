@@ -9,7 +9,7 @@ Only works for Windows 64bits
 
 Library is curretly in develop, and only tested on my PC, with the DevPreview1406
 
-#### webpage comming soon 
+#### webpage comming soon and reference
 
 #### Install 
 
@@ -23,6 +23,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - color1920, color image 1920 x 1080
 - imageTest,  color image, depth image and infrared image
 - skeleton, how to track up to 6 skeletons 
+- mask, how to oobrain bodyIndex of the users.
 
 
 #### Folders:
