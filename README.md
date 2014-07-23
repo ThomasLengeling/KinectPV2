@@ -11,7 +11,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 
 #### Reference and point cloud comming soon
 
-[Page](http://codigogenerativo.com/kinect-2-0-library-for-processing/)
+[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) wih a sample tutorial and a couple of useful things. 
 
 #### Install 
 
