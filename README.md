@@ -26,7 +26,8 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - mask, obtain bodyIndex of the users.
 
 
-#### Folders:
+To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
+
 
 ---
 
@@ -37,8 +38,6 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 The actual processing library, just copy the folder KinectPV2 into the libraries folder in your processing sketch folder
 
 ---
-
-To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
 
 #### Todo
