@@ -11,8 +11,8 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 
 #### Reference and point cloud comming soon
 
-[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) wih a sample tutorial and a couple of useful things. 
-
+[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
+s
 #### Install 
 
 - Install KinectSDK v2.0 for Windows 
