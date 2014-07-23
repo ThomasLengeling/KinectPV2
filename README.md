@@ -17,6 +17,12 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
 
 
+###### KinectPV2
+
+The actual processing library, just copy the folder KinectPV2 into the libraries folder in your processing sketch folder
+
+---
+
 #### Examples
 
 - depthTest, how to obtain depth information
@@ -29,15 +35,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
 
----
 
-##### Processing
-
-###### KinectPV2
-
-The actual processing library, just copy the folder KinectPV2 into the libraries folder in your processing sketch folder
-
----
 
 
 #### Todo
