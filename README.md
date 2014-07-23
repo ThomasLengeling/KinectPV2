@@ -38,15 +38,8 @@ The actual processing library, just copy the folder KinectPV2 into the libraries
 
 ---
 
-##### Build
+To build the library form source, the repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
-###### vc2012
-
-Visual Stduio project for creating the .dll library with JNI code.
-
-###### eclipse
-
-Eclipse project for creating the .jar file 
 
 #### Todo
 
