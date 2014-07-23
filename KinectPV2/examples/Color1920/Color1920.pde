@@ -6,9 +6,7 @@ void setup() {
   size(900, 768);
 
   kinect = new KinectV2(this);
-  kinect.enableColorImg();
-  kinect.enableDepthImg();
-  kinect.enableInfraredImg();
+  kinect.enableColorImg(true);
 
   kinect.init();
 }
