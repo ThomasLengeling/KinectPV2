@@ -1,7 +1,7 @@
 KinectPV2
 ==========
 
-### Kinect4W 2.0 library for Processing
+### Kinect One library for Processing
 
 Version 0.4
 
