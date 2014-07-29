@@ -9,7 +9,7 @@ Only works for Windows 64bits
 
 Library is curretly in develop, and only tested on my PC, with the DevPreview1406
 
-#### Reference and point cloud comming soon
+#### Reference and tutorial coming soon
 
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
 #### Install 
