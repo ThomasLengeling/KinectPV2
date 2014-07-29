@@ -27,6 +27,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - imageTest,  color image, depth image and infrared image
 - skeleton, how to track up to 6 skeletons 
 - mask, obtain bodyIndex of the users.
+- Point Cloud, Example who to render the point cloud from the depth Image information
 
 
 To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
@@ -35,9 +36,10 @@ To build the library from source, use this repository [KinectPV2_BuildLibs](http
 
 #### Todo
 
-- PointCloud Example
 - Skeleton
 - Tracking example
+- Contour example
+- Color Point Cloud
 
 ---
 
