@@ -40,6 +40,7 @@ To build the library from source, use this repository [KinectPV2_BuildLibs](http
 - Tracking example
 - Contour example
 - Color Point Cloud
+- Multiple Devices
 
 ---
 
