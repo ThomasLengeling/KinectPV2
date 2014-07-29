@@ -1,11 +1,11 @@
 import KinectPV2.*;
 
-KinectV2 kinect;
+KinectPV2 kinect;
 
 void setup() {
   size(512*2, 424);
 
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   
   kinect.enableDepthImg(true);
   kinect.enableBodyTrackImg(true);
@@ -27,4 +27,3 @@ void mousePressed() {
   println(frameRate);
   saveFrame();
 }
-

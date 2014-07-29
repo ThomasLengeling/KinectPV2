@@ -1,11 +1,11 @@
 import KinectPV2.*;
 
-KinectV2 kinect;
+KinectPV2 kinect;
 
 void setup() {
-  size(900, 768);
+  size(1920, 1080);
 
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   kinect.enableColorImg(true);
 
   kinect.init();
@@ -24,4 +24,3 @@ void mousePressed() {
   println(frameRate);
   saveFrame();
 }
-

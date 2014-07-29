@@ -1,15 +1,16 @@
 import KinectPV2.*;
 
-KinectV2 kinect;
+KinectPV2 kinect;
 
 void setup() {
-  size(512*3, 424);
+  size(512*3, 424, P3D);
 
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
   kinect.enableInfraredImg(true);
   kinect.enableLongExposureInfraredImg(true);
   kinect.init();
+  
 }
 
 void draw() {
@@ -19,12 +20,6 @@ void draw() {
   image(kinect.getInfraredImage(), 512, 0);
   image(kinect.getLongExposureInfraredImage(), 512*2, 0);
   
-  fill(255, 255, 0);
-  text(frameRate, 50, 50);
+  stroke(255);
+  text(frameRate, 50, height - 50);
 }
-
-void mousePressed() {
-  println(frameRate);
-  saveFrame();
-}
-

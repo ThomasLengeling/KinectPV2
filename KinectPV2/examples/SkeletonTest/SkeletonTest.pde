@@ -1,13 +1,13 @@
 import KinectPV2.*;
 
-KinectV2 kinect;
+KinectPV2 kinect;
 
 Skeleton [] skeleton;
 
 void setup() {
   size(1024, 768);
 
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   
   kinect.enableSkeleton(true );
   kinect.windowSizeSkeleton(1024, 768);
@@ -15,7 +15,7 @@ void setup() {
 
   kinect.init();
   
-  skeleton = new Skeleton[6];
+ // skeleton = new Skeleton[6];
   
   
 }
