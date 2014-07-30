@@ -1,6 +1,6 @@
 import java.nio.FloatBuffer;
 
-import KinectPV2*.;
+import KinectPV2.*;
 import javax.media.opengl.GL2;
 
 private KinectPV2 kinect;
