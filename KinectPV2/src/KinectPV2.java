@@ -34,11 +34,11 @@ along with KinectfV2.0 library for Processing.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-public class KinectV2 extends Device{
+public class KinectPV2 extends Device{
 	
 	public static PApplet parent;
 	
-	public KinectV2(PApplet _p) {
+	public KinectPV2(PApplet _p) {
 		super(_p);	
 		parent = _p;
 		
