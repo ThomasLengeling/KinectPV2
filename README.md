@@ -30,7 +30,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - point Cloud, point cloud render using opengl
 
 
-To build the library from source, use this repository [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
+To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
 
 
