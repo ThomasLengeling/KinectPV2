@@ -37,6 +37,8 @@ To build the library from source, use this repository ( not always updated ) [Ki
 #### Todo
 
 - Skeleton
+- Face tracking
+- Heart rate detection
 - Tracking example
 - Contour example
 - Color Point Cloud
