@@ -6,7 +6,7 @@ public class Skeleton implements Constants{
 	
 	private   PApplet parent;
 	
-	protected Joint [] joints;
+	protected KJoint [] kJoints;
 	
 	protected int leftHandState;
 	protected int rightHandState;
@@ -15,9 +15,9 @@ public class Skeleton implements Constants{
 	
 	Skeleton(PApplet p){
 		parent = p;
-		joints  = new Joint[JointType_Count + 1];
+		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
-			joints[i] = new Joint(0,0,0,0);
+			kJoints[i] = new KJoint(0,0,0,0);
 		}
 	}
 	
@@ -25,8 +25,8 @@ public class Skeleton implements Constants{
 		return tracked;
 	}
 	
-	public Joint [] getJoints(){
-		return joints;
+	public KJoint [] getJoints(){
+		return kJoints;
 	}
 	
 	public int getLeftHandState(){
@@ -47,15 +47,15 @@ public class Skeleton implements Constants{
 		if(tracked){
 			for(int j = 0; j < JointType_Count; j ++){			
 				int index1 = j * 5;
-				joints[j].x = rawData[index2 + index1 + 0];
-				joints[j].y = rawData[index2 + index1 + 1];
-				joints[j].z = 0;
+				kJoints[j].x = rawData[index2 + index1 + 0];
+				kJoints[j].y = rawData[index2 + index1 + 1];
+				kJoints[j].z = 0;
 				
 				int state =   (int)rawData[index2 + index1 + 3];
 				int type  =   (int)rawData[index2 + index1 + 4];
 				
-				joints[j].state = state;
-				joints[j].type  = type;
+				kJoints[j].state = state;
+				kJoints[j].type  = type;
 				if(type == JointType_HandLeft)
 					leftHandState = state;
 				if(type == JointType_HandRight)
@@ -105,31 +105,33 @@ public class Skeleton implements Constants{
 	    
 	    drawJoint(JointType_ThumbLeft);
 	    drawJoint(JointType_ThumbRight);
+	    
+	    drawJoint(JointType_Head);
 	      
 	}
 	
 	public void drawJoint(int jointType){
 		parent.noStroke();
 		parent.fill(155);
-		parent.ellipse(joints[jointType].x, joints[jointType].y, 10 ,10);
+		parent.ellipse(kJoints[jointType].x, kJoints[jointType].y, 10 ,10);
 		
 	}
 	
 	public void drawBone(int jointType1, int jointType2){
 		parent.noStroke();
 		parent.fill(155);
-		parent.ellipse(joints[jointType1].x, joints[jointType1].y, 20 ,20);
+		parent.ellipse(kJoints[jointType1].x, kJoints[jointType1].y, 20 ,20);
 		parent.stroke(255);
-		parent.line(joints[jointType1].x, joints[jointType1].y, joints[jointType2].x, joints[jointType2].y);
+		parent.line(kJoints[jointType1].x, kJoints[jointType1].y, kJoints[jointType2].x, kJoints[jointType2].y);
 	}
 	
 	public void drawHandStates(){
 		
 		handState(leftHandState);
-		parent.ellipse(joints[JointType_HandLeft].x, joints[JointType_HandLeft].y, 90, 90);
+		parent.ellipse(kJoints[JointType_HandLeft].x, kJoints[JointType_HandLeft].y, 90, 90);
 		
 		handState(rightHandState);
-		parent.ellipse(joints[JointType_HandRight].x, joints[JointType_HandRight].y, 90, 90);
+		parent.ellipse(kJoints[JointType_HandRight].x, kJoints[JointType_HandRight].y, 90, 90);
 	}
 	
 	public void handState(int handState){

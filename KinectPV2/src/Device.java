@@ -124,6 +124,7 @@ public class Device implements Constants, Runnable {
 	
 	private void copySkeletonRawData(float [] rawData){
 		//PApplet.arrayCopy(rawData, 0, skeleton.getData(), 0, skeleton.skeletonSize);
+		if(rawData.length == JOINTSIZE)
 		for(int i = 0; i < BODY_COUNT; i++){
 			skeleton[i].createSkeletons(rawData, i);
 		}

@@ -62,16 +62,16 @@ void draw() {
 
 
   //individual JOINTS
-  /*
-   for(int i = 0; i < skeleton.length; i++){
-   if(skeleton[i].isTracked()){
-   Joint[] joints = skeleton[i].getJoints();
-   ellipse(joints[kinect.JointType_Head].getX(),joints[kinect.JointType_Head].getY(),50,50);
-   skeleton[i].drawBody();
-   skeleton[i].drawHandStates();
-   }
-   }
-   */
+
+  for (int i = 0; i < skeleton.length; i++) {
+    if (skeleton[i].isTracked()) {
+      KJoint[] joints = skeleton[i].getJoints();
+      ellipse(joints[kinect.JointType_Head].getX(), joints[kinect.JointType_Head].getY(), 50, 50);
+      skeleton[i].drawBody();
+      skeleton[i].drawHandStates();
+    }
+  }
+
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);

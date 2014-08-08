@@ -27,8 +27,10 @@ public interface Constants {
 	public final static int JointType_HandTipRight	= 23;
 	public final static int JointType_ThumbRight	= 24;
 	public final static int JointType_Count	= ( JointType_ThumbRight + 1 );
-
+	
 	public final static int BODY_COUNT = 6;
+	
+	public final static int JOINTSIZE = BODY_COUNT * (JointType_Count + 1) * 5;
 
 	public final static int WIDTHColor  = 1920;
 	public final static int HEIGHTColor = 1080;
