@@ -3,7 +3,7 @@ KinectPV2
 
 ### Kinect One library for Processing
 
-Version 0.4
+Version 0.4.5
 
 Only works for Windows 64bits
 
@@ -28,6 +28,7 @@ Library is curretly in develop, and only tested on my PC, with the DevPreview140
 - skeleton, how to track up to 6 skeletons 
 - mask, obtain bodyIndex of the users.
 - point Cloud, point cloud render using opengl
+- SkeletonDepthMask, Skeleton tracking, with depth and body tracking
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
