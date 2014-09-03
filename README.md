@@ -1,7 +1,7 @@
 KinectPV2
 ==========
 
-### Kinect for Windows v2 (K4W2) library for Processing
+### Kinect for Windows v2 library for Processing
 
 Version 0.4.5
 
@@ -9,7 +9,7 @@ Library is curretly in develop, with SDK Version 1408 (8/20/2014)
 
 ####Requirements
 
-- A Kinect for windows v2 device
+- A Kinect for Windows v2 Device (K4W2)
 - [Kinect SDK v2](http://www.microsoft.com/en-us/download/details.aspx?id=43661)
 - Computer with a dedicated USB 3.0 and 64bits
 - Windows 8, 8.1
