@@ -35,7 +35,8 @@ void setup() {
 
   //Enables depth and Body tracking (mask image)
   kinect.enableDepthMaskImg(true);
-  kinect.enableSkeleton(true);
+  kinect.enableSkeleton(true );
+  kinect.enableSkeletonDepth(true);
   kinect.skeletonMapToDimentions(width, height);
 
   kinect.init();
@@ -48,7 +49,7 @@ void draw() {
 
   image(kinect.getDepthMaskImage(), 0, 0, width, height);
 
-  skeleton =  kinect.getSkeleton();
+  skeleton =  kinect.getSkeletonDepth();
 
   //individual JOINTS
   for (int i = 0; i < skeleton.length; i++) {
@@ -107,26 +108,32 @@ void drawBody(KJoint[] joints) {
   drawJoint(joints, KinectPV2.JointType_ThumbRight);
 
   drawJoint(joints, KinectPV2.JointType_Head);
+  
+  println(joints[KinectPV2.JointType_Head].getZ() );
 }
 
 void drawJoint(KJoint[] joints, int jointType) {
-  pushMatrix();
-  noStroke();
-  fill(255);
-  translate(joints[jointType].getX(), joints[jointType].getY(), joints[jointType].getZ());
-  ellipse(0, 0, 25, 25);
-  popMatrix();
+  if (joints[jointType].getZ() != 0.0) {
+    pushMatrix();
+    noStroke();
+    fill(255);
+    translate(joints[jointType].getX(), joints[jointType].getY(), joints[jointType].getZ());
+    ellipse(0, 0, 25, 25);
+    popMatrix();
+  }
 }
 
 void drawBone(KJoint[] joints, int jointType1, int jointType2) {
-  pushMatrix();
-  noStroke();
-  fill(255);
-  translate(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ());
-  ellipse(0, 0, 25, 25);
-  stroke(255);
-  popMatrix();
-  line(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ(), joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
+  if (joints[jointType1].getZ() != 0.0 || joints[jointType2].getZ() != 0.0) {
+    pushMatrix();
+    noStroke();
+    fill(255);
+    translate(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ());
+    ellipse(0, 0, 25, 25);
+    stroke(255);
+    popMatrix();
+    line(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ(), joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
+  }
 }
 
 void drawHandState(KJoint joint) {

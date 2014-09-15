@@ -62,6 +62,7 @@ void setup() {
   kinect = new KinectPV2(this);
 
   kinect.enableSkeleton(true );
+  kinect.enableSkeletonDepth(true);
   kinect.skeletonMapToDimentions(width, height);
   kinect.enableBodyTrackImg(true );
 
@@ -74,7 +75,7 @@ void draw() {
   background(0);
 
   image(kinect.getBodyTrackImage(), 0, 0, 200, 200);
-  skeleton =  kinect.getSkeleton();
+  skeleton =  kinect.getSkeletonDepth();
 
   //individual JOINTS
   for (int i = 0; i < skeleton.length; i++) {
@@ -179,4 +180,3 @@ void handState(int handState) {
     break;
   }
 }
-

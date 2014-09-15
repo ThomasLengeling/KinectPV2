@@ -1,5 +1,28 @@
 package KinectPV2;
 
+/*
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+KinectPV2, Kinect one library for processing
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 import java.nio.FloatBuffer;
 
 import com.jogamp.common.nio.Buffers;
@@ -15,11 +38,11 @@ public class Device implements Constants, Runnable {
 		platformName = platformName.toLowerCase();
 		System.out.println(arch +" "+platformName);
 		if (arch == 64) {
+			System.loadLibrary("Kinect20.Face");
 			System.loadLibrary("KinectPV2");
 			System.out.println("Loading KinectV2");
 		} else {
-			System.loadLibrary("KinectPV2");
-			System.out.println("ERROR CANOT LOAD 32bits ");
+			System.out.println("error loading 32bits");
 		}
 	}
 	
@@ -28,8 +51,12 @@ public class Device implements Constants, Runnable {
 	private  Image infraredImg;
 	private  Image longExposureImg;
 	private  Image bodyTrackImg;
+	private  Image depthMaskImg;
 	
-	private Skeleton [] skeleton;
+	private Skeleton   [] skeletonDepth;
+	private Skeleton   [] skeleton3D;
+	
+	private FaceData   [] faceData; 
 	
 	FloatBuffer pointCloudPos;
 	FloatBuffer pointCloudColor;
@@ -39,17 +66,33 @@ public class Device implements Constants, Runnable {
 	private PApplet parent;
 	private long ptr;
 	
+	private boolean startSensor;
+	
 	public Device(PApplet _p){
 		parent = _p;
 		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, parent.ARGB);
 		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
 		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		
 		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.RGB);
+		depthMaskImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.RGB);
+		
 		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
 		
-		skeleton 		= new Skeleton[BODY_COUNT];
+		skeletonDepth 		= new Skeleton[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
-			skeleton[i] = new Skeleton(parent);
+			skeletonDepth[i] = new Skeleton(parent);
+		}
+		
+		skeleton3D 		= new Skeleton[BODY_COUNT];
+		for(int i = 0; i < BODY_COUNT; i++){
+			skeleton3D[i] = new Skeleton(parent);
+		}
+		
+		
+		faceData 		= new FaceData[BODY_COUNT];
+		for(int i = 0; i < BODY_COUNT; i++){
+			faceData[i] = new FaceData();
 		}
 		
 		pointCloudPos   = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
@@ -57,17 +100,21 @@ public class Device implements Constants, Runnable {
 		pointCloudColor = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
 				
 		//FloatBuffer.allocate( WIDTHDepth * HEIGHTDepth * 3);
-		
+		startSensor = false;
 		jniDevice();
-		runningKinect = true;
-		(new Thread(this)).start();
+		
 	}
 	
 	protected void initDevice(){
-		boolean result = jniInit();
-		if(result == false){
+		startSensor = jniInit();
+		if(startSensor == false){
 			System.out.println("ERROR STARTING KINECT V2");
 			parent.exit();
+		}
+		
+		if(startSensor){
+			runningKinect = true;
+			(new Thread(this)).start();
 		}
 		
 		String load = jniVersion();
@@ -76,41 +123,41 @@ public class Device implements Constants, Runnable {
 	
 	//COPY IMAGES TYPES FROM JNI FUNTIONS
 	private void copyColorImg(int [] rawData){
-		//if(rawData.length == colorImg.getImgSize() && rawData != null ){
-			PApplet.arrayCopy(rawData, 0, colorImg.pixels(), 0, colorImg.getImgSize());
-			colorImg.updatePixels();
+		PApplet.arrayCopy(rawData, 0, colorImg.pixels(), 0, colorImg.getImgSize());
+		colorImg.updatePixels();
 			
-			if(colorImg.processRawData)
-				PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0, colorImg.getImgSize());
-		//}
+		if(colorImg.isProcessRawData())
+			PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0, colorImg.getImgSize());
 	}
 	
 	private void copyDepthImg(int [] rawData){
-		//if(rawData.length == depthImg.getImgSize() && rawData != null){
-			PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
-			depthImg.updatePixels();
-			//if(depthImg.processRawData)
-			//	PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
-			
-		//}
+		PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
+		depthImg.updatePixels();
+		if(depthImg.isProcessRawData())
+			PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
+	}
+	
+	private void copyDepthMaskImg(int [] rawData){
+		PApplet.arrayCopy(rawData, 0, depthMaskImg.pixels(), 0, depthMaskImg.getImgSize());
+		depthMaskImg.updatePixels();
+		if(depthMaskImg.isProcessRawData())
+			PApplet.arrayCopy(rawData, 0, depthMaskImg.rawIntData, 0, depthMaskImg.getImgSize());
+		
 	}
 	
 	private void copyInfraredImg(int [] rawData){
-		//if(rawData.length == infraredImg.getImgSize() && rawData != null ){
-			PApplet.arrayCopy(rawData, 0, infraredImg.pixels(), 0, infraredImg.getImgSize());
-			infraredImg.updatePixels();
+		PApplet.arrayCopy(rawData, 0, infraredImg.pixels(), 0, infraredImg.getImgSize());
+		infraredImg.updatePixels();
 			
-			if(infraredImg.processRawData)
-				PApplet.arrayCopy(rawData, 0, infraredImg.rawIntData, 0, infraredImg.getImgSize());
-		//}
+		if(infraredImg.isProcessRawData())
+			PApplet.arrayCopy(rawData, 0, infraredImg.rawIntData, 0, infraredImg.getImgSize());
 	}
 	
 	private void copyBodyTrackImg(int [] rawData){
 		PApplet.arrayCopy(rawData, 0, bodyTrackImg.pixels(), 0, bodyTrackImg.getImgSize());
 		bodyTrackImg.updatePixels();
 		
-		
-		if(bodyTrackImg.processRawData)
+		if(bodyTrackImg.isProcessRawData())
 			PApplet.arrayCopy(rawData, 0, bodyTrackImg.rawIntData, 0, bodyTrackImg.getImgSize());
 	}
 	
@@ -118,16 +165,25 @@ public class Device implements Constants, Runnable {
 		PApplet.arrayCopy(rawData, 0, longExposureImg.pixels(), 0, longExposureImg.getImgSize());
 		longExposureImg.updatePixels();
 		
-		if(longExposureImg.processRawData)
+		if(longExposureImg.isProcessRawData())
 			PApplet.arrayCopy(rawData, 0, longExposureImg.rawIntData, 0, longExposureImg.getImgSize());
 	}
 	
-	private void copySkeletonRawData(float [] rawData){
-		//PApplet.arrayCopy(rawData, 0, skeleton.getData(), 0, skeleton.skeletonSize);
-		if(rawData.length == JOINTSIZE)
-		for(int i = 0; i < BODY_COUNT; i++){
-			skeleton[i].createSkeletons(rawData, i);
+	//SKELETON DEPTH
+	private void copySkeletonDepthData(float [] rawData){
+		if(rawData.length == JOINTSIZE){
+			for(int i = 0; i < BODY_COUNT; i++){
+				skeletonDepth[i].createSkeletonDepth(rawData, i);
+			}
 		}
+	}
+	
+	//SKELETON 3D
+	private void copySkeleton3DData(float [] rawData){
+		if(rawData.length == JOINTSIZE)
+			for(int i = 0; i < BODY_COUNT; i++){
+				skeleton3D[i].createSkeleton3D(rawData, i);
+			}
 	}
 	
 	private void copyRawDepthImg(int [] rawData){
@@ -149,6 +205,13 @@ public class Device implements Constants, Runnable {
 		}
 	}
 	
+	private void copyFaceRawData(float [] rawData){
+		if(rawData.length == FACESIZE){
+			for(int i = 0; i < BODY_COUNT; i++)
+				faceData[i].createFaceData(rawData, i);
+		}
+	}
+	
 	/**
 	 * Get Point Cloud as FloatBuffer
 	 * @return
@@ -163,15 +226,30 @@ public class Device implements Constants, Runnable {
 	}
 	*/
 	
-	/**
-	 * Get Skeleton as Joints with Positions and Tracking states 
-	 * @return
-	 */
-	public Skeleton [] getSkeleton(){
-		return skeleton;
+	public FaceData [] getFaceData(){
+		return faceData;
 	}
 	
-	public void windowSizeSkeleton(int width, int height){
+	/**
+	 * Get Skeleton as Joints with Positions and Tracking states
+	 * in 3D, (x,y,z) ->joint and orientation
+	 * @return
+	 */
+	public Skeleton [] getSkeleton3D(){
+		return skeleton3D;
+	}
+	
+	/**
+	 * Get Skeleton as Joints with Positions and Tracking states
+	 * base on Depth Image, 
+	 * @return Skeleton with only (x, y) skeleton position mapped
+	 * to the depth Image, get z value from the Depth Image.
+	 */
+	public Skeleton [] getSkeletonDepth(){
+		return skeletonDepth;
+	}
+	
+	public void skeletonMapToDimentions(int width, int height){
 		jniSetWindowSizeSkeleton(width, height);
 	}
 	
@@ -192,6 +270,10 @@ public class Device implements Constants, Runnable {
 	 */
 	public PImage getDepthImage(){
 		return depthImg.img;
+	}
+	
+	public PImage getDepthMaskImage(){
+		return depthMaskImg.img;
 	}
 	
 	/**
@@ -229,6 +311,15 @@ public class Device implements Constants, Runnable {
 	 */
 	public int [] getRawDepth(){
 		return depthImg.rawIntData;
+	}
+	
+	/**
+	 * Get Raw DepthMask Data
+	 *  512 x 424
+	 * @return int []
+	 */
+	public int [] getRawDepthMask(){
+		return depthMaskImg.rawIntData;
 	}
 	
 	/**
@@ -274,7 +365,7 @@ public class Device implements Constants, Runnable {
 	 * @param toggle 
 	 */
 	public void activateRawColor(boolean toggle){
-		colorImg.processRawData = toggle;
+		colorImg.activateRawData(toggle);
 	}
 	
 	/**
@@ -283,7 +374,16 @@ public class Device implements Constants, Runnable {
 	 * @param toggle
 	 */
 	public void activateRawDepth(boolean toggle){
-		depthImg.processRawData = toggle;
+		depthImg.activateRawData(toggle);
+	}
+	
+	/**
+	 * Activate Raw Depth Image Capture
+	 * Use getDepthMaskRaw() Method
+	 * @param toggle
+	 */
+	public void activateRawDepthMaskImg(boolean toggle){
+		depthMaskImg.activateRawData(toggle);
 	}
 	
 	/**
@@ -292,7 +392,7 @@ public class Device implements Constants, Runnable {
 	 * @param toggle
 	 */
 	public void activateRawInfrared(boolean toggle){
-		infraredImg.processRawData = toggle;
+		infraredImg.activateRawData(toggle);
 	}
 	
 	/**
@@ -301,7 +401,7 @@ public class Device implements Constants, Runnable {
 	 * @param toggle
 	 */
 	public void activateRawBodyTrack(boolean toggle){
-		bodyTrackImg.processRawData = toggle;
+		bodyTrackImg.activateRawData(toggle);
 	}
 	/**
 	 * Activate Raw LongExposureInfrared Image Capture
@@ -309,7 +409,7 @@ public class Device implements Constants, Runnable {
 	 * @param toggle
 	 */
 	public void activateRawLongExposure(boolean toggle){
-		longExposureImg.processRawData = toggle;
+		longExposureImg.activateRawData(toggle);
 	}
 	
 	/**
@@ -326,6 +426,16 @@ public class Device implements Constants, Runnable {
 	 */
 	public void enableDepthImg(boolean toggle){
 		jniEnableDepthFrame(toggle);
+	}
+	
+	
+	
+	/**
+	 * Enable or Disable DepthMask Image Capture
+	 * @param toggle
+	 */
+	public void enableDepthMaskImg(boolean toggle){
+		jniEnableDepthMaskFrame(toggle);
 	}
 	
 	/**
@@ -360,6 +470,26 @@ public class Device implements Constants, Runnable {
 		jniEnableSkeleton(toggle);
 	}
 	
+	/**
+	 * Enable or Disable Skeleton tracking
+	 * @param toggle
+	 */
+	public void enableSkeleton3D(boolean toggle){
+		jniEnableSkeleton3D(toggle);
+	}
+	
+	/**
+	 * Enable or Disable Skeleton tracking
+	 * @param toggle
+	 */
+	public void enableSkeletonDepth(boolean toggle){
+		jniEnableSkeletonDepthMap(toggle);
+	}
+	
+	
+	public void enableFaceDetection(boolean toggle){
+		jniEnableFaceDetection(toggle);
+	}
 	
 	
 	/**
@@ -369,7 +499,6 @@ public class Device implements Constants, Runnable {
 	public void enablePointCloud(boolean toggle){
 		jniEnablePointCloud(toggle);
 	}
-	
 	
 	/**
 	 * Set Threshold Depth Value Z for Point Cloud
@@ -393,6 +522,12 @@ public class Device implements Constants, Runnable {
 		jniEnablePointCloudColor(toggle);
 	}
 	*/
+	
+	/*
+	public void enableMirror(boolean toggle){
+		jniSetMirror(toggle);
+	}
+	*/
 
 	protected boolean updateDevice(){
 		boolean result =  jniUpdate();
@@ -401,7 +536,8 @@ public class Device implements Constants, Runnable {
 	
 
 	protected void stopDevice(){
-		skeleton = null;
+		skeleton3D = null;
+		skeletonDepth = null;
 		colorImg = null;
 		depthImg = null;
 		infraredImg = null;
@@ -428,6 +564,8 @@ public class Device implements Constants, Runnable {
 	
 	private native void jniEnableDepthFrame(boolean toggle);
 	
+	private native void jniEnableDepthMaskFrame(boolean toggle);
+	
 	private native void jniEnableInfraredFrame(boolean toggle);
 	
 	private native void jniEnableBodyTrackFrame(boolean toggle);
@@ -436,7 +574,11 @@ public class Device implements Constants, Runnable {
 	
 	private native void jniEnableSkeleton(boolean toggle);
 	
-	private native void jniGetSkeleton();
+	private native void jniEnableSkeletonDepthMap(boolean toggle);
+	
+	private native void jniEnableSkeleton3D(boolean toggle);
+	
+	private native void jniEnableFaceDetection(boolean toggle);
 	
 	private native void jniEnablePointCloud(boolean toggle);
 	
@@ -445,6 +587,8 @@ public class Device implements Constants, Runnable {
 	private native void jniThresholdDepthPointCloud(float val);
 	
 	private native float jniGetDefaultThresholdDepthPointCloud();
+	
+	private native void jniSetMirror(boolean toggle);
 
 
 	public void run() {
@@ -452,12 +596,12 @@ public class Device implements Constants, Runnable {
 		while (runningKinect) {
 			boolean result = updateDevice();
 			if(!result){
-				System.out.println("Error updating Kinect");
+				System.out.println("Error updating Kinect EXIT");
 			}
 			try {
 				Thread.sleep(2); //2
 			} catch (InterruptedException e) {
-				 e.printStackTrace();
+					e.printStackTrace();
 			}
 		}
 		
