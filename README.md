@@ -3,7 +3,7 @@ KinectPV2
 
 ### Kinect for Windows v2 library for Processing
 
-Version 0.4.5
+Version 0.5
 
 Library is curretly in develop, with SDK Version 1408 (8/20/2014)
 
@@ -29,13 +29,16 @@ Library is curretly in develop, with SDK Version 1408 (8/20/2014)
 
 #### Examples
 
-- depthTest, how to obtain depth information
-- color1920, color image 1920 x 1080
-- imageTest,  color image, depth image and infrared image
-- skeleton, how to track up to 6 skeletons 
-- mask, obtain bodyIndex of the users.
-- point Cloud, point cloud render using opengl
-- SkeletonDepthMask, Skeleton tracking, with depth and body tracking
+- Color1920, color image 1920 x 1080
+- DepthTest, how to obtain depth information
+- MaskTest, get only the contour image of the users.
+- PointCloudOGL, point cloud render using opengl
+- SimpleFaceTracking, simple face tracking up 6 users.
+- Skeleton3d, 3d skeleton.
+- SkeletonColor, map color frame to skeleton.
+- SkeletonMaskDepth, map depth frame and mask frame to skeleton
+- SkeletonTest, simple 6 users skeleton
+- imageTest, images frame test
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
@@ -44,10 +47,7 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 #### Todo
 
-- Skeleton
-- Face tracking
 - Heart rate detection
-- Tracking example
 - Contour example
 - Color Point Cloud
 - Multiple Devices
