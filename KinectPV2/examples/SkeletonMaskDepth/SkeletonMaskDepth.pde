@@ -57,7 +57,7 @@ void draw() {
 
       color col  = getIndexColor(i);
       fill(col);
-      stroke(col);
+      stroke(0);
 
       drawBody(joints);
       drawHandState(joints[KinectPV2.JointType_HandRight]);
