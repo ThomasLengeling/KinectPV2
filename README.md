@@ -52,6 +52,10 @@ To build the library from source, use this repository ( not always updated ) [Ki
 - Color Point Cloud
 - Multiple Devices
 
+#### License
+
+MIT License http://en.wikipedia.org/wiki/MIT_License
+
 ---
 
 ###### Required notification
