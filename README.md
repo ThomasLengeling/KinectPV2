@@ -43,7 +43,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
-
+---
 
 #### Todo
 
