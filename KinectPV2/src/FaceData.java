@@ -2,7 +2,7 @@ package KinectPV2;
 
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
-KinectPV2, Kinect one library for processing
+KinectPV2, Kinect for Windows v2 library for processing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,43 +25,77 @@ THE SOFTWARE.
 
 import processing.core.PVector;
 
-public class FaceData {
+public class FaceData implements FaceProperties{
 	
-	PVector [] facePoints ;
+	PVector [] facePointsColor;
+	PVector [] facePointsInfrared;
+	
+	FaceFeatures [] facefeatures;
 	
 	boolean faceTracked;
 	
 	Rectangle rect;
 	
+	float pitch;
+	float yaw;
+	float roll;
+	
 	FaceData(){
-		facePoints = new PVector[5];
-		for(int i = 0; i <facePoints.length; i++)
-			facePoints[i] =  new PVector();
+		facePointsColor = new PVector[5];
+		for(int i = 0; i < facePointsColor.length; i++)
+			facePointsColor[i] =  new PVector();
+		
+		facePointsInfrared = new PVector[5];
+		for(int i = 0; i < facePointsInfrared.length; i++)
+			facePointsInfrared[i] =  new PVector();
 		
 		rect = new Rectangle(0, 0, 0, 0);
 		faceTracked = false;
+		
+		facefeatures = new FaceFeatures[8];
+		
+		for(int i = 0; i < 8; i++){
+			facefeatures[i] = new FaceFeatures(i, -1);
+		}
 	}
 
 	
 	void createFaceData(float [] rawData, int iFace){
-		if(rawData[iFace * 26 + 25] == 0.0)
+		int index = iFace * 36;
+		if(rawData[index + 35] == 0.0)
 			faceTracked = false;
 		else
 			faceTracked = true;
-	System.out.println(rawData[iFace * 26 + 25]+" iF "+iFace);
-		//if(faceTracked){
-			for(int i = 0; i < 5; i++){
-				int index = iFace * 26 + i*2;
-				facePoints[i].x = rawData[index + 0];
-				facePoints[i].y = rawData[index + 1];
-				//System.out.println(facePoints[i].x+" "+facePoints[i].y);
-			}
-			
-			rect.setX(rawData[iFace * 26 + 10 + 0]);
-			rect.setY(rawData[iFace * 26 + 10 + 1]);
-			rect.setWidth(rawData[iFace * 26 + 10 + 2]);
-			rect.setHeight(rawData[iFace * 26 + 10 + 3]);
-		//}
+
+		for(int i = 0; i < 5; i++){
+			facePointsColor[i].x = rawData[index + i*2 + 0];
+			facePointsColor[i].y = rawData[index + i*2 + 1];
+		}
+		
+		for(int i = 0; i < 5; i++){
+			facePointsInfrared[i].x = rawData[index + i*2 + 10 + 0];
+			facePointsInfrared[i].y = rawData[index + i*2 + 10 + 1];
+		}
+		int index2 = index +20;
+		rect.setX(rawData[index2 + 0]);
+		rect.setY(rawData[index2 + 1]);
+		rect.setWidth(rawData[index2 + 2]);
+		rect.setHeight(rawData[index2 + 3]);
+		
+		pitch = rawData[index2 + 4];
+		yaw   = rawData[index2 + 5];
+		roll  = rawData[index2 + 6];
+		
+		//System.out.println(iFace+" "+pitch+" "+yaw+" "+roll);
+		for(int i =0; i < 8; i++){
+			facefeatures[i].setFeatureType(i);
+			facefeatures[i].setState((int)rawData[index2 + 7 + i]);
+			//System.out.println(iFace+" "+facefeatures[i].getFeatureType()+" "+(int)rawData[index2 + 7 + i] );
+		}
+	}
+	
+	public FaceFeatures [] getFaceFeatures(){
+		return facefeatures;
 	}
 	
 	public Rectangle getBoundingRect(){
@@ -72,7 +106,11 @@ public class FaceData {
 		return faceTracked;
 	}
 	
-	public PVector [] getFacePoints(){
-		return facePoints;
+	public PVector [] getFacePointsColorMap(){
+		return facePointsColor;
+	}
+	
+	public PVector [] getFacePointsInfraredMap(){
+		return facePointsInfrared;
 	}
 }

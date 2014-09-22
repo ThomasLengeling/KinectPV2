@@ -2,7 +2,7 @@ package KinectPV2;
 
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
-KinectPV2, Kinect one library for processing
+KinectPV2, Kinect for Windows v2 library for processing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,13 @@ THE SOFTWARE.
 */
 
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PImage;
 
 
 public class Image{
-	private   float fps;
-	private   int imgPixelSize;
-	private   PApplet parent;
+	private    float fps;
+	private    int imgPixelSize;
+	private    PApplet parent;
 	
 	protected  PImage    img;
 	private    boolean   processRawData;
@@ -41,13 +40,12 @@ public class Image{
 	
 	public Image(PApplet p, int width, int height, int MODE){
 		parent = p;
-		img =  parent.createImage(width, height, MODE);
+		img    =  parent.createImage(width, height, MODE);
 		imgPixelSize = width * height;
-		rawByteData = new byte[imgPixelSize];
-		rawIntData  = new int[imgPixelSize];
+		rawByteData  = new byte[imgPixelSize];
+		rawIntData   = new int[imgPixelSize];
 		processRawData= false;
 	}
-	
 	
 	public int getImgSize(){
 		return imgPixelSize;
@@ -76,5 +74,4 @@ public class Image{
 	public void activateRawData(boolean rawData){
 		processRawData = rawData;
 	}
-	
 }

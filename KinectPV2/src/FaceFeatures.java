@@ -23,13 +23,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public interface Constants {
+public class FaceFeatures {
 	
-	public final static int BODY_COUNT = 6;
-
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	int feature;
+	int state;
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	FaceFeatures(int feature, int state){
+		this.feature = feature;
+		this.state = state;
+	}
+	
+	public void setFeatureType(int feature){
+		this.feature = feature;
+	}
+	
+	public void setState(int state){
+		this.state = state;
+	}
+	
+	
+	public int getState(){
+		return state;
+	}
+	
+	public int getFeatureType(){
+		return feature;
+	}
+	
 }
