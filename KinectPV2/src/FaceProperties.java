@@ -23,13 +23,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-public interface Constants {
+public interface FaceProperties  extends Constants {
+	public final static int FaceProperty_Happy	= 0;
+	public final static int FaceProperty_Engaged	= 1;
+	public final static int FaceProperty_LeftEyeClosed		= 2;
+	public final static int FaceProperty_RightEyeClosed		= 3;
+	public final static int FaceProperty_LookingAway	= 4;
+	public final static int FaceProperty_MouthMoved = 5;
+	public final static int FaceProperty_MouthOpen = 6;
+	public final static int FaceProperty_WearingGlasses = 7;
+	public final static int Activity_Count	= ( FaceProperty_WearingGlasses + 1 );
 	
-	public final static int BODY_COUNT = 6;
-
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	public final static int FACESIZE  = BODY_COUNT * (36);
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	public final static int DetectionResult_Unknown = -1;
+	public final static int DetectionResult_Yes = 1;
+	public final static int DetectionResult_No = 0;
+	public final static int DetectionResult_Maybe =2;
+	
+	public final static int Face_LeftEye = 0;
+	public final static int Face_RightEye = 1;
+	public final static int Face_Nose = 2;
+	public final static int Face_LeftMouth = 3;
+	public final static int Face_RightMouth = 4;
 }

@@ -2,7 +2,7 @@ package KinectPV2;
 
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
-KinectPV2, Kinect one library for processing
+KinectPV2, Kinect for Windows v2 library for processing
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,9 +30,9 @@ import com.jogamp.common.nio.Buffers;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class Device implements Constants, Runnable {
+public class Device implements Constants, FaceProperties, SkeletonProperties, Runnable {
 		
-	static {
+	static { 
 		int arch = Integer.parseInt(System.getProperty("sun.arch.data.model"));
 		String platformName = System.getProperty("os.name");
 		platformName = platformName.toLowerCase();
@@ -54,7 +54,8 @@ public class Device implements Constants, Runnable {
 	private  Image depthMaskImg;
 	
 	private Skeleton   [] skeletonDepth;
-	private Skeleton   [] skeleton3D;
+	private Skeleton   [] skeleton3d;
+	private Skeleton   [] skeletonColor;
 	
 	private FaceData   [] faceData; 
 	
@@ -70,23 +71,28 @@ public class Device implements Constants, Runnable {
 	
 	public Device(PApplet _p){
 		parent = _p;
-		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, parent.ARGB);
-		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
-		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
+		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
-		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.RGB);
-		depthMaskImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.RGB);
+		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
+		depthMaskImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
 		
-		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, parent.ALPHA);
+		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
 		skeletonDepth 		= new Skeleton[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
-			skeletonDepth[i] = new Skeleton(parent);
+			skeletonDepth[i] = new Skeleton();
 		}
 		
-		skeleton3D 		= new Skeleton[BODY_COUNT];
+		skeleton3d 		= new Skeleton[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
-			skeleton3D[i] = new Skeleton(parent);
+			skeleton3d[i] = new Skeleton();
+		}
+		
+		skeletonColor 	= new Skeleton[BODY_COUNT];
+		for(int i = 0; i < BODY_COUNT; i++){
+			skeletonColor[i] = new Skeleton();
 		}
 		
 		
@@ -178,12 +184,21 @@ public class Device implements Constants, Runnable {
 		}
 	}
 	
-	//SKELETON 3D
-	private void copySkeleton3DData(float [] rawData){
+	//Color Data 
+	private void copySkeletonColorData(float [] rawData){
 		if(rawData.length == JOINTSIZE)
 			for(int i = 0; i < BODY_COUNT; i++){
-				skeleton3D[i].createSkeleton3D(rawData, i);
+				skeletonColor[i].createSkeletonDepth(rawData, i);
 			}
+	}
+	
+	//SKELETON 3D
+	private void copySkeleton3DData(float [] rawData){
+		if(rawData.length == JOINTSIZE) {
+			for(int i = 0; i < BODY_COUNT; i++){
+				skeleton3d[i].createSkeleton3D(rawData, i);
+			}
+		}
 	}
 	
 	private void copyRawDepthImg(int [] rawData){
@@ -233,10 +248,10 @@ public class Device implements Constants, Runnable {
 	/**
 	 * Get Skeleton as Joints with Positions and Tracking states
 	 * in 3D, (x,y,z) ->joint and orientation
-	 * @return
+	 * @return  Skeleton
 	 */
-	public Skeleton [] getSkeleton3D(){
-		return skeleton3D;
+	public Skeleton [] getSkeleton3d(){
+		return skeleton3d;
 	}
 	
 	/**
@@ -245,12 +260,18 @@ public class Device implements Constants, Runnable {
 	 * @return Skeleton with only (x, y) skeleton position mapped
 	 * to the depth Image, get z value from the Depth Image.
 	 */
-	public Skeleton [] getSkeletonDepth(){
+	public Skeleton [] getSkeletonDepthMap(){
 		return skeletonDepth;
 	}
 	
-	public void skeletonMapToDimentions(int width, int height){
-		jniSetWindowSizeSkeleton(width, height);
+	/**
+	 * Get Skeleton as Joints with Positions and Tracking states
+	 * base on color Image, 
+	 * @return Skeleton with only (x, y) skeleton position mapped
+	 * to the color Image;
+	 */
+	public Skeleton [] getSkeletonColorMap(){
+		return skeletonColor;
 	}
 	
 	//IMAGES
@@ -471,18 +492,26 @@ public class Device implements Constants, Runnable {
 	}
 	
 	/**
-	 * Enable or Disable Skeleton tracking
+	 * Enable or Disable Skeleton tracking Color Map
 	 * @param toggle
 	 */
-	public void enableSkeleton3D(boolean toggle){
-		jniEnableSkeleton3D(toggle);
+	public void enableSkeletonColorMap(boolean toggle){
+		jniEnableSkeletonColorMap(toggle);
 	}
 	
 	/**
-	 * Enable or Disable Skeleton tracking
+	 * Enable or Disable Skeleton tracking 3d Map
 	 * @param toggle
 	 */
-	public void enableSkeletonDepth(boolean toggle){
+	public void enableSkeleton3dMap(boolean toggle){
+		jniEnableSkeleton3dMap(toggle);
+	}
+	
+	/**
+	 * Enable or Disable Skeleton tracking Depth Map
+	 * @param toggle
+	 */
+	public void enableSkeletonDepthMap(boolean toggle){
 		jniEnableSkeletonDepthMap(toggle);
 	}
 	
@@ -536,8 +565,9 @@ public class Device implements Constants, Runnable {
 	
 
 	protected void stopDevice(){
-		skeleton3D = null;
+		skeleton3d = null;
 		skeletonDepth = null;
+		skeletonColor = null;
 		colorImg = null;
 		depthImg = null;
 		infraredImg = null;
@@ -550,9 +580,6 @@ public class Device implements Constants, Runnable {
 	private native void jniDevice();
 	
 	private native boolean jniInit();
-	
-	//for Skeleton
-	private native void jniSetWindowSizeSkeleton(int width, int height);
 	
 	private native String jniVersion();
 	
@@ -572,11 +599,15 @@ public class Device implements Constants, Runnable {
 	
 	private native void jniEnableLongExposureInfrared(boolean toggle);
 	
+	
 	private native void jniEnableSkeleton(boolean toggle);
+	
+	private native void jniEnableSkeletonColorMap(boolean toggle);
 	
 	private native void jniEnableSkeletonDepthMap(boolean toggle);
 	
-	private native void jniEnableSkeleton3D(boolean toggle);
+	private native void jniEnableSkeleton3dMap(boolean toggle);
+	
 	
 	private native void jniEnableFaceDetection(boolean toggle);
 	
@@ -588,8 +619,6 @@ public class Device implements Constants, Runnable {
 	
 	private native float jniGetDefaultThresholdDepthPointCloud();
 	
-	private native void jniSetMirror(boolean toggle);
-
 
 	public void run() {
 		//int fr = PApplet.round(1000.0f / parent.frameRate);
