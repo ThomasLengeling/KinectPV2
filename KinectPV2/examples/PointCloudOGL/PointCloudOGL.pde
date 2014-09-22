@@ -1,6 +1,6 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect one library for processing
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+ KinectPV2, Kinect for Windows v2 library for processing
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ import KinectPV2.*;
 import javax.media.opengl.GL2;
 
 private KinectPV2 kinect;
-
 
 float a = 0;
 int zval = 50;
@@ -120,3 +119,4 @@ public void keyPressed() {
     println(depthVal);
   }
 }
+

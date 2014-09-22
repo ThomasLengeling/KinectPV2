@@ -1,6 +1,6 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect one library for processing
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+ KinectPV2, Kinect for Windows v2 library for processing
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ void setup() {
   kinect.enableInfraredImg(true);
   kinect.enableLongExposureInfraredImg(true);
   kinect.init();
-  
 }
 
 void draw() {
@@ -42,7 +41,8 @@ void draw() {
   image(kinect.getDepthImage(), 0, 0);
   image(kinect.getInfraredImage(), 512, 0);
   image(kinect.getLongExposureInfraredImage(), 512*2, 0);
-  
+
   stroke(255);
   text(frameRate, 50, height - 50);
 }
+

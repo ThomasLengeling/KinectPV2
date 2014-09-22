@@ -1,6 +1,6 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect one library for processing
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+ KinectPV2, Kinect for Windows v2 library for processing
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
 import KinectPV2.*;
 
 KinectPV2 kinect;
@@ -46,21 +47,110 @@ void draw() {
 
   for (int i = 0; i < faceData.length; i++) {
     if (faceData[i].isFaceTracked()) {
-      PVector [] facePoints = faceData[i].getFacePoints();
+      PVector [] facePointsColor = faceData[i].getFacePointsColorMap();
+
       Rectangle rectFace = faceData[i].getBoundingRect();
 
-      for (int f = 0; f < facePoints.length; f++) {
-        fill(255, 255, 0);
-        ellipse(facePoints[f].x, facePoints[f].y, 10, 10);
+      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
+
+      PVector nosePos = new PVector();
+      noStroke();
+
+      color col = getIndexColor(i);
+
+      fill(col);   
+      for (int j = 0; j < facePointsColor.length; j++) {
+        if (j == KinectPV2.Face_Nose)
+          nosePos.set(facePointsColor[j].x, facePointsColor[j].y);
+
+        ellipse(facePointsColor[j].x, facePointsColor[j].y, 15, 15);
       }
 
+      if (nosePos.x != 0 && nosePos.y != 0)
+        for (int j = 0; j < 8; j++) {
+          int st   = faceFeatures[j].getState();
+          int type = faceFeatures[j].getFeatureType();
+
+          String str = getStateTypeAsString(st, type);
+
+          fill(255);
+          text(str, nosePos.x + 150, nosePos.y - 70 + j*25);
+        }
       stroke(255, 0, 0);
       noFill();
       rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
     }
   }
-
-
-  fill(255, 0, 0);
-  text(frameRate, 50, 50);
 }
+
+
+color getIndexColor(int index) {
+  color col = color(255);
+  if (index == 0)
+    col = color(255, 0, 0);
+  if (index == 1)
+    col = color(0, 255, 0);
+  if (index == 2)
+    col = color(0, 0, 255);
+  if (index == 3)
+    col = color(255, 255, 0);
+  if (index == 4)
+    col = color(0, 255, 255);
+  if (index == 5)
+    col = color(255, 0, 255);
+
+  return col;
+}
+
+
+String getStateTypeAsString(int state, int type) {
+  String  str ="";
+  switch(type) {
+  case KinectPV2.FaceProperty_Happy:
+    str = "Happy";
+    break;
+
+  case KinectPV2.FaceProperty_Engaged:
+    str = "Engaged";
+    break;
+
+  case KinectPV2.FaceProperty_LeftEyeClosed:
+    str = "LeftEyeClosed";
+    break;
+
+  case KinectPV2.FaceProperty_RightEyeClosed:
+    str = "RightEyeClosed";
+    break;
+
+  case KinectPV2.FaceProperty_LookingAway:
+    str = "LookingAway";
+    break;
+
+  case KinectPV2.FaceProperty_MouthMoved:
+    str = "MouthMoved";
+    break;
+
+  case KinectPV2.FaceProperty_MouthOpen:
+    str = "MouthOpen";
+    break;
+
+  case KinectPV2.FaceProperty_WearingGlasses:
+    str = "WearingGlasses";
+    break;
+  }
+
+  switch(state) {
+  case KinectPV2.DetectionResult_Unknown:
+    str += ": Unknown";
+    break;
+  case KinectPV2.DetectionResult_Yes:
+    str += ": Yes";
+    break;  
+  case KinectPV2.DetectionResult_No:
+    str += ": No";
+    break;
+  }
+
+  return str;
+}
+

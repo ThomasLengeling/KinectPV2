@@ -1,6 +1,6 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect one library for processing
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+ KinectPV2, Kinect for Windows v2 library for processing
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -47,3 +47,4 @@ void mousePressed() {
   println(frameRate);
   saveFrame();
 }
+
