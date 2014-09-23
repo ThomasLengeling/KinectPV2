@@ -59,9 +59,3 @@ To build the library from source, use this repository ( not always updated ) [Ki
 MIT License http://en.wikipedia.org/wiki/MIT_License
 
 ---
-
-###### Required notification
-
-The K4W2 hardware is currently pre-release. Per the K4W2 developer program agreement, all public demonstrations and code should display this notice:
-
-"This is preliminary software and/or hardware and APIs are preliminary and subject to change."
