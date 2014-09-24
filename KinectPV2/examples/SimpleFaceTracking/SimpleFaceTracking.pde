@@ -41,6 +41,7 @@ void setup() {
 void draw() {
   background(0);
 
+
   image(kinect.getColorImage(), 0, 0);
 
   faceData =  kinect.getFaceData();

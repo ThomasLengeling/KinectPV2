@@ -37,13 +37,10 @@ public void setup() {
   size(1280, 720, P3D);
 
   kinect = new KinectPV2(this);
-  
   kinect.enableDepthImg(true);
-  
-  //enable point cloud
   kinect.enablePointCloud(true);
   depthVal = kinect.getThresholdDepthPointCloud();
-
+  kinect.activateRawDepth(true);
 
   kinect.init();
 }
@@ -51,12 +48,9 @@ public void setup() {
 public void draw() {
   background(0);
 
-  //get image data
   image(kinect.getDepthImage(), 0, 0, 320, 240);
 
   kinect.setThresholdPointCloud(depthVal);
-  
-  //get point cloud data as float buffer
   FloatBuffer pointCloudBuffer = kinect.getPointCloudPosFloatBuffer();
 
   PJOGL pgl = (PJOGL)beginPGL();
@@ -65,16 +59,13 @@ public void draw() {
   gl2.glEnable( GL2.GL_BLEND );
   gl2.glEnable(GL2.GL_POINT_SMOOTH);      
 
- //send the float buffer point cloud to the vertex data
   gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
   gl2.glVertexPointer(3, GL2.GL_FLOAT, 0, pointCloudBuffer);
 
-  //rotate the scene and scale
   gl2.glTranslatef(width/2, height/2, zval);
   gl2.glScalef(scaleVal, -1*scaleVal, scaleVal);
   gl2.glRotatef(a, 0.0f, 1.0f, 0.0f);
 
-  //draw the float buffer
   gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHDepth * kinect.HEIGHTDepth);
 
   gl2.glDisable(GL2.GL_BLEND);
@@ -82,6 +73,12 @@ public void draw() {
 
   stroke(255, 0, 0);
   text(frameRate, 50, height- 50);
+}
+
+public void mousePressed() {
+
+  println(frameRate);
+  saveFrame();
 }
 
 public void keyPressed() {

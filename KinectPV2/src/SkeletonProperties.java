@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Skeleton Properties
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public interface SkeletonProperties extends Constants{
 	public final static int JointType_SpineBase		= 0;
 	public final static int JointType_SpineMid		= 1;

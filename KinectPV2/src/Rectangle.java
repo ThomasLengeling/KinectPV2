@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Simple Rectangle class
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class Rectangle {
 	
 	float x;

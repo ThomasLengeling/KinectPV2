@@ -25,6 +25,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * 
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class KinectPV2 extends Device{
 	
 	public static PApplet parent;

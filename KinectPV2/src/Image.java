@@ -26,7 +26,11 @@ THE SOFTWARE.
 import processing.core.PApplet;
 import processing.core.PImage;
 
-
+/**
+ * Image class helper
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class Image{
 	private    float fps;
 	private    int imgPixelSize;
@@ -47,30 +51,57 @@ public class Image{
 		processRawData= false;
 	}
 	
+	/**
+	 * Get Image Size in int
+	 * @return int
+	 */
 	public int getImgSize(){
 		return imgPixelSize;
 	}
 	
+	/**
+	 * update Pixels, img.updatePixels()
+	 */
 	public void updatePixels(){
 		img.updatePixels();
 	}
 	
+	/**
+	 * get Pixels Image,  img.pixels
+	 * @return int []
+	 */
 	public int [] pixels(){
 		return img.pixels;
 	}
 	
+	/**
+	 * get Image
+	 * @return PImage
+	 */
 	public PImage getColorImage() {		
 		return img;
 	}
 	
+	/**
+	 * get Fps of the current Image
+	 * @return float
+	 */
 	public float getFPS() {
 		return fps;
 	}
 	
+	/**
+	 * Process Raw Data
+	 * @return boolean
+	 */
 	public boolean isProcessRawData(){
 		return processRawData;
 	}
 	
+	/**
+	 * Activate Process Rae Data
+	 * @param rawData
+	 */
 	public void activateRawData(boolean rawData){
 		processRawData = rawData;
 	}
