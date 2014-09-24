@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Commun Face Properties
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public interface FaceProperties  extends Constants {
 	public final static int FaceProperty_Happy	= 0;
 	public final static int FaceProperty_Engaged	= 1;

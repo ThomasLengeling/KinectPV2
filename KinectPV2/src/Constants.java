@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Common variables for all the classes.
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public interface Constants {
 	
 	public final static int BODY_COUNT = 6;

@@ -23,6 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Simple Joint Class with (x, y, z) position, Orientation, state and type
+ * @author thomas
+ *
+ */
 public class KJoint {
 	
 	protected float x;
@@ -45,26 +50,50 @@ public class KJoint {
 	
 	KJoint(){}
 	
+	/**
+	 * Get orientation of a single Joint
+	 * @return Quartenion
+	 */
 	public Quartenion getOrientation() {
 		return orientation;
 	}
 	
+	/**
+	 * get X position
+	 * @return float x
+	 */
 	public float getX(){
 		return x;
 	}
 	
+	/**
+	 * get Y position
+	 * @return float y
+	 */
 	public float getY(){
 		return y;
 	}
 	
+	/**
+	 * get Z position
+	 * @return float z
+	 */
 	public float getZ(){
 		return z;
 	}
 	
+	/**
+	 * get State of a single Joint
+	 * @return state
+	 */
 	public int getState(){
 		return state;
 	}
 	
+	/**
+	 * get Joint Type 
+	 * @return int
+	 */
 	public int getType(){
 		return type;
 	}

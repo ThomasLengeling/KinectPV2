@@ -25,6 +25,13 @@ THE SOFTWARE.
 
 import processing.core.PVector;
 
+
+/**
+ * Face Data
+ * P
+ * @author thomas
+ *
+ */
 public class FaceData implements FaceProperties{
 	
 	PVector [] facePointsColor;
@@ -60,7 +67,7 @@ public class FaceData implements FaceProperties{
 	}
 
 	
-	void createFaceData(float [] rawData, int iFace){
+	protected void createFaceData(float [] rawData, int iFace){
 		int index = iFace * 36;
 		if(rawData[index + 35] == 0.0)
 			faceTracked = false;
@@ -94,22 +101,42 @@ public class FaceData implements FaceProperties{
 		}
 	}
 	
+	/**
+	 * Get Face Features
+	 * @return FaceFeatures []
+	 */
 	public FaceFeatures [] getFaceFeatures(){
 		return facefeatures;
 	}
 	
+	/**
+	 * get Bounding Face Rectangle
+	 * @return Rectangle
+	 */
 	public Rectangle getBoundingRect(){
 		return rect;
 	}
 	
+	/**
+	 * If Face is being Tracked
+	 * @return boolean
+	 */
 	public boolean isFaceTracked(){
 		return faceTracked;
 	}
 	
+	/**
+	 * get Face Points mapped to color Space (Color Image)
+	 * @return PVector []
+	 */
 	public PVector [] getFacePointsColorMap(){
 		return facePointsColor;
 	}
 	
+	/**
+	 * get Face Points mapped to Infrared Space (InFrared Image)
+	 * @return
+	 */
 	public PVector [] getFacePointsInfraredMap(){
 		return facePointsInfrared;
 	}

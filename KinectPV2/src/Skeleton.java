@@ -23,7 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-
+/**
+ * Skeleton Class
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class Skeleton implements SkeletonProperties{
 	
 	
@@ -41,18 +45,33 @@ public class Skeleton implements SkeletonProperties{
 		}
 	}
 	
+	/*
+	 * if the current skeleton is being tracked
+	 */
 	public boolean isTracked(){
 		return tracked;
 	}
 	
+	/**
+	 * get the array of joints of the skeleton
+	 * @return  KJoint []
+	 */
 	public KJoint [] getJoints(){
 		return kJoints;
 	}
 	
+	/**
+	 * get Left Hand State of the skeleton
+	 * @return int leftHandState
+	 */
 	public int getLeftHandState(){
 		return leftHandState;
 	}
 	
+	/**
+	 * get Right Hand State of the skeleton
+	 * @return int rightHandState
+	 */
 	public int getRightHandState(){
 		return rightHandState;
 	}

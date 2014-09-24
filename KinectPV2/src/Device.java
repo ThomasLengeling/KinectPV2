@@ -30,6 +30,11 @@ import com.jogamp.common.nio.Buffers;
 import processing.core.PApplet;
 import processing.core.PImage;
 
+/**
+ * Initilice Device
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class Device implements Constants, FaceProperties, SkeletonProperties, Runnable {
 		
 	static { 
@@ -69,6 +74,11 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private boolean startSensor;
 	
+	
+	/**
+	 * Start device
+	 * @param _p PApplet
+	 */
 	public Device(PApplet _p){
 		parent = _p;
 		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
@@ -228,8 +238,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	}
 	
 	/**
-	 * Get Point Cloud as FloatBuffer
-	 * @return
+	 * Get Point Cloud Depth Map as FloatBuffer
+	 * @return FloatBuffer
 	 */
 	public FloatBuffer getPointCloudPosFloatBuffer(){
 		return pointCloudPos;
@@ -241,14 +251,18 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	}
 	*/
 	
+	/**
+	 * Get Face Data, up to 6 users
+	 * @return Array of FaceData 
+	 */
 	public FaceData [] getFaceData(){
 		return faceData;
 	}
 	
 	/**
 	 * Get Skeleton as Joints with Positions and Tracking states
-	 * in 3D, (x,y,z) ->joint and orientation
-	 * @return  Skeleton
+	 * in 3D, (x,y,z) joint and orientation,  Skeleton up to 6 users
+	 * @return Skeleton []
 	 */
 	public Skeleton [] getSkeleton3d(){
 		return skeleton3d;
@@ -256,9 +270,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Get Skeleton as Joints with Positions and Tracking states
-	 * base on Depth Image, 
-	 * @return Skeleton with only (x, y) skeleton position mapped
+	 * base on Depth Image, Skeleton with only (x, y) skeleton position mapped
 	 * to the depth Image, get z value from the Depth Image.
+	 * @return Skeleton []
 	 */
 	public Skeleton [] getSkeletonDepthMap(){
 		return skeletonDepth;
@@ -267,8 +281,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Get Skeleton as Joints with Positions and Tracking states
 	 * base on color Image, 
-	 * @return Skeleton with only (x, y) skeleton position mapped
-	 * to the color Image;
+	 * @return Skeleton []
 	 */
 	public Skeleton [] getSkeletonColorMap(){
 		return skeletonColor;
@@ -293,6 +306,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		return depthImg.img;
 	}
 	
+	/**
+	 * get Depth Mask Image, outline color of the users.
+	 * @return PImage
+	 */
 	public PImage getDepthMaskImage(){
 		return depthMaskImg.img;
 	}
@@ -383,7 +400,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw Color Image Capture.
 	 * Use getRawColor() Method
-	 * @param toggle 
+	 * @param boolean toggle 
 	 */
 	public void activateRawColor(boolean toggle){
 		colorImg.activateRawData(toggle);
@@ -392,7 +409,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw Depth Image Capture
 	 * Use getRawDepth() Method
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void activateRawDepth(boolean toggle){
 		depthImg.activateRawData(toggle);
@@ -401,7 +418,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw Depth Image Capture
 	 * Use getDepthMaskRaw() Method
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void activateRawDepthMaskImg(boolean toggle){
 		depthMaskImg.activateRawData(toggle);
@@ -410,7 +427,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw Infrared Image Capture
 	 * Use getRawInfrared() Method
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void activateRawInfrared(boolean toggle){
 		infraredImg.activateRawData(toggle);
@@ -419,7 +436,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw BodyTrack Image Capture
 	 * Use getRawBodyTrack() Method
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void activateRawBodyTrack(boolean toggle){
 		bodyTrackImg.activateRawData(toggle);
@@ -427,7 +444,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Activate Raw LongExposureInfrared Image Capture
 	 * use getRawLongExposure() method
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void activateRawLongExposure(boolean toggle){
 		longExposureImg.activateRawData(toggle);
@@ -435,7 +452,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Color Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableColorImg(boolean toggle){
 		jniEnableColorFrame(toggle);
@@ -443,7 +460,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Depth Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableDepthImg(boolean toggle){
 		jniEnableDepthFrame(toggle);
@@ -453,7 +470,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable DepthMask Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableDepthMaskImg(boolean toggle){
 		jniEnableDepthMaskFrame(toggle);
@@ -461,7 +478,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Infrared Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableInfraredImg(boolean toggle){
 		jniEnableInfraredFrame(toggle);
@@ -469,7 +486,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable BodyTrack Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableBodyTrackImg(boolean toggle){
 		jniEnableBodyTrackFrame(toggle);
@@ -477,7 +494,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable LongExposure Infrared Image Capture
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableLongExposureInfraredImg(boolean toggle){
 		jniEnableLongExposureInfrared(toggle);
@@ -485,7 +502,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Skeleton tracking
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableSkeleton(boolean toggle){
 		jniEnableSkeleton(toggle);
@@ -493,7 +510,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Skeleton tracking Color Map
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableSkeletonColorMap(boolean toggle){
 		jniEnableSkeletonColorMap(toggle);
@@ -501,7 +518,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Skeleton tracking 3d Map
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableSkeleton3dMap(boolean toggle){
 		jniEnableSkeleton3dMap(toggle);
@@ -509,13 +526,17 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Skeleton tracking Depth Map
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enableSkeletonDepthMap(boolean toggle){
 		jniEnableSkeletonDepthMap(toggle);
 	}
 	
 	
+	/**
+	 * Enable or Disable Face Tracking
+	 * @param boolean toggle 
+	 */
 	public void enableFaceDetection(boolean toggle){
 		jniEnableFaceDetection(toggle);
 	}
@@ -523,7 +544,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Enable or Disable Point Cloud from Depth 
-	 * @param toggle
+	 * @param boolean toggle 
 	 */
 	public void enablePointCloud(boolean toggle){
 		jniEnablePointCloud(toggle);
@@ -531,7 +552,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	/**
 	 * Set Threshold Depth Value Z for Point Cloud
-	 * @param val
+	 * @param float val
 	 */
 	public void setThresholdPointCloud(float val){
 		jniThresholdDepthPointCloud(val);
@@ -540,7 +561,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Get Threshold Depth Value Z from Point Cloud
 	 * Default 1.9
-	 * @return
+	 * @return default Threshold
 	 */
 	public float  getThresholdDepthPointCloud(){
 		return jniGetDefaultThresholdDepthPointCloud();

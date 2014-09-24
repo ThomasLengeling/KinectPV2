@@ -23,29 +23,55 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/**
+ * Face Features class, with type Feature and State.
+ * @author Thomas Sanchez Lengeling
+ *
+ */
 public class FaceFeatures {
 	
 	int feature;
 	int state;
 	
+	/**
+	 * Create Feature
+	 * @param feature
+	 * @param state
+	 */
 	FaceFeatures(int feature, int state){
 		this.feature = feature;
 		this.state = state;
 	}
 	
+	/**
+	 * Set Feature
+	 * @param feature
+	 */
 	public void setFeatureType(int feature){
 		this.feature = feature;
 	}
 	
+	/**
+	 * Set State
+	 * @param state
+	 */
 	public void setState(int state){
 		this.state = state;
 	}
 	
 	
+	/**
+	 * Get State
+	 * @return
+	 */
 	public int getState(){
 		return state;
 	}
 	
+	/**
+	 * Get Feature Type
+	 * @return
+	 */
 	public int getFeatureType(){
 		return feature;
 	}
