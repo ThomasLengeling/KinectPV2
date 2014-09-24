@@ -7,6 +7,8 @@ Version 0.5
 
 Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
+---
+
 ####Requirements
 
 - A Kinect for Windows v2 Device (K4W2)
@@ -59,4 +61,4 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 MIT License http://en.wikipedia.org/wiki/MIT_License
 
----
+
