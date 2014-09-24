@@ -51,6 +51,7 @@ To build the library from source, use this repository ( not always updated ) [Ki
 - Contour example
 - Color Point Cloud
 - Multiple Devices
+- [Kinect Fusion](http://msdn.microsoft.com/en-us/library/dn188670.aspx)
 
 ---
 
