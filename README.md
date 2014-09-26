@@ -57,6 +57,23 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 ---
 
+#### Images
+
+ void enableColorImg(boolean toggle);
+ void enableDepthImg(boolean toggle);
+ void enableInfraredImg(boolean toggle);
+ void enableBodyTrackImg(boolean toggle);
+ void enableLongExposureInfrared(boolean toggle);
+
+#### Raw Data
+
+#### Skeleton tracking
+
+#### Face Tracking
+
+#### Point Cloud
+---
+
 #### License
 
 MIT License http://en.wikipedia.org/wiki/MIT_License
