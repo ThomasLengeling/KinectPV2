@@ -23,7 +23,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
 #### Install 
 
-- Install Kinect [SDK](http://www.microsoft.com/en-us/download/details.aspx?id=43661) v2.0 for Windows 
+- Install [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/download/details.aspx?id=43661)
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
 
 
