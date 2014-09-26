@@ -59,13 +59,13 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 #### Images
 
+```java
  void enableColorImg(boolean toggle);
  void enableDepthImg(boolean toggle);
  void enableInfraredImg(boolean toggle);
  void enableBodyTrackImg(boolean toggle);
  void enableLongExposureInfrared(boolean toggle);
-
-#### Raw Data
+```
 
 #### Skeleton tracking
 
