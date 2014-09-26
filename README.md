@@ -57,7 +57,7 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 ---
 
-#### Device
+#### Simple Device
 
 To include the library into a processing sketh you just need to import it and initialize it.
 
@@ -89,7 +89,6 @@ To obtain the color Image, depth Image, infrared Image, bodyIndex Image and long
  PImage getInfraredImage();
  PImage getBodyTrackImage();
  PImage getLongExposureInfrared();
- 
 ```
 just initialize in the setup()
 
@@ -106,16 +105,28 @@ PImage imgC = kinect.getColorImage();
 image(imgC, 0, 0);
 ```
 
-If you need to obtain the raw data of each Image as a array of int's you need to active it.
+If you need to obtain the raw data of each Image as a array of int's you need to active it first.
 
+```java
+void activateRawColor(boolean toggle);
+void activateRawDepth(boolean toggle);
+void activateRawDepthMaskImg(boolean toggle);
+void activateRawInfrared(boolean toggle);
+void activateRawBodyTrack(boolean toggle);
+void activateRawLongExposure(boolean toggle);
+```
 
+to obtain the raw data as a array of intengers (RGB or gray scale)
 
+```java
+int [] getRawDepth();
+int [] getRawDepthMask();
+int [] getRawColor();
+int [] getRawInfrared();
+int [] getRawBodyTrack();
+int [] getRawLongExposure();
+```
 
-#### Skeleton tracking
-
-#### Face Tracking
-
-#### Point Cloud
 ---
 
 #### License
