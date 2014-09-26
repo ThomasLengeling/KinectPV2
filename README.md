@@ -75,7 +75,7 @@ void setup() {
 
 #### Images
 
-To obtain the color Image, depth Image, infrared PImage, bodyIndex PImage and the the long Exposure IRPImage as a PImage you need to active with the following method
+To obtain the color Image, depth Image, infrared Image, bodyIndex Image and long Exposure Image as a PImage you need to active with the following method
 
 ```java
  void enableColorImg(boolean toggle);
