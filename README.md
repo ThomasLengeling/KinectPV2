@@ -75,7 +75,7 @@ void setup() {
 
 #### Images
 
-To obtain the color, depth, infrared, bodyIndex or the long Exposure Ir you need to active then in the setup method.
+To obtain the color Image, depth Image, infrared PImage, bodyIndex PImage and the the long Exposure IRPImage as a PImage you need to active with the following method
 
 ```java
  void enableColorImg(boolean toggle);
@@ -83,14 +83,33 @@ To obtain the color, depth, infrared, bodyIndex or the long Exposure Ir you need
  void enableInfraredImg(boolean toggle);
  void enableBodyTrackImg(boolean toggle);
  void enableLongExposureInfrared(boolean toggle);
+ 
+ PImage getColorImage();
+ PImage getDepthImage();
+ PImage getInfraredImage();
+ PImage getBodyTrackImage();
+ PImage getLongExposureInfrared();
+ 
 ```
-initialize in the setup and obtain
+just initialize in the setup()
 
 ```java
   kinect = new KinectV2(this);
   kinect.enableColorImg(true);
   kinect.init();
 ```
+
+get the PImage in the draw()
+
+```java
+PImage imgC = kinect.getColorImage();
+image(imgC, 0, 0);
+```
+
+If you need to obtain the raw data of each Image as a array of int's you need to active it.
+
+
+
 
 #### Skeleton tracking
 
