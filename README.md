@@ -57,7 +57,25 @@ To build the library from source, use this repository ( not always updated ) [Ki
 
 ---
 
+#### Device
+
+To include the library into a processing sketh you just need to import it and initialize it.
+
+```java
+import KinectPV2.*;
+KinectV2 kinect;
+
+void setup() {
+
+  kinect = new KinectV2(this);
+  //Start up methods go here
+  kinect.init();
+}
+```
+
 #### Images
+
+To obtain the color, depth, infrared, bodyIndex or the long Exposure Ir you need to active then in the setup method.
 
 ```java
  void enableColorImg(boolean toggle);
@@ -65,6 +83,13 @@ To build the library from source, use this repository ( not always updated ) [Ki
  void enableInfraredImg(boolean toggle);
  void enableBodyTrackImg(boolean toggle);
  void enableLongExposureInfrared(boolean toggle);
+```
+initialize in the setup and obtain
+
+```java
+  kinect = new KinectV2(this);
+  kinect.enableColorImg(true);
+  kinect.init();
 ```
 
 #### Skeleton tracking
