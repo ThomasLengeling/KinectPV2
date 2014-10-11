@@ -16,6 +16,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 - Computer with a dedicated USB 3.0 and 64bits
 - Windows 8, 8.1
 - [Processing 2.2.1](http://processing.org/) or greater
+- Update your latest video card driver
 
 
 #### Reference and tutorial coming soon
