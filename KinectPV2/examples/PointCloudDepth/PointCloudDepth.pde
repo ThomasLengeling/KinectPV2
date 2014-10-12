@@ -48,10 +48,7 @@ void draw() {
   /* Get the point cloud as a PImage
    * Each pixel of the PointCloudDepthImage correspondes to the value 
    * of the Z in the Point Cloud or distances, the values of 
-   * the Point cloud are mapped from (0.0 - 8.0)  to gray color (0 - 255)
-   * if change the low and high Threshold, then the mapping min and max distantance
-   * are change to the new min and max threashold.
-   * (low, high) -> (0, 255)
+   *  the Point cloud are mapped from (0.0 - 8.0)  to gray color (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);
   
