@@ -57,6 +57,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	private  Image longExposureImg;
 	private  Image bodyTrackImg;
 	private  Image depthMaskImg;
+	private  Image pointCloudDepthImg;
 	
 	private Skeleton   [] skeletonDepth;
 	private Skeleton   [] skeleton3d;
@@ -89,6 +90,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		depthMaskImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
 		
 		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+		
+		pointCloudDepthImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
 		skeletonDepth 		= new Skeleton[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
@@ -183,6 +186,15 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		
 		if(longExposureImg.isProcessRawData())
 			PApplet.arrayCopy(rawData, 0, longExposureImg.rawIntData, 0, longExposureImg.getImgSize());
+	}
+	
+	//POINT CLOUD DEPTH
+	private void copyPointCloudImage(int [] rawData) {
+		if(rawData.length ==  WIDTHDepth * HEIGHTDepth) {
+			PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.rawIntData, 0, pointCloudDepthImg.getImgSize());
+			PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.pixels(), 0, pointCloudDepthImg.getImgSize());
+			pointCloudDepthImg.updatePixels();
+		}
 	}
 	
 	//SKELETON DEPTH
@@ -342,6 +354,11 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	}
 	
 	
+	public PImage getPointCloudDepthImage() {
+		return pointCloudDepthImg.img;
+	}
+	
+	
 	/**
 	 * Get Raw Depth Data
 	 *  512 x 424
@@ -394,6 +411,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	 */
 	public int [] getRawLongExposure(){
 		return longExposureImg.rawIntData;
+	}
+	
+	public int [] getRawPointCloudDepth() {
+		return pointCloudDepthImg.rawIntData;
 	}
 	
 	//ACTIVATE RAW DATA
@@ -554,8 +575,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	 * Set Threshold Depth Value Z for Point Cloud
 	 * @param float val
 	 */
-	public void setThresholdPointCloud(float val){
-		jniThresholdDepthPointCloud(val);
+	public void setLowThresholdPC(float val){
+		jniSetLowThresholdDepthPC(val);
 	}
 	
 	/**
@@ -563,9 +584,28 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	 * Default 1.9
 	 * @return default Threshold
 	 */
-	public float  getThresholdDepthPointCloud(){
-		return jniGetDefaultThresholdDepthPointCloud();
+	public float  getLowThresholdDepthPC(){
+		return jniGetLowThresholdDepthPC();
 	}
+	
+	
+	/**
+	 * Set Threshold Depth Value Z for Point Cloud
+	 * @param float val
+	 */
+	public void setHighThresholdPC(float val){
+		jniSetHighThresholdDepthPC(val);
+	}
+	
+	/**
+	 * Get Threshold Depth Value Z from Point Cloud
+	 * Default 1.9
+	 * @return default Threshold
+	 */
+	public float  getHighThresholdDepthPC(){
+		return jniGetHighThresholdDepthPC();
+	}
+	
 	
 	/*
 	public void enablePointCloudColor(boolean toggle){
@@ -636,9 +676,16 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private native void jniEnablePointCloudColor(boolean toggle);
 	
-	private native void jniThresholdDepthPointCloud(float val);
 	
-	private native float jniGetDefaultThresholdDepthPointCloud();
+	
+	private native void jniSetLowThresholdDepthPC(float val);
+	
+	private native float jniGetLowThresholdDepthPC();
+	
+
+	private native void jniSetHighThresholdDepthPC(float val);
+	
+	private native float jniGetHighThresholdDepthPC();
 	
 
 	public void run() {

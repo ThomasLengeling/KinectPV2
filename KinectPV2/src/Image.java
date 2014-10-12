@@ -40,6 +40,8 @@ public class Image{
 	private    boolean   processRawData;
 	
 	protected  byte  []  rawByteData;
+	
+	protected  float []  rawFloatData;
 	protected  int   []  rawIntData;
 	
 	public Image(PApplet p, int width, int height, int MODE){
@@ -47,7 +49,9 @@ public class Image{
 		img    =  parent.createImage(width, height, MODE);
 		imgPixelSize = width * height;
 		rawByteData  = new byte[imgPixelSize];
+		
 		rawIntData   = new int[imgPixelSize];
+		rawFloatData = new float[imgPixelSize];
 		processRawData= false;
 	}
 	
