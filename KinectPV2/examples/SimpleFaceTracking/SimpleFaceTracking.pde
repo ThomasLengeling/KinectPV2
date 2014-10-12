@@ -41,7 +41,6 @@ void setup() {
 void draw() {
   background(0);
 
-
   image(kinect.getColorImage(), 0, 0);
 
   faceData =  kinect.getFaceData();
@@ -82,6 +81,9 @@ void draw() {
       rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
     }
   }
+
+  fill(255);
+  text("frameRate "+frameRate, 50, 50);
 }
 
 
