@@ -37,4 +37,7 @@ public interface Constants {
 	
 	public final static int WIDTHDepth  = 512;
 	public final static int HEIGHTDepth = 424;
+	
+	public final static int Int32 = 0;
+	public final static int Float = 1;
 }
