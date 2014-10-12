@@ -32,16 +32,17 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
 #### Examples
 
-- Color1920, color image 1920 x 1080
-- DepthTest, how to obtain depth information
+- Color1920, color image 1920 x 1080.
+- DepthTest, how to obtain depth information.
 - MaskTest, get only the contour image of the users.
-- PointCloudOGL, point cloud render using opengl
+- PointCloudOGL, point cloud render using opengl.
+- PointCloudDepth, obtain the point cloud as a deph Image, and as a int [] array.
 - SimpleFaceTracking, simple face tracking up 6 users.
 - Skeleton3d, 3d skeleton.
 - SkeletonColor, map color frame to skeleton.
-- SkeletonMaskDepth, map depth frame and mask frame to skeleton
-- SkeletonTest, simple 6 users skeleton
-- imageTest, images frame test
+- SkeletonMaskDepth, map depth frame and mask frame to skeleton.
+- SkeletonTest, simple 6 users skeleton.
+- imageTest, images frame test.
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
