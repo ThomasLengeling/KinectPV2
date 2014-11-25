@@ -31,7 +31,10 @@ private KinectPV2 kinect;
 float a = 0;
 int zval = 50;
 float scaleVal = 260;
-float depthVal = 0;
+
+//Distance Threashold
+float maxD = 4.0f; //meters
+float minD = 1.0f;
 
 public void setup() {
   size(1280, 720, P3D);
@@ -39,8 +42,10 @@ public void setup() {
   kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
   kinect.enablePointCloud(true);
-  depthVal = kinect.getThresholdDepthPointCloud();
   kinect.activateRawDepth(true);
+
+  kinect.setLowThresholdPC(minD);
+  kinect.setHighThresholdPC(maxD);
 
   kinect.init();
 }
@@ -50,7 +55,10 @@ public void draw() {
 
   image(kinect.getDepthImage(), 0, 0, 320, 240);
 
-  kinect.setThresholdPointCloud(depthVal);
+  //Threahold of the point Cloud.
+  kinect.setLowThresholdPC(minD);
+  kinect.setHighThresholdPC(maxD);
+
   FloatBuffer pointCloudBuffer = kinect.getPointCloudPosFloatBuffer();
 
   PJOGL pgl = (PJOGL)beginPGL();
@@ -109,14 +117,24 @@ public void keyPressed() {
     println(a);
   }
 
-  if (key == 'c') {
-    depthVal -= 0.01;
-    println(depthVal);
+  if (key == '1') {
+    minD += 0.01;
+    println("Change min: "+minD);
   }
 
-  if (key == 'v') {
-    depthVal += 0.01;
-    println(depthVal);
+  if (key == '2') {
+    minD -= 0.01;
+    println("Change min: "+minD);
+  }
+
+  if (key == '3') {
+    maxD += 0.01;
+    println("Change max: "+maxD);
+  }
+
+  if (key == '4') {
+    maxD -= 0.01;
+    println("Change max: "+maxD);
   }
 }
 
