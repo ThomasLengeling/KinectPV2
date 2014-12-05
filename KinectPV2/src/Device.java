@@ -58,15 +58,19 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	private  Image bodyTrackImg;
 	private  Image depthMaskImg;
 	private  Image pointCloudDepthImg;
+	private  Image coordinateRGBDepthImg;
 	
 	private Skeleton   [] skeletonDepth;
 	private Skeleton   [] skeleton3d;
 	private Skeleton   [] skeletonColor;
 	
+	private HDFaceData [] HDFace;
+	
 	private FaceData   [] faceData; 
 	
 	FloatBuffer pointCloudPos;
 	FloatBuffer pointCloudColor;
+	FloatBuffer colorFloatBuffer;
 	
 	protected boolean runningKinect;
 	
@@ -83,6 +87,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	public Device(PApplet _p){
 		parent = _p;
 		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
+		coordinateRGBDepthImg =  new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
 		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
@@ -92,7 +97,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
 		pointCloudDepthImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
-		
+				
 		skeletonDepth 		= new Skeleton[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
 			skeletonDepth[i] = new Skeleton();
@@ -108,15 +113,19 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 			skeletonColor[i] = new Skeleton();
 		}
 		
-		
 		faceData 		= new FaceData[BODY_COUNT];
 		for(int i = 0; i < BODY_COUNT; i++){
 			faceData[i] = new FaceData();
 		}
 		
-		pointCloudPos   = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
+		HDFace  = new HDFaceData[BODY_COUNT];
+		for(int i = 0; i < BODY_COUNT; i++) {
+			HDFace[i] = new HDFaceData();
+		}
 		
-		pointCloudColor = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
+		pointCloudPos    = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
+		pointCloudColor  = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
+		colorFloatBuffer = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
 				
 		//FloatBuffer.allocate( WIDTHDepth * HEIGHTDepth * 3);
 		startSensor = false;
@@ -147,6 +156,14 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 			
 		if(colorImg.isProcessRawData())
 			PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0, colorImg.getImgSize());
+	}
+	
+	//independet channels Color Image
+	private void copyColorChannelImg(float [] rawData) {
+		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
+			colorFloatBuffer.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
+			colorFloatBuffer.rewind();
+		}
 	}
 	
 	private void copyDepthImg(int [] rawData){
@@ -234,7 +251,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		}
 	}
 
-	
+	//positions
 	private void copyPointCloudColor(float [] rawData){
 		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
 			pointCloudColor.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
@@ -242,6 +259,16 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		}
 	}
 	
+	private void copyColorBuffer(float [] rawData){
+		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
+			colorFloatBuffer.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
+			colorFloatBuffer.rewind();
+		}
+	}
+	
+	
+	
+	//FACE DATA
 	private void copyFaceRawData(float [] rawData){
 		if(rawData.length == FACESIZE){
 			for(int i = 0; i < BODY_COUNT; i++)
@@ -249,6 +276,23 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		}
 	}
 	
+	//HDFACE
+	private void copyHDFaceVertexRawData(float [] rawData) {
+		if(rawData.length == HDFaceVertexCount * BODY_COUNT * 2 + BODY_COUNT){
+			for(int i = 0; i < BODY_COUNT; i++)
+				HDFace[i].createHDFaceVertexData(rawData, i);
+		}
+	}
+	
+	//Coordinate Mappers
+	private void copyCoordinateMapper(int [] rawData){
+		PApplet.arrayCopy(rawData, 0, coordinateRGBDepthImg.pixels(), 0, coordinateRGBDepthImg.getImgSize());
+		coordinateRGBDepthImg.updatePixels();
+	}
+	
+	
+	
+
 	/**
 	 * Get Point Cloud Depth Map as FloatBuffer
 	 * @return FloatBuffer
@@ -257,11 +301,18 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		return pointCloudPos;
 	}
 	
-	/*
-	public FloatBuffer getPointCloudFloatColorBuffer(){
+	public FloatBuffer getColorFloatBuffer() {
+		return colorFloatBuffer;
+	}
+	
+	public HDFaceData [] getHDFaceVertex() {
+		return HDFace;
+	}
+	
+	
+	public FloatBuffer getPointCloudColorFloatBuffer(){
 		return pointCloudColor;
 	}
-	*/
 	
 	/**
 	 * Get Face Data, up to 6 users
@@ -417,6 +468,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		return pointCloudDepthImg.rawIntData;
 	}
 	
+	public PImage getCoordinateRGBDepthImage() {
+		return coordinateRGBDepthImg.img;
+	}
+	
 	//ACTIVATE RAW DATA
 	/**
 	 * Activate Raw Color Image Capture.
@@ -477,6 +532,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	 */
 	public void enableColorImg(boolean toggle){
 		jniEnableColorFrame(toggle);
+	}
+	
+	public void enableColorChannel(boolean toggle) {
+		jniEnableColorChannelsFrame(toggle);
 	}
 	
 	/**
@@ -562,6 +621,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		jniEnableFaceDetection(toggle);
 	}
 	
+	public void enableHDFaceDetection(boolean toggle) {
+		jniEnableHDFaceDetection(toggle);
+	}
+	
 	
 	/**
 	 * Enable or Disable Point Cloud from Depth 
@@ -569,6 +632,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	 */
 	public void enablePointCloud(boolean toggle){
 		jniEnablePointCloud(toggle);
+	}
+	
+	public void enableCoordinateMapperRGBDepth(boolean toggle) {
+		jniEnableCoordinateMappingRGBDepth(toggle);
 	}
 	
 	/**
@@ -606,12 +673,29 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		return jniGetHighThresholdDepthPC();
 	}
 	
+	public void setCoordBkgImg(int [] pixels) {
+		int [] sendPixels = new int[pixels.length*4];
+		for(int i = 0; i < pixels.length; i++) {
+			int index = i;
+			int pixel = pixels[i];
+			int  r = (pixel >> 24) & 0xFF;
+			int  g = (pixel >> 16) & 0xFF;
+			int  b = (pixel >> 8) & 0xFF;
+			int  a  = pixel & 0xFF;
+			
+			sendPixels[index*4 + 0] = a;  //R
+			sendPixels[index*4 + 1] = b;//G
+			sendPixels[index*4 + 2] = g; //B
+			sendPixels[index*4 + 3] = r;//ALPHA
+		}
+		jniSendArrayInts(sendPixels);
+	}
 	
-	/*
+	
 	public void enablePointCloudColor(boolean toggle){
 		jniEnablePointCloudColor(toggle);
 	}
-	*/
+	
 	
 	/*
 	public void enableMirror(boolean toggle){
@@ -650,6 +734,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private native void jniEnableColorFrame(boolean toggle);
 	
+	private native void jniEnableColorChannelsFrame(boolean toggle);
+	
 	private native void jniEnableDepthFrame(boolean toggle);
 	
 	private native void jniEnableDepthMaskFrame(boolean toggle);
@@ -669,8 +755,15 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private native void jniEnableSkeleton3dMap(boolean toggle);
 	
+	//SEND IMAGE FOR COODINATOR
+	private native void jniSendArrayInts (int [] array);
+	
 	
 	private native void jniEnableFaceDetection(boolean toggle);
+	
+	private native void jniEnableHDFaceDetection(boolean toggle);
+	
+	private native void jniEnableCoordinateMappingRGBDepth(boolean toggle);
 	
 	private native void jniEnablePointCloud(boolean toggle);
 	
