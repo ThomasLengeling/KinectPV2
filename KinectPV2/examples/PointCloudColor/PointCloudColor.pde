@@ -53,8 +53,8 @@ public void draw() {
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
 
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorFloatBuffer();
-  FloatBuffer colorBuffer      = kinect.getColorFloatBuffer();
+  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
   PJOGL pgl = (PJOGL)beginPGL();
   GL2 gl2 = pgl.gl.getGL2();

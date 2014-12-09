@@ -59,7 +59,7 @@ public void draw() {
   kinect.setLowThresholdPC(minD);
   kinect.setHighThresholdPC(maxD);
 
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudPosFloatBuffer();
+  FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
   PJOGL pgl = (PJOGL)beginPGL();
   GL2 gl2 = pgl.gl.getGL2();
