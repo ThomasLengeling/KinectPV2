@@ -3,17 +3,20 @@ KinectPV2
 
 ### Kinect for Windows v2 library for Processing
 
-Version 0.4.5
+Version 0.7
 
-Library is curretly in develop, with SDK Version 1408 (8/20/2014)
+Library is curretly on develop, with SDK Version 1409 (9/16/2014)
+
+---
 
 ####Requirements
 
 - A Kinect for Windows v2 Device (K4W2)
-- [Kinect SDK v2](http://www.microsoft.com/en-us/download/details.aspx?id=43661)
+- [Kinect SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - Computer with a dedicated USB 3.0 and 64bits
 - Windows 8, 8.1
 - [Processing 2.2.1](http://processing.org/) or greater
+- Update your latest video card driver
 
 
 #### Reference and tutorial coming soon
@@ -21,7 +24,7 @@ Library is curretly in develop, with SDK Version 1408 (8/20/2014)
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
 #### Install 
 
-- Install Kinect [SDK](http://www.microsoft.com/en-us/download/details.aspx?id=43661) v2.0 for Windows 
+- Install [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
 
 
@@ -29,33 +32,109 @@ Library is curretly in develop, with SDK Version 1408 (8/20/2014)
 
 #### Examples
 
-- depthTest, how to obtain depth information
-- color1920, color image 1920 x 1080
-- imageTest,  color image, depth image and infrared image
-- skeleton, how to track up to 6 skeletons 
-- mask, obtain bodyIndex of the users.
-- point Cloud, point cloud render using opengl
-- SkeletonDepthMask, Skeleton tracking, with depth and body tracking
+- Color1920, color image 1920 x 1080.
+- DepthTest, how to obtain depth information.
+- MaskTest, get only the contour image of the users.
+- PointCloudOGL, point cloud render using opengl.
+- PointCloudDepth, obtain the point cloud as a deph Image, and as a int [] array.
+- SimpleFaceTracking, simple face tracking up 6 users.
+- Skeleton3d, 3d skeleton.
+- SkeletonColor, map color frame to skeleton.
+- SkeletonMaskDepth, map depth frame and mask frame to skeleton.
+- SkeletonTest, simple 6 users skeleton.
+- imageTest, images frame test.
+- CoordinateMapperRGBDepth, RGB+Depth
+- HDFaceVertex. HDFace Points
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
 
-
+---
 
 #### Todo
 
-- Skeleton
-- Face tracking
 - Heart rate detection
-- Tracking example
 - Contour example
 - Color Point Cloud
 - Multiple Devices
+- [Kinect Fusion](http://msdn.microsoft.com/en-us/library/dn188670.aspx)
 
 ---
 
-###### Required notification
+#### Simple Device
 
-The K4W2 hardware is currently pre-release. Per the K4W2 developer program agreement, all public demonstrations and code should display this notice:
+To include the library into a processing sketh you just need to import it and initialize it.
 
-"This is preliminary software and/or hardware and APIs are preliminary and subject to change."
+```java
+import KinectPV2.*;
+KinectV2 kinect;
+
+void setup() {
+
+  kinect = new KinectV2(this);
+  //Start up methods go here
+  kinect.init();
+}
+```
+
+#### Images
+
+To obtain the color Image, depth Image, infrared Image, bodyIndex Image and long Exposure Image as a PImage you need to active with the following method
+
+```java
+ void enableColorImg(boolean toggle);
+ void enableDepthImg(boolean toggle);
+ void enableInfraredImg(boolean toggle);
+ void enableBodyTrackImg(boolean toggle);
+ void enableLongExposureInfrared(boolean toggle);
+ 
+ PImage getColorImage();
+ PImage getDepthImage();
+ PImage getInfraredImage();
+ PImage getBodyTrackImage();
+ PImage getLongExposureInfrared();
+```
+just initialize in the setup()
+
+```java
+  kinect = new KinectV2(this);
+  kinect.enableColorImg(true);
+  kinect.init();
+```
+
+get the PImage in the draw()
+
+```java
+PImage imgC = kinect.getColorImage();
+image(imgC, 0, 0);
+```
+
+If you need to obtain the raw data of each Image as a array of int's you need to active it first.
+
+```java
+void activateRawColor(boolean toggle);
+void activateRawDepth(boolean toggle);
+void activateRawDepthMaskImg(boolean toggle);
+void activateRawInfrared(boolean toggle);
+void activateRawBodyTrack(boolean toggle);
+void activateRawLongExposure(boolean toggle);
+```
+
+to obtain the raw data as a array of intengers (RGB or gray scale)
+
+```java
+int [] getRawDepth();
+int [] getRawDepthMask();
+int [] getRawColor();
+int [] getRawInfrared();
+int [] getRawBodyTrack();
+int [] getRawLongExposure();
+```
+
+---
+
+#### License
+
+MIT License http://en.wikipedia.org/wiki/MIT_License
+
+
