@@ -41,7 +41,11 @@ public class FaceData implements FaceProperties{
 	
 	boolean faceTracked;
 	
+<<<<<<< HEAD
 	Rectangle rect;
+=======
+	KRectangle rect;
+>>>>>>> origin/dev
 	
 	float pitch;
 	float yaw;
@@ -56,7 +60,11 @@ public class FaceData implements FaceProperties{
 		for(int i = 0; i < facePointsInfrared.length; i++)
 			facePointsInfrared[i] =  new PVector();
 		
+<<<<<<< HEAD
 		rect = new Rectangle(0, 0, 0, 0);
+=======
+		rect = new KRectangle(0, 0, 0, 0);
+>>>>>>> origin/dev
 		faceTracked = false;
 		
 		facefeatures = new FaceFeatures[8];
@@ -113,7 +121,11 @@ public class FaceData implements FaceProperties{
 	 * get Bounding Face Rectangle
 	 * @return Rectangle
 	 */
+<<<<<<< HEAD
 	public Rectangle getBoundingRect(){
+=======
+	public KRectangle getBoundingRect(){
+>>>>>>> origin/dev
 		return rect;
 	}
 	

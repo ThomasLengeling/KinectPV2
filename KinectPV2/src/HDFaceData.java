@@ -30,10 +30,7 @@ THE SOFTWARE.
  * @author Thomas Sanchez Lengeling
  *
  */
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/dev
 public class HDFaceData implements FaceProperties{
 	
 	PVector [] HDFaceVertex;

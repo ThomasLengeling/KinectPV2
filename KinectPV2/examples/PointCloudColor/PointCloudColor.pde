@@ -28,24 +28,22 @@ import javax.media.opengl.GL2;
 
 private KinectPV2 kinect;
 
-float a = 0;
-int zval = 50;
-float scaleVal = 260;
+float a = 180;
+int zval = 350;
+float scaleVal = 990;
+float rotY = 0;
+float rotZ = 0;
+float rotX = PI;
 
-//Distance Threashold
-float maxD = 4.0f; //meters
-float minD = 1.0f;
+float depthVal = 0;
 
 public void setup() {
   size(1280, 720, P3D);
 
   kinect = new KinectPV2(this);
-  kinect.enableDepthImg(true);
-  kinect.enablePointCloud(true);
-  kinect.activateRawDepth(true);
-
-  kinect.setLowThresholdPC(minD);
-  kinect.setHighThresholdPC(maxD);
+  // kinect.enableDepthImg(true);
+  // kinect.enableColorImg(true);
+  kinect.enablePointCloudColor(true);
 
   kinect.init();
 }
@@ -53,35 +51,33 @@ public void setup() {
 public void draw() {
   background(0);
 
-  image(kinect.getDepthImage(), 0, 0, 320, 240);
+  image(kinect.getColorImage(), 0, 0, 320, 240);
 
-  //Threahold of the point Cloud.
-  kinect.setLowThresholdPC(minD);
-  kinect.setHighThresholdPC(maxD);
-
-<<<<<<< HEAD
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudPosFloatBuffer();
-=======
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
->>>>>>> origin/dev
+  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
   PJOGL pgl = (PJOGL)beginPGL();
   GL2 gl2 = pgl.gl.getGL2();
 
   gl2.glEnable( GL2.GL_BLEND );
-  gl2.glEnable(GL2.GL_POINT_SMOOTH);      
+  // gl2.glEnable(GL2.GL_POINT_SMOOTH);      
 
   gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+  gl2.glEnableClientState(GL2.GL_COLOR_ARRAY);
+  gl2.glColorPointer(3, GL2.GL_FLOAT, 0, colorBuffer);
   gl2.glVertexPointer(3, GL2.GL_FLOAT, 0, pointCloudBuffer);
 
   gl2.glTranslatef(width/2, height/2, zval);
   gl2.glScalef(scaleVal, -1*scaleVal, scaleVal);
   gl2.glRotatef(a, 0.0f, 1.0f, 0.0f);
 
-  gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHDepth * kinect.HEIGHTDepth);
+  gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHColor * kinect.HEIGHTColor);
+
   gl2.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+  gl2.glDisableClientState(GL2.GL_COLOR_ARRAY);
   gl2.glDisable(GL2.GL_BLEND);
   endPGL();
+
 
   stroke(255, 0, 0);
   text(frameRate, 50, height- 50);
@@ -90,7 +86,7 @@ public void draw() {
 public void mousePressed() {
 
   println(frameRate);
-  saveFrame();
+  //  saveFrame();
 }
 
 public void keyPressed() {
@@ -104,11 +100,11 @@ public void keyPressed() {
   }
 
   if (key == 'z') {
-    scaleVal += 0.1;
+    scaleVal += 1;
     println(scaleVal);
   }
   if (key == 'x') {
-    scaleVal -= 0.1;
+    scaleVal -= 1;
     println(scaleVal);
   }
 
@@ -121,41 +117,14 @@ public void keyPressed() {
     println(a);
   }
 
-  if (key == '1') {
-    minD += 0.01;
-    println("Change min: "+minD);
-<<<<<<< HEAD
+  if (key == 'c') {
+    depthVal -= 0.01;
+    println(depthVal);
   }
 
-  if (key == '2') {
-    minD -= 0.01;
-    println("Change min: "+minD);
-  }
-
-  if (key == '3') {
-    maxD += 0.01;
-    println("Change max: "+maxD);
-  }
-
-  if (key == '4') {
-    maxD -= 0.01;
-    println("Change max: "+maxD);
-=======
-  }
-
-  if (key == '2') {
-    minD -= 0.01;
-    println("Change min: "+minD);
->>>>>>> origin/dev
-  }
-
-  if (key == '3') {
-    maxD += 0.01;
-    println("Change max: "+maxD);
-  }
-
-  if (key == '4') {
-    maxD -= 0.01;
-    println("Change max: "+maxD);
+  if (key == 'v') {
+    depthVal += 0.01;
+    println(depthVal);
   }
 }
+

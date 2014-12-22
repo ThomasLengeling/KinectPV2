@@ -51,4 +51,10 @@ public interface FaceProperties  extends Constants {
 	public final static int Face_Nose = 2;
 	public final static int Face_LeftMouth = 3;
 	public final static int Face_RightMouth = 4;
+	
+	public final static int HDFaceVertexCount = 1347;
+	
+	//6 MORE POINT FOR TRACKING AND NOT TRAKING
+	public final static int HDFaceVertexPoints = HDFaceVertexCount * BODY_COUNT * 2 + BODY_COUNT;
+	
 }
