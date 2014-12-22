@@ -46,7 +46,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 - HDFaceVertex. HDFace Points
 - [OpenCV](https://github.com/atduskgreg/opencv-processing) examples:
   - Live Capture App
-  - Find Contours with depth or blody Index
+  - Find Contours with depth or bodyIndex
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
