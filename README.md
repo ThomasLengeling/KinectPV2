@@ -5,7 +5,9 @@ KinectPV2
 
 =======
 Version 0.7.1
+
 Library is curretly on develop, with SDK Version 1409 (9/16/2014)
+
 ---
 
 ####Requirements
