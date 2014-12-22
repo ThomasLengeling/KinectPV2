@@ -49,7 +49,7 @@ void draw() {
     if (faceData[i].isFaceTracked()) {
       PVector [] facePointsColor = faceData[i].getFacePointsColorMap();
 
-      Rectangle rectFace = faceData[i].getBoundingRect();
+      KRectangle rectFace = faceData[i].getBoundingRect();
 
       FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
 
