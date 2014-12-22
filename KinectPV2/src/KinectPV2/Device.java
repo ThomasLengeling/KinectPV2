@@ -68,14 +68,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private FaceData   [] faceData; 
 	
-<<<<<<< HEAD
-	FloatBuffer pointCloudPos;
-	FloatBuffer pointCloudColor;
-=======
 	FloatBuffer pointCloudDepthPos;
 	FloatBuffer pointCloudColorPos;
 	FloatBuffer colorChannelBuffer;
->>>>>>> origin/dev
 	
 	protected boolean runningKinect;
 	
@@ -128,16 +123,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 			HDFace[i] = new HDFaceData();
 		}
 		
-<<<<<<< HEAD
-		pointCloudPos   = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
-		pointCloudColor = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
-		
-=======
 		pointCloudDepthPos  = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
 		pointCloudColorPos  = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
 		colorChannelBuffer  = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
 				
->>>>>>> origin/dev
 		//FloatBuffer.allocate( WIDTHDepth * HEIGHTDepth * 3);
 		startSensor = false;
 		jniDevice();
@@ -169,8 +158,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 			PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0, colorImg.getImgSize());
 	}
 	
-<<<<<<< HEAD
-=======
 	//independet channels Color Image
 	private void copyColorChannelImg(float [] rawData) {
 		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
@@ -180,7 +167,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	}
 
 	
->>>>>>> origin/dev
 	private void copyDepthImg(int [] rawData){
 		PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
 		depthImg.updatePixels();
@@ -261,18 +247,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private void copyPointCloudPos(float [] rawData){
 		if(rawData.length == WIDTHDepth * HEIGHTDepth * 3){
-<<<<<<< HEAD
-			pointCloudPos.put(rawData, 0, WIDTHDepth * HEIGHTDepth * 3);
-			pointCloudPos.rewind();
-		}
-	}
-
-	
-	private void copyPointCloudColor(float [] rawData){
-		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
-			pointCloudColor.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
-			pointCloudColor.rewind();
-=======
 			pointCloudDepthPos.put(rawData, 0, WIDTHDepth * HEIGHTDepth * 3);
 			pointCloudDepthPos.rewind();
 		}
@@ -290,7 +264,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
 			colorChannelBuffer.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
 			colorChannelBuffer.rewind();
->>>>>>> origin/dev
 		}
 	}
 	
@@ -316,31 +289,13 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		coordinateRGBDepthImg.updatePixels();
 	}
 	
-<<<<<<< HEAD
-=======
 	
 	
 
->>>>>>> origin/dev
 	/**
 	 * Get Point Cloud Depth Map as FloatBuffer
 	 * @return FloatBuffer
 	 */
-<<<<<<< HEAD
-	public FloatBuffer getPointCloudPosFloatBuffer(){
-		return pointCloudPos;
-	}
-	
-	public HDFaceData [] getHDFaceVertex() {
-		return HDFace;
-	}
-	
-	/*
-	public FloatBuffer getPointCloudFloatColorBuffer(){
-		return pointCloudColor;
-	}
-	*/
-=======
 	public FloatBuffer getPointCloudDepthPos(){
 		return pointCloudDepthPos;
 	}
@@ -358,7 +313,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	public HDFaceData [] getHDFaceVertex() {
 		return HDFace;
 	}
->>>>>>> origin/dev
 	
 	/**
 	 * Get Face Data, up to 6 users
@@ -580,13 +534,16 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		jniEnableColorFrame(toggle);
 	}
 	
-<<<<<<< HEAD
-=======
+	/**
+	 * Enable or disable enableColorChannel
+	 * 3 independent color channels 1920 x 1080 x 3 from 0-1
+	 * Ideally for openGL calls
+	 * @param toggle
+	 */
 	public void enableColorChannel(boolean toggle) {
 		jniEnableColorChannelsFrame(toggle);
 	}
 	
->>>>>>> origin/dev
 	/**
 	 * Enable or Disable Depth Image Capture
 	 * @param boolean toggle 
@@ -670,6 +627,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		jniEnableFaceDetection(toggle);
 	}
 	
+	/**
+	 * Enable HDFace detection
+	 * @param toggle
+	 */
 	public void enableHDFaceDetection(boolean toggle) {
 		jniEnableHDFaceDetection(toggle);
 	}
@@ -683,6 +644,11 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		jniEnablePointCloud(toggle);
 	}
 	
+	/**
+	 * Enable Coordinate Mapper RGB Depth
+	 * Green screen effect 
+	 * @param toggle
+	 */
 	public void enableCoordinateMapperRGBDepth(boolean toggle) {
 		jniEnableCoordinateMappingRGBDepth(toggle);
 	}
@@ -722,6 +688,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		return jniGetHighThresholdDepthPC();
 	}
 	
+	/**
+	 * Set the background Image for the Coordinate Mapper
+	 * @param array of pixels
+	 */
 	public void setCoordBkgImg(int [] pixels) {
 		int [] sendPixels = new int[pixels.length*4];
 		for(int i = 0; i < pixels.length; i++) {
@@ -740,28 +710,31 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		jniSendArrayInts(sendPixels);
 	}
 	
-<<<<<<< HEAD
-	/*
-	public void enablePointCloudColor(boolean toggle){
-		jniEnablePointCloudColor(toggle);
-	}
-	*/
-=======
-	
+	/**
+	 * Enable point cloud color 
+	 * @param toggle
+	 */
 	public void enablePointCloudColor(boolean toggle){
 		jniEnablePointCloudColor(toggle);
 	}
 	
-	//MAPPERS
+	/**
+	 * Map Depth to Camara Table
+	 * unsupported
+	 * @return
+	 */
 	public float []  getMapDethCamaraTable(){
 		return jniEnableMapDethCamaraTable();
 	}
 	
 	
+	/**
+	 * Map Depth to color frame
+	 * @return
+	 */
 	public float [] getMapDepthToColor (){
 		return jniEnableMapDethToColorSpace();
 	}
->>>>>>> origin/dev
 	
 	/*
 	public void enableMirror(boolean toggle){
@@ -800,11 +773,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private native void jniEnableColorFrame(boolean toggle);
 	
-<<<<<<< HEAD
-=======
 	private native void jniEnableColorChannelsFrame(boolean toggle);
 	
->>>>>>> origin/dev
 	private native void jniEnableDepthFrame(boolean toggle);
 	
 	private native void jniEnableDepthMaskFrame(boolean toggle);
@@ -845,12 +815,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	private native float jniGetLowThresholdDepthPC();
 	
 
-<<<<<<< HEAD
-	private native void jniSetHighThresholdDepthPC(float val);
-	
-	private native float jniGetHighThresholdDepthPC();
-	
-=======
 	private native void  jniSetHighThresholdDepthPC(float val);
 	
 	private native float jniGetHighThresholdDepthPC();
@@ -860,7 +824,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private native float []  jniEnableMapDethToColorSpace();
 	
->>>>>>> origin/dev
 
 	public void run() {
 		//int fr = PApplet.round(1000.0f / parent.frameRate);

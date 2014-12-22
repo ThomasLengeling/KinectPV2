@@ -24,7 +24,7 @@ THE SOFTWARE.
 */
 
 /**
- * Simple Rectangle class
+ * Simple KRectangle class
  * @author Thomas Sanchez Lengeling
  *
  */

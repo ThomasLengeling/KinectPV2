@@ -38,15 +38,9 @@ public class KJoint {
 	
 	protected int type;
 	
-<<<<<<< HEAD
-	protected  Quartenion  orientation;
-	
-	KJoint(float x, float y, float z, Quartenion ori, int state){
-=======
 	protected  KQuartenion  orientation;
 	
 	KJoint(float x, float y, float z, KQuartenion ori, int state){
->>>>>>> origin/dev
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -60,11 +54,7 @@ public class KJoint {
 	 * Get orientation of a single Joint
 	 * @return Quartenion
 	 */
-<<<<<<< HEAD
-	public Quartenion getOrientation() {
-=======
 	public KQuartenion getOrientation() {
->>>>>>> origin/dev
 		return orientation;
 	}
 	

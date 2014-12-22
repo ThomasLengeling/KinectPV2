@@ -24,7 +24,7 @@ THE SOFTWARE.
 */
 
 /**
- * Simple Quartenion class
+ * Simple KQuartenion class
  * @author Thomas Sanchez Lengeling
  *
  */

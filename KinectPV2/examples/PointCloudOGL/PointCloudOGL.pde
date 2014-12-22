@@ -59,11 +59,7 @@ public void draw() {
   kinect.setLowThresholdPC(minD);
   kinect.setHighThresholdPC(maxD);
 
-<<<<<<< HEAD
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudPosFloatBuffer();
-=======
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
->>>>>>> origin/dev
 
   PJOGL pgl = (PJOGL)beginPGL();
   GL2 gl2 = pgl.gl.getGL2();
@@ -90,7 +86,7 @@ public void draw() {
 public void mousePressed() {
 
   println(frameRate);
-  saveFrame();
+ // saveFrame();
 }
 
 public void keyPressed() {
@@ -124,7 +120,6 @@ public void keyPressed() {
   if (key == '1') {
     minD += 0.01;
     println("Change min: "+minD);
-<<<<<<< HEAD
   }
 
   if (key == '2') {
@@ -140,13 +135,11 @@ public void keyPressed() {
   if (key == '4') {
     maxD -= 0.01;
     println("Change max: "+maxD);
-=======
   }
 
   if (key == '2') {
     minD -= 0.01;
     println("Change min: "+minD);
->>>>>>> origin/dev
   }
 
   if (key == '3') {

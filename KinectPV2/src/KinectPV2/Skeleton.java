@@ -41,11 +41,7 @@ public class Skeleton implements SkeletonProperties{
 	Skeleton(){
 		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
-<<<<<<< HEAD
-			kJoints[i] = new KJoint(0,0,0, new Quartenion(), 0);
-=======
 			kJoints[i] = new KJoint(0,0,0, new KQuartenion(), 0);
->>>>>>> origin/dev
 		}
 	}
 	

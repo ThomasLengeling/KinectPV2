@@ -6,11 +6,7 @@ import KinectPV2.KinectPV2;
 import KinectPV2.Skeleton;
 import KinectPV2.FaceData;
 import KinectPV2.HDFaceData;
-<<<<<<< HEAD
-import KinectPV2.Rectangle;
-=======
 import KinectPV2.KRectangle;
->>>>>>> origin/dev
 import processing.core.*;
 import processing.opengl.PGL;
 import processing.opengl.PJOGL;
@@ -69,11 +65,6 @@ public class HelloWorld extends PApplet {
 	float maxD = 4.0f; //meters
 	float minD = 1.0f;
 	
-<<<<<<< HEAD
-	public void setup() {
-		size(1920, 1080, P3D);
-		
-=======
 	boolean  activateMapDepthTable = false;
 	
 	PImage depthToColorImg;
@@ -93,7 +84,6 @@ public class HelloWorld extends PApplet {
 		 }
 			 
 		
->>>>>>> origin/dev
 		kinect = new KinectPV2(this);
 		//kinect.enableCoordinateMapperRGBDepth(true);
 		//kinect.enableColorImg(true);
@@ -115,11 +105,6 @@ public class HelloWorld extends PApplet {
 	    //kinect.activateRawDepth(true);
 		//kinect.enableBodyTrackImg(true);
 		//
-<<<<<<< HEAD
-		
-	//	kinect.enableFaceDetection(true);
-		kinect.enableHDFaceDetection(true);
-=======
 		kinect.enableDepthImg(true);
 		kinect.enableColorImg(true);
 		kinect.activateRawDepth(true);
@@ -128,7 +113,6 @@ public class HelloWorld extends PApplet {
 		//kinect.enablePointCloudColor(true);
 	//	kinect.activateRawColor(true);
 		//kinect.enableHDFaceDetection(true);
->>>>>>> origin/dev
 		
 		//kinect.enableSkeleton(true);
 		//kinect.enableSkeletonColorMap(true);
@@ -151,10 +135,6 @@ public class HelloWorld extends PApplet {
 
 	public void draw() {
 		background(0);
-<<<<<<< HEAD
-		//image(kinect.getColorImage(), 0, 0);
-		
-=======
 		
 		// image(kinect.getColorImage(), 0, 0, 320, 240);
 		
@@ -236,7 +216,6 @@ public class HelloWorld extends PApplet {
 		  
 		//image(kinect.getColorImage(), 0, 0);
 	/*	
->>>>>>> origin/dev
 		HDFaceData []  hdFaceData = kinect.getHDFaceVertex();
 		
 		stroke(0, 255, 0);
@@ -252,11 +231,7 @@ public class HelloWorld extends PApplet {
 			}
 			endShape();
 		}
-<<<<<<< HEAD
-		
-=======
 	*/
->>>>>>> origin/dev
 		
 		//image(kinect.getCoordinateRGBDepthImage(), 0, 0);
 
