@@ -3,15 +3,8 @@ KinectPV2
 
 ### Kinect for Windows v2 library for Processing
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Version 0.5
 =======
-Version 0.7
->>>>>>> origin/dev
-=======
-Version 0.7
->>>>>>> 5cda745594f90fbedfefe7c38a50632d888f8780
+Version 0.7.1
 
 Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
@@ -51,16 +44,8 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 - SkeletonMaskDepth, map depth frame and mask frame to skeleton.
 - SkeletonTest, simple 6 users skeleton.
 - imageTest, images frame test.
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 - CoordinateMapperRGBDepth, RGB+Depth
 - HDFaceVertex. HDFace Points
->>>>>>> origin/dev
-=======
-- CoordinateMapperRGBDepth, RGB+Depth
-- HDFaceVertex. HDFace Points
->>>>>>> 5cda745594f90fbedfefe7c38a50632d888f8780
 
 
 To build the library from source, use this repository ( not always updated ) [KinectPV2_BuildLibs](https://github.com/ThomasLengeling/KinectPV2_BuildLibs)
