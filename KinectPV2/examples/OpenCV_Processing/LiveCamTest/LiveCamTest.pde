@@ -21,5 +21,5 @@ void draw() {
   opencv.loadImage(kinect.getColorImage());
   PImage img = opencv.getInput();
   image(img, 0, 0);
-  
 }
+

@@ -6,7 +6,7 @@ import KinectPV2.KinectPV2;
 import KinectPV2.Skeleton;
 import KinectPV2.FaceData;
 import KinectPV2.HDFaceData;
-import KinectPV2.Rectangle;
+import KinectPV2.KRectangle;
 import processing.core.*;
 import processing.opengl.PGL;
 import processing.opengl.PJOGL;
@@ -65,8 +65,24 @@ public class HelloWorld extends PApplet {
 	float maxD = 4.0f; //meters
 	float minD = 1.0f;
 	
+	boolean  activateMapDepthTable = false;
+	
+	PImage depthToColorImg;
+	
+	int [] depthZero;
+	
 	public void setup() {
 		size(1920, 1080, P3D);
+		
+		depthToColorImg = createImage(512, 424, PImage.RGB);
+		depthZero		= new int[512*424];
+		
+		 for(int i = 0; i < KinectPV2.WIDTHDepth; i++) {
+			 for(int j = 0; j < KinectPV2.HEIGHTDepth; j++) {
+				 depthZero[424*i + j] = 0;
+			 }
+		 }
+			 
 		
 		kinect = new KinectPV2(this);
 		//kinect.enableCoordinateMapperRGBDepth(true);
@@ -89,9 +105,14 @@ public class HelloWorld extends PApplet {
 	    //kinect.activateRawDepth(true);
 		//kinect.enableBodyTrackImg(true);
 		//
-		
+		kinect.enableDepthImg(true);
+		kinect.enableColorImg(true);
+		kinect.activateRawDepth(true);
+		kinect.activateRawColor(true);
 	//	kinect.enableFaceDetection(true);
-		kinect.enableHDFaceDetection(true);
+		//kinect.enablePointCloudColor(true);
+	//	kinect.activateRawColor(true);
+		//kinect.enableHDFaceDetection(true);
 		
 		//kinect.enableSkeleton(true);
 		//kinect.enableSkeletonColorMap(true);
@@ -114,8 +135,87 @@ public class HelloWorld extends PApplet {
 
 	public void draw() {
 		background(0);
-		//image(kinect.getColorImage(), 0, 0);
 		
+		// image(kinect.getColorImage(), 0, 0, 320, 240);
+		
+		 float [] mapDCT = kinect.getMapDepthToColor();
+		 
+		 int [] colorRaw = kinect.getRawColor();
+		 int [] depthRaw = kinect.getRawDepth();
+		 
+		 int count = 0;
+		 int step =1;
+		 
+		 PApplet.arrayCopy(depthZero, depthToColorImg.pixels);
+			
+		 depthToColorImg.loadPixels();
+		 for(int i = 0; i < KinectPV2.WIDTHDepth; i+=step) {
+			 for(int j = 0; j < KinectPV2.HEIGHTDepth; j+=step) {
+				 float valX = mapDCT[count*2 + 0];
+				 float valY = mapDCT[count*2 + 1];
+				 
+				 int valXDepth = (int)((valX/1920.0)*512.0);
+				 int valYDepth = (int)((valY/1080.0)*424.0);
+				 
+				 int  valXColor = (int)(valX);
+				 int  valYColor = (int)(valY);
+				 
+				 //512*i + j
+				 
+
+			 //     depthToColorImg.pixels[424*i + j] = 77;
+
+				if(	valXDepth >= 0 && valXDepth < 512 && valYDepth >= 0 && valYDepth < 424 ) {
+					if(valXColor >= 0 && valXColor < 1920 && valYColor >= 0 && valYColor < 1080) {
+					    int color = colorRaw[valYColor*1920 + valXColor];
+						//int color = depthRaw[valYDepth*512 + valXDepth];
+						// depthToColorImg.pixels[valYDepth*512 + valXDepth] = depthRaw[valYDepth*512 + valXDepth];
+						 
+						depthToColorImg.pixels[valYDepth*512 + valXDepth] = color;
+					}
+				}
+				count++;
+			 }
+		 }
+		 depthToColorImg.updatePixels();
+		 
+		 image(depthToColorImg, 0, 424);
+		 image(kinect.getColorImage(), 0, 0, 512, 424);
+		 image(kinect.getDepthImage(), 512, 0);
+		 
+
+		  //Threahold of the point Cloud.
+		 // kinect.setLowThresholdPC(minD);
+		//  kinect.setHighThresholdPC(maxD);
+
+		  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+		  FloatBuffer colorBuffer = kinect.getColorChannelBuffer();
+		  
+		  PJOGL pgl = (PJOGL)beginPGL();
+		  GL2 gl2 = pgl.gl.getGL2();
+
+		  gl2.glEnable( GL2.GL_BLEND );
+		 // gl2.glEnable(GL2.GL_POINT_SMOOTH);      
+
+		  gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+		  gl2.glEnableClientState(GL2.GL_COLOR_ARRAY);
+		  gl2.glColorPointer(3, GL2.GL_FLOAT, 0, colorBuffer);
+		  gl2.glVertexPointer(3, GL2.GL_FLOAT, 0, pointCloudBuffer);
+
+		  gl2.glTranslatef(width/2, height/2, zval);
+		  gl2.glScalef(scaleVal, -1*scaleVal, scaleVal);
+		  gl2.glRotatef(a, 0.0f, 1.0f, 0.0f);
+
+		  gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHColor * kinect.HEIGHTColor);
+
+		  gl2.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+		  gl2.glDisableClientState(GL2.GL_COLOR_ARRAY);
+		  gl2.glDisable(GL2.GL_BLEND);
+		  endPGL();
+
+		  
+		//image(kinect.getColorImage(), 0, 0);
+	/*	
 		HDFaceData []  hdFaceData = kinect.getHDFaceVertex();
 		
 		stroke(0, 255, 0);
@@ -131,7 +231,7 @@ public class HelloWorld extends PApplet {
 			}
 			endShape();
 		}
-		
+	*/
 		
 		//image(kinect.getCoordinateRGBDepthImage(), 0, 0);
 

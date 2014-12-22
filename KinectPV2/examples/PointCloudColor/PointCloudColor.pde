@@ -28,9 +28,9 @@ import javax.media.opengl.GL2;
 
 private KinectPV2 kinect;
 
-float a = 0;
-int zval = 50;
-float scaleVal = 260;
+float a = 180;
+int zval = 350;
+float scaleVal = 990;
 float rotY = 0;
 float rotZ = 0;
 float rotX = PI;
@@ -100,11 +100,11 @@ public void keyPressed() {
   }
 
   if (key == 'z') {
-    scaleVal += 0.1;
+    scaleVal += 1;
     println(scaleVal);
   }
   if (key == 'x') {
-    scaleVal -= 0.1;
+    scaleVal -= 1;
     println(scaleVal);
   }
 
