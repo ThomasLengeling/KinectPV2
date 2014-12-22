@@ -1,7 +1,5 @@
 package KinectPV2;
 
-import processing.core.PVector;
-
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -26,57 +24,57 @@ THE SOFTWARE.
 */
 
 /**
- * Face Features class, with type Feature and State.
+ * Simple Rectangle class
  * @author Thomas Sanchez Lengeling
  *
  */
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/dev
-public class HDFaceData implements FaceProperties{
+public class Rectangle {
 	
-	PVector [] HDFaceVertex;
-	boolean faceTracked;
+	float x;
+	float y;
 	
-	HDFaceData(){
-		HDFaceVertex = new PVector[ HDFaceVertexCount];
-		for(int i = 0; i < HDFaceVertexCount; i++)
-			HDFaceVertex[i] = new PVector(0, 0);
+	float width;
+	float height;
+	
+	
+	Rectangle(float x, float y, float width, float height){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 	
-	protected void createHDFaceVertexData(float [] rawData, int iFace){
-		int index = HDFaceVertexCount * 2;
-		
-		if(rawData[BODY_COUNT * HDFaceVertexCount * 2 + iFace] == 1)
-			faceTracked = true;
-		else
-			faceTracked = false;
-		for(int i = 0; i < HDFaceVertexCount; i++) {
-			HDFaceVertex[i].x = rawData[index * iFace + i * 2 + 0];
-			HDFaceVertex[i].y = rawData[index * iFace + i * 2 + 1];
-		}	
+	public void setX(float x){
+		this.x =x;
 	}
 	
-	public PVector [] getHDFaceVertex(){
-		return HDFaceVertex;
+	public void setY(float y){
+		this.y =y;
 	}
 	
-	public boolean isTracked() {
-		return faceTracked;
+	public void setWidth(float w){
+		this.width =w;
 	}
 	
-	public float getX(int index) {
-		return HDFaceVertex[index].x;
+	public void setHeight(float height){
+		this.height = height;
 	}
 	
-	public float getY(int index) {
-		return HDFaceVertex[index].y;
+	public float getX(){
+		return x;
 	}
 	
-	public PVector getPVector(int index) {
-		return HDFaceVertex[index];
+	public float getY(){
+		return y;
 	}
-
-
+	
+	public float getWidth(){
+		return width;
+	}
+	
+	public float getHeight(){
+		return height;
+	}
+	
+	
 }

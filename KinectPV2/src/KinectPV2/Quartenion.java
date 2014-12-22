@@ -1,7 +1,5 @@
 package KinectPV2;
 
-import processing.core.PVector;
-
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -26,57 +24,41 @@ THE SOFTWARE.
 */
 
 /**
- * Face Features class, with type Feature and State.
+ * Simple Quartenion class
  * @author Thomas Sanchez Lengeling
  *
  */
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/dev
-public class HDFaceData implements FaceProperties{
+public class Quartenion {
 	
-	PVector [] HDFaceVertex;
-	boolean faceTracked;
+	float x;
+	float y;
+	float z;
 	
-	HDFaceData(){
-		HDFaceVertex = new PVector[ HDFaceVertexCount];
-		for(int i = 0; i < HDFaceVertexCount; i++)
-			HDFaceVertex[i] = new PVector(0, 0);
+	float w;
+	
+	Quartenion(float x, float y, float z, float w){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 	}
 	
-	protected void createHDFaceVertexData(float [] rawData, int iFace){
-		int index = HDFaceVertexCount * 2;
-		
-		if(rawData[BODY_COUNT * HDFaceVertexCount * 2 + iFace] == 1)
-			faceTracked = true;
-		else
-			faceTracked = false;
-		for(int i = 0; i < HDFaceVertexCount; i++) {
-			HDFaceVertex[i].x = rawData[index * iFace + i * 2 + 0];
-			HDFaceVertex[i].y = rawData[index * iFace + i * 2 + 1];
-		}	
+	Quartenion(){}
+	
+	public float getX(){
+		return x;
 	}
 	
-	public PVector [] getHDFaceVertex(){
-		return HDFaceVertex;
+	public float getY(){
+		return y;
 	}
 	
-	public boolean isTracked() {
-		return faceTracked;
+	public float getZ(){
+		return z;
 	}
 	
-	public float getX(int index) {
-		return HDFaceVertex[index].x;
+	public float getW(){
+		return w;
 	}
 	
-	public float getY(int index) {
-		return HDFaceVertex[index].y;
-	}
-	
-	public PVector getPVector(int index) {
-		return HDFaceVertex[index];
-	}
-
-
 }
