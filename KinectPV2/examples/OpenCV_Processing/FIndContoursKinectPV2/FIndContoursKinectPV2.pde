@@ -11,11 +11,15 @@ int threshold = 10;
 float maxD = 4.0f;
 float minD = 0.5f;
 
+boolean    contourBodyIndex = false;
+
 void setup() { 
   size(512*3, 424, P3D);
   opencv = new OpenCV(this, 512, 424);
   kinect = new KinectPV2(this);
   kinect.enablePointCloud(true);
+  kinect.enableBodyTrackImg(true);
+
   //kinect.enableDepthImg(true);
   kinect.init();
 }
@@ -27,12 +31,24 @@ void draw() {
   strokeWeight(3);
 
   image(kinect.getDepthImage(), 0, 0);
-  image(kinect.getPointCloudDepthImage(), 512, 0);
+  
+  //change contour extraction from bodyIndexImg or to PointCloudDepth
+  if (contourBodyIndex)
+    image(kinect.getBodyTrackImage(), 512, 0);
+  else
+    image(kinect.getPointCloudDepthImage(), 512, 0);
 
-  opencv.loadImage(kinect.getPointCloudDepthImage());
-  opencv.gray();
-  opencv.threshold(threshold);
-  PImage dst = opencv.getOutput();
+  if (contourBodyIndex) {
+    opencv.loadImage(kinect.getBodyTrackImage());
+    opencv.gray();
+    opencv.threshold(threshold);
+    PImage dst = opencv.getOutput();
+  } else {
+    opencv.loadImage(kinect.getPointCloudDepthImage());
+    opencv.gray();
+    opencv.threshold(threshold);
+    PImage dst = opencv.getOutput();
+  }
 
   ArrayList<Contour> contours = opencv.findContours(false, false);
 
@@ -68,6 +84,15 @@ void draw() {
 
 
 void keyPressed() {
+  //change contour finder from contour body to depth-PC
+  if( key == 'b'){
+   contourBodyIndex = !contourBodyIndex;
+   if(contourBodyIndex)
+     threshold = 200;
+    else
+     threshold = 40;
+  }
+  
   if (key == 'a') {
     threshold+=1;
   }
