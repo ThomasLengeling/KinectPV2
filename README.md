@@ -4,7 +4,7 @@ KinectPV2
 ### Kinect for Windows v2 library for Processing
 
 =======
-Version 0.7.1
+Version 0.7.2
 
 Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
