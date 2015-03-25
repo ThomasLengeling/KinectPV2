@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 /**
  * Commun Face Properties
- * @author Thomas Sanchez Lengeling
+ * @author Thomas Sanchez Lengelinghttp://marketplace.eclipse.org/marketplace-client-intro?mpc_install=27025
  *
  */
 public interface FaceProperties  extends Constants {
