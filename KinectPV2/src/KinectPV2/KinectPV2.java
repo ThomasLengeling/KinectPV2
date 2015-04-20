@@ -43,12 +43,12 @@ public class KinectPV2 extends Device{
 	
 	public void init(){
 		initDevice();
-		runningKinect = true;
+		setRunningKinect(true);
 	}
 
 	public void dispose() {
 		System.out.println("EXIT");
-		runningKinect = false;
+		setRunningKinect(false);
 		stopDevice();
 	}
 	
