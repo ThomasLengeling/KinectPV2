@@ -53,7 +53,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	
 	private  Image colorImg;
 	private  Image depthImg;
-	private  short[] depthDataRaw;
 	private  Image infraredImg;
 	private  Image longExposureImg;
 	private  Image bodyTrackImg;
@@ -73,21 +72,12 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	FloatBuffer pointCloudColorPos;
 	FloatBuffer colorChannelBuffer;
 	
-	private boolean runningKinect;
-	public boolean isRunningKinect() {
-		return runningKinect;
-	}
-
-	protected void setRunningKinect(boolean runningKinect) {
-		this.runningKinect = runningKinect;
-	}
-
+	protected boolean runningKinect;
 	
 	private PApplet parent;
 	private long ptr;
 	
 	private boolean startSensor;
-	
 	
 	
 	/**
@@ -99,8 +89,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
 		coordinateRGBDepthImg =  new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
 		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
-		depthDataRaw = new short[WIDTHDepth*HEIGHTDepth];
-		
 		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		
 		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
@@ -153,7 +141,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		}
 		
 		if(startSensor){
-			setRunningKinect(true);
+			runningKinect = true;
 			(new Thread(this)).start();
 		}
 		
@@ -184,13 +172,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 		depthImg.updatePixels();
 		if(depthImg.isProcessRawData())
 			PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
-	}
-	
-	private void copyDepthRawData(short [] rawData){
-		PApplet.arrayCopy(rawData, 0, depthDataRaw, 0, depthImg.getImgSize());
-//		depthImg.updatePixels();
-//		if(depthImg.isProcessRawData())
-//			PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
 	}
 	
 	private void copyDepthMaskImg(int [] rawData){
@@ -432,10 +413,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 	/**
 	 * Get Raw Depth Data
 	 *  512 x 424
-	 * @return short []
+	 * @return int []
 	 */
-	public short [] getRawDepth(){
-		return depthDataRaw;
+	public int [] getRawDepth(){
+		return depthImg.rawIntData;
 	}
 	
 	/**
@@ -846,7 +827,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties, Ru
 
 	public void run() {
 		//int fr = PApplet.round(1000.0f / parent.frameRate);
-		while (isRunningKinect()) {
+		while (runningKinect) {
 			boolean result = updateDevice();
 			if(!result){
 				System.out.println("Error updating Kinect EXIT");
