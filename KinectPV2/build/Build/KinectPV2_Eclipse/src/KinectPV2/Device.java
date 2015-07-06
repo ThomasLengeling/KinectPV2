@@ -57,6 +57,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	// IMAGES
 	private Image colorImg;
 	private Image depthImg;
+	private Image depth256Img;
 	private Image infraredImg;
 	private Image infraredLongExposureImg;
 	private Image bodyTrackImg;
@@ -98,6 +99,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		// SETUP IMAGES
 		colorImg = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
 		depthImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+		depth256Img = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 		infraredImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
 
 		bodyTrackImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
@@ -247,7 +249,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 * @return PImage
 	 */
 	public PImage getDepthImage() {
-		int[] depthData = jniGetDepthData();
+		int [] depthData = jniGetDepth16Data();
 		PApplet.arrayCopy(depthData, 0, depthImg.pixels(), 0,
 				depthImg.getImgSize());
 		depthImg.updatePixels();
@@ -260,6 +262,24 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		return depthImg.img;
 	}
 
+	/**
+	 * Get Depth 256 strip data 512 x 424
+	 * @return PImage
+	 */ 
+	public PImage getDepth256Image() {
+		int[] depth256Data = jniGetDepth256Data();
+		PApplet.arrayCopy(depth256Data, 0, depth256Img.pixels(), 0,
+				depth256Img.getImgSize());
+		depth256Img.updatePixels();
+
+		if (depth256Img.isProcessRawData())
+			PApplet.arrayCopy(depth256Data, 0, depth256Img.rawIntData, 0,
+					depth256Img.getImgSize());
+
+		// jniDepthReadyCopy(true);
+		return depth256Img.img;
+	}
+	
 	/**
 	 * get Depth Mask Image, outline color of the users.
 	 * 
@@ -773,7 +793,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	}
 	
 	protected void cleanDevice() {
-		boolean val  = jniStopSignal();
+		jniStopSignal();
 	}
 
 	// ------JNI FUNCTIONS
@@ -825,7 +845,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	// DEPTH
 	private native int[] jniGetColorData();
 
-	private native int[] jniGetDepthData();
+	private native int[] jniGetDepth16Data();
+	
+	private native int[] jniGetDepth256Data();
 
 	private native int[] jniGetInfraredData();
 

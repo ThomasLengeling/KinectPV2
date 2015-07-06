@@ -13,7 +13,7 @@ public class TestImg extends PApplet {
 	
 	
 	public void setup() {
-		size(512*3, 424*2, P3D);
+		size(512*4, 424*2, P3D);
 		
 		
 		kinect = new KinectPV2(this);
@@ -21,7 +21,7 @@ public class TestImg extends PApplet {
 		//kinect.enableColorImg(true);
 		kinect.enableDepthImg(true);
 		kinect.enableInfraredImg(true);
-		//kinect.enableInfraredLongExposureImg(true);
+		kinect.enableInfraredLongExposureImg(true);
 		//kinect.enableBodyTrackImg(true);
 		//kinect.enableDepthMaskImg(true);
 		
@@ -41,9 +41,10 @@ public class TestImg extends PApplet {
 		
 		//image(kinect.getColorImage(), 0, 424, 512, 424);
 		image(kinect.getDepthImage(), 0, 0, 512, 424);
+		image(kinect.getDepth256Image(), 512, 0, 512, 424);
 		
-		image(kinect.getInfraredImage(), 512, 0, 512, 424);
-		//image(kinect.getInfraredLongExposureImage(), 512, 424, 512, 424);
+		image(kinect.getInfraredImage(), 512*2, 0, 512, 424);
+		image(kinect.getInfraredLongExposureImage(), 0, 424, 512, 424);
 		
 		//image(kinect.getBodyTrackImage(), 512*2, 0, 512,  424);
 		//image(kinect.getDepthMaskImage(), 512*2, 424, 512,  424);

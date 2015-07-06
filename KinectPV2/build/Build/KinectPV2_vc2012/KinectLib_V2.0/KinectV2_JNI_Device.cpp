@@ -333,7 +333,7 @@ JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetColorData
 * Method:    jniGetDepth_16_Data
 * Signature: ()[I
 */
-JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth_16_Data
+JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth16Data
 (JNIEnv * env, jobject obj)
 {
 	jclass cls = env->GetObjectClass(obj);
@@ -353,7 +353,7 @@ JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth_16_Data
 * Method :   jniGetDepth_256_Data
 * Signature : ()[I
 */
-JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth_256_Data
+JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth256Data
 (JNIEnv * env, jobject obj)
 {
 	jclass cls = env->GetObjectClass(obj);

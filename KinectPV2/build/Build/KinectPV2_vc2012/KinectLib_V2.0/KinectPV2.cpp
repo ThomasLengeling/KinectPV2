@@ -806,28 +806,33 @@ namespace KinectPV2{
 					{
 						//cout << "get frame" << std::endl;
 						hr = pDepthFrame->AccessUnderlyingBuffer(&nBufferSize, &pBufferDepth);
+
 						if (SUCCEEDED(hr) && pBufferDepth){
 							//uint32_t * depthFrameDataTemp = depthFrameData;
 							const UINT16* pBufferEnd = pBufferDepth + (frame_size_depth);
 							int depthIndex = 0;
 
-							std::mutex mtx;
-							mtx.lock();
+							//std::mutex mtx;
+							//mtx.lock();
 							while (pBufferDepth < pBufferEnd)
 							{
 								USHORT depth = *pBufferDepth;
 								BYTE intensity = static_cast<BYTE>((depth >= nDepthMinReliableDistance) && (depth <= nDepthMaxReliableDistance) ? (depth % 256) : 0);
 
 								depthRaw_16_Data[depthIndex] = depth;// intensity;
-								depthRaw_256_Data[depthIndex] = intensity;// intensity;
+								depthRaw_256_Data[depthIndex] = depth;// intensity;
 
-								depth_16_Data[depthIndex] = colorByte2Int((uint32_t)depth);
+								depth_16_Data[depthIndex] = colorByte2Int(uint32_t(((float)depth*0.056666f)));
 								depth_256_Data[depthIndex] = colorByte2Int((uint32_t)intensity);
 
 								++pBufferDepth;
 								++depthIndex;
+
+								if (depthIndex % 50 == 0)
+									std::cout << (uint32_t)depth <<" "<< (uint32_t)intensity<< std::endl;
 							}
-							mtx.unlock();
+							//std::cout << "depth" << std::endl;
+							//mtx.unlock();
 							//memcpy(depthData, depthFrameDataTemp, frame_size_depth * sizeof(uint32_t));
 							depthFrameReady = true;
 						}
@@ -840,7 +845,7 @@ namespace KinectPV2{
 						if (DeviceOptions::isEnablePointCloud() && kCoordinateMapper){
 
 							UINT16 *pBufferPC = NULL;
-							hr = pDepthFrame->AccessUnderlyingBuffer(&nBufferSize, &pBufferPC);
+							//hr = pDepthFrame->AccessUnderlyingBuffer(&nBufferSize, &pBufferPC);
 							//std::cout << "PC" << std::endl;
 							if (SUCCEEDED(hr) && pBufferPC){
 
@@ -969,7 +974,7 @@ namespace KinectPV2{
 							while (pBuffer < pBufferEnd)
 							{
 								USHORT ir = *pBuffer;
-								BYTE intensity = static_cast<BYTE>(ir >> 4);
+								BYTE intensity = static_cast<BYTE>(ir >> 6);
 								infraredLongExposureData[longExposureIndex] = colorByte2Int((uint32_t)intensity);
 								++pBuffer; //unsigned int
 								++longExposureIndex;
@@ -1839,11 +1844,7 @@ namespace KinectPV2{
 		dYaw = asin(2 * (w * y - x * z)) / M_PI * 180.0;
 		dRoll = atan2(2 * (x * y + w * z), w * w + x * x - y * y - z * z) / M_PI * 180.0;
 
-		// clamp rotation values in degrees to a specified range of values to control the refresh rate
-		double increment = c_FaceRotationIncrementInDegrees;
-		*pPitch = static_cast<int>((dPitch + increment / 2.0 * (dPitch > 0 ? 1.0 : -1.0)) / increment) * static_cast<int>(increment);
-		*pYaw = static_cast<int>((dYaw + increment / 2.0 * (dYaw > 0 ? 1.0 : -1.0)) / increment) * static_cast<int>(increment);
-		*pRoll = static_cast<int>((dRoll + increment / 2.0 * (dRoll > 0 ? 1.0 : -1.0)) / increment) * static_cast<int>(increment);
+		// clamp rotation values in degrees to a specified range of values to control the JNI_GetDepth_16_Data -1.0)) / increment) * static_cast<int>(increment);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////

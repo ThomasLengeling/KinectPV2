@@ -166,7 +166,7 @@ extern "C" {
 	* Method:    jniGetDepthData
 	* Signature: ()[I
 	*/
-	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth_16_Data
+	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth16Data
 		(JNIEnv *, jobject);
 
 	/*
@@ -174,7 +174,7 @@ extern "C" {
 	* Method:    jniGetDepthData
 	* Signature: ()[I
 	*/
-	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth_256_Data
+	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth256Data
 		(JNIEnv *, jobject);
 
 	/*
