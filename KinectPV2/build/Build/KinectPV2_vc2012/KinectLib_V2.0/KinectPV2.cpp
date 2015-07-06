@@ -820,7 +820,7 @@ namespace KinectPV2{
 								BYTE intensity = static_cast<BYTE>((depth >= nDepthMinReliableDistance) && (depth <= nDepthMaxReliableDistance) ? (depth % 256) : 0);
 
 								depthRaw_16_Data[depthIndex] = depth;// intensity;
-								depthRaw_256_Data[depthIndex] = depth;// intensity;
+								depthRaw_256_Data[depthIndex] =  intensity;
 
 								depth_16_Data[depthIndex] = colorByte2Int(uint32_t(((float)depth*0.056666f)));
 								depth_256_Data[depthIndex] = colorByte2Int((uint32_t)intensity);
@@ -842,11 +842,11 @@ namespace KinectPV2{
 						if (DeviceOptions::isEnablePointCloud() && kCoordinateMapper){
 
 							UINT16 *pBufferPC = NULL;
-							//hr = pDepthFrame->AccessUnderlyingBuffer(&nBufferSize, &pBufferPC);
+							hr = pDepthFrame->AccessUnderlyingBuffer(&nBufferSize, &pBufferPC);
 							//std::cout << "PC" << std::endl;
 							if (SUCCEEDED(hr) && pBufferPC){
 
-								hr = kCoordinateMapper->MapDepthFrameToCameraSpace(frame_size_depth, depthRaw_16_Data, frame_size_depth, mCamaraSpacePointDepth);
+								hr = kCoordinateMapper->MapDepthFrameToCameraSpace(frame_size_depth, pBufferPC, frame_size_depth, mCamaraSpacePointDepth);
 
 								if (SUCCEEDED(hr) && mCamaraSpacePointDepth != NULL){
 									const UINT16 * pBufferEnd = pBufferPC + (frame_size_depth);
@@ -854,19 +854,14 @@ namespace KinectPV2{
 									int cameraSpaceIndex = 0;
 
 									while (pBufferPC < pBufferEnd){
+										USHORT depth = *pBufferPC; //0 -4500 depth
 
-										float val = depthRaw_16_Data[depthIndex];
-
-										if (val > depthPCLowTh && val < depthPCHighTh){
+										if (depth > depthPCLowTh && depth < depthPCHighTh){
 											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].X;
 											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].Y;
-											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].X;
+											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].Z;
 
-											float colVal = lmap(val, 0.0, 8000.0, 0.0f, 1.0);
-											pointCloudDepthImage[depthIndex] = colorByte2Int(uint32_t(colVal * 255));
-
-											pointCloudDepthNormalized[depthIndex] = colVal;
-											//pointCloudDepthImage[depthIndex] = val;
+											pointCloudDepthImage[depthIndex] = colorByte2Int(uint32_t(((float)depth*0.056666f)));
 										}
 										else{
 											pointCloudPosData[cameraSpaceIndex++] = NULL;
@@ -874,7 +869,7 @@ namespace KinectPV2{
 											pointCloudPosData[cameraSpaceIndex++] = NULL;
 
 											pointCloudDepthImage[depthIndex] = colorByte2Int((uint32_t)0);
-											pointCloudDepthImage[depthIndex] = NULL;
+											//pointCloudDepthImage[depthIndex] = NULL;
 										}
 
 										//std::cout << colorByte2Int(uint32_t(val * 255)) << std::endl;
