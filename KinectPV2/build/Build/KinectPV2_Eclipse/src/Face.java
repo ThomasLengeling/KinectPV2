@@ -72,21 +72,22 @@ public class Face extends PApplet {
 		        ellipse(facePointsColor[j].x, facePointsColor[j].y, 15, 15);
 		      }
 
-		      if (nosePos.x != 0 && nosePos.y != 0)
+		      if (nosePos.x != 0 && nosePos.y != 0){
 		        for (int j = 0; j < 8; j++) {
 		          int st   = faceFeatures[j].getState();
 		          int type = faceFeatures[j].getFeatureType();
-
+	
 		          String str = getStateTypeAsString(st, type);
-
+	
 		          fill(255);
 		          text(str, nosePos.x + 150, nosePos.y - 70 + j*25);
 		        }
-		      stroke(255, 0, 0);
-		      noFill();
-		      rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
+		        stroke(255, 0, 0);
+		        noFill();
+		        rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
 		    }
 		  }
+		}
 
 	}
 	
