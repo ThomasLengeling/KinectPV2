@@ -24,7 +24,7 @@ static const double c_FaceRotationIncrementInDegrees = 5.0f;
 static const long long kThreadSleepDuration = 5L;
 
 
-uint32_t  bodyColors[] = { 0xffffffff, 0x00ff00ff, 0xff0000ff, 0xffff00ff, 0xff00ffff, 0x00ffffff, 0x0000ffff };
+uint32_t  bodyColors[] = { 0x0000ff, 0x00ff00, 0xff0000, 0xffff00, 0xff00ff, 0x00ffff, 0x00ffffff, 0xffffff };
 
 namespace KinectPV2{
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +49,6 @@ namespace KinectPV2{
 		infraredData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 		infraredLongExposureData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
-		//BODY TRACK AND MASK
-		bodyTrackData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 		depthMaskData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
 		//COLOR CHANNELS
@@ -235,6 +233,8 @@ namespace KinectPV2{
 
 				SafeRelease(pBodyIndexFrameSource);
 
+				//BODY TRACK AND MASK
+				bodyTrackData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
 				bodyTackDataUser_1 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 				bodyTackDataUser_2 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
@@ -827,9 +827,6 @@ namespace KinectPV2{
 
 								++pBufferDepth;
 								++depthIndex;
-
-								if (depthIndex % 50 == 0)
-									std::cout << (uint32_t)depth <<" "<< (uint32_t)intensity<< std::endl;
 							}
 							//std::cout << "depth" << std::endl;
 							//mtx.unlock();
@@ -1048,7 +1045,7 @@ namespace KinectPV2{
 
 					if (SUCCEEDED(hr))
 					{
-						if (SUCCEEDED(hr) && pBodyIndexBuffer != NULL && nBodyIndexWidth == cDepthWidth && nBodyIndexHeight == cDepthHeight)
+						if ( pBodyIndexBuffer != NULL && nBodyIndexWidth == cDepthWidth && nBodyIndexHeight == cDepthHeight)
 						{
 							//uint32_t * inFraredFrameDataTemp = inFraredFrameData;
 							const BYTE* pBufferEnd = pBodyIndexBuffer + (frame_size_depth);
@@ -1103,9 +1100,10 @@ namespace KinectPV2{
 
 
 								//uint32_t color = ((ir / 32) << 5) + ((ir / 32) << 2) + (ir / 64);
-								bodyTrackData[bodyIndex] = bodyColors[bodyColor];// colorByte2Int((uint32_t)intensity);
+								bodyTrackData[bodyIndex]  = colorByte2Int((uint32_t)bodyColor);
 								++pBodyIndexBuffer; //(unsigned int)
 								++bodyIndex;
+
 							}
 
 							//std::cout << min <<" m, max "<< max << std::endl;

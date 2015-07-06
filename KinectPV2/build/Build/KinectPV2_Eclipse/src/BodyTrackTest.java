@@ -20,13 +20,15 @@ public class BodyTrackTest extends PApplet {
 		
 		kinect = new KinectPV2(this);
 		kinect.enableBodyTrackImg(true);
+		kinect.enableDepthMaskImg(true);
 		kinect.init();
 	}
 	
 	public void draw() {
 		background(255, 0, 0);
 	
-		image(kinect.getBodyTrackImage(), 0, 424);
+		image(kinect.getBodyTrackImage(), 0, 0);
+		image(kinect.getDepthMaskImage(), 0, 424);
 		
 		kinect.generteBodyTrackUsers();
 		
