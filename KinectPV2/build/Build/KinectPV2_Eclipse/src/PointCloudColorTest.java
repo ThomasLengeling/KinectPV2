@@ -1,8 +1,11 @@
 import java.nio.*;
 
+import javax.media.opengl.GL2;
+
 import KinectPV2.KinectPV2;
 import processing.core.*;
 import processing.opengl.PGL;
+import processing.opengl.PJOGL;
 import processing.opengl.PShader;
 
 
@@ -59,7 +62,7 @@ public class PointCloudColorTest extends PApplet {
 		
 		// Loads a shader to render geometry w/out
 		// textures and lights.
-		sh = loadShader("frag.glsl", "vert.glsl");
+	//	sh = loadShader("frag.glsl", "vert.glsl");
 	}
 
 	public void draw() {
@@ -67,28 +70,30 @@ public class PointCloudColorTest extends PApplet {
 
 	//	image(kinect.getColorImage(), 0, 0, 320, 240);
 
-		FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
-		FloatBuffer colorBuffer = kinect.getColorChannelBuffer();
+	  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+	  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
-		pgl = beginPGL();
-		sh.bind();
-		
-		int  vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
-		int  colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
-		  
+	  PJOGL pgl = (PJOGL)beginPGL();
+	  GL2 gl2 = pgl.gl.getGL2();
 
-		pgl.enableVertexAttribArray(vertLoc);
-		pgl.enableVertexAttribArray(colorLoc);
-		
-		//int vertData = kinect.WIDTHColor * kinect.HEIGHTColor;
-		  
-		pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
-		pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 0, colorBuffer);
-		
-		pgl.drawArrays(PGL.TRIANGLES, 0, 3);
-		  
-		sh.unbind(); 
-		endPGL();
+	  gl2.glEnable( GL2.GL_BLEND );
+	  // gl2.glEnable(GL2.GL_POINT_SMOOTH);      
+
+	  gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+	  gl2.glEnableClientState(GL2.GL_COLOR_ARRAY);
+	  gl2.glColorPointer(3, GL2.GL_FLOAT, 0, colorBuffer);
+	  gl2.glVertexPointer(3, GL2.GL_FLOAT, 0, pointCloudBuffer);
+
+	  gl2.glTranslatef(width/2, height/2, zval);
+	  gl2.glScalef(scaleVal, -1*scaleVal, scaleVal);
+	  gl2.glRotatef(a, 0.0f, 1.0f, 0.0f);
+
+	  gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHColor * kinect.HEIGHTColor);
+
+	  gl2.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+	  gl2.glDisableClientState(GL2.GL_COLOR_ARRAY);
+	  gl2.glDisable(GL2.GL_BLEND);
+	  endPGL();
 
 		stroke(255, 0, 0);
 		text(frameRate, 50, height - 50);

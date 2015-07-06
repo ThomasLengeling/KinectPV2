@@ -819,7 +819,7 @@ namespace KinectPV2{
 								USHORT depth = *pBufferDepth;
 								BYTE intensity = static_cast<BYTE>((depth >= nDepthMinReliableDistance) && (depth <= nDepthMaxReliableDistance) ? (depth % 256) : 0);
 
-								depthRaw_16_Data[depthIndex] = depth;// intensity;
+								depthRaw_16_Data[depthIndex] = depth;
 								depthRaw_256_Data[depthIndex] =  intensity;
 
 								depth_16_Data[depthIndex] = colorByte2Int(uint32_t(((float)depth*0.056666f)));
