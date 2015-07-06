@@ -5,14 +5,26 @@ namespace KinectPV2{
 	{
 	public:
 		DeviceActivators(){
+			disableAll();
+		}
+
+
+		void disableAll()
+		{
+			//COLOR
 			mColorFrameReady = false;
 			mColorChannelsFrameReady = false;
 
+			//DEPTH
 			mDepthFrameReady = false;
+			mDepthFrameDone = false;
 
+			//INFRARED
 			mInfraredFrameReady = false;
+			mInfraredFrameDone = false;
 			mInfraredlongExposureReady = false;
 
+			//BODY INDEX
 			mBodyIndexReady = false;
 			mBodyIndexDephReady = false;
 
@@ -22,22 +34,40 @@ namespace KinectPV2{
 			mColorPointCloudFrameReady = false;
 
 			//SKELETON
-			mSkeletonReady = false;
+			mSkeletonDepthReady = false;
+			mSkeletonColorReady = false;
+			mSkeleton3DReady = false;
+
+			mSkeletonDepthDone = false;
+			mSkeletonColorDone = false;
+			mSkeleton3DDone = false;
 
 			//FACE
 			mFaceDetectionReady = false;
 			mHDFaceDetectionReady = false;
-			
+
+			//MAPERS
 			mCoordinateRGBXReady = false;
 
+			//THREADS
+			colorProcess = false;
+			depthProcess = false;
+			infraredProcess = false;
+			infraredLongExposureProcess = false;
+			skeletonProcess = false;
+			bodyTrackProcess = false;
+			hdFaceProcess = false;
 		}
 
 		bool			isColorFrameReady(){ return mColorFrameReady; }
 		bool			isColorChannelsFrameReady(){ return mColorChannelsFrameReady; }
 
 		bool			isDepthFrameReady(){ return mDepthFrameReady; }
+		bool			isDepthFrameDone(){ return mDepthFrameDone; }
 
 		bool			isInfraredFrameReady(){ return mInfraredFrameReady; }
+		bool			isInfraredFrameDone(){ return mInfraredFrameDone; }
+
 		bool			isInfraredlongExposureReady(){ return mInfraredlongExposureReady; }
 
 		bool			isBodyIndexReady(){ return mBodyIndexReady; }
@@ -47,7 +77,11 @@ namespace KinectPV2{
 		bool			isDepthPointCloudImageReady(){ return mDepthPointCloudImageReady; }
 		bool			isColorPointCloudFrameReady(){ return mColorPointCloudFrameReady; }
 
-		bool			isSkeletonReady(){ return mSkeletonReady; }
+		bool			isSkeletonDepthReady(){ return mSkeletonDepthReady; }
+		bool			isSkeletonDepthDone(){ return mSkeletonDepthDone; }
+
+		bool			isSkeletonColorReady(){ return mSkeletonColorReady; }
+		bool			isSkeleton3DReady(){ return mSkeleton3DReady; }
 
 		bool			isFaceDetectionReady(){ return mFaceDetectionReady; }
 		bool			isHDFaceDetectionReady(){ return  mHDFaceDetectionReady; }
@@ -59,8 +93,11 @@ namespace KinectPV2{
 		bool			mColorChannelsFrameReady;
 
 		bool			mDepthFrameReady;
+		bool			mDepthFrameDone;
 
 		bool			mInfraredFrameReady;
+		bool			mInfraredFrameDone;
+
 		bool			mInfraredlongExposureReady;
 
 		bool			mBodyIndexReady;
@@ -72,7 +109,13 @@ namespace KinectPV2{
 		bool			mColorPointCloudFrameReady;
 
 		//SKELETON
-		bool			mSkeletonReady;
+		bool			mSkeletonDepthReady;
+		bool			mSkeletonColorReady;
+		bool			mSkeleton3DReady;
+
+		bool			mSkeletonDepthDone;
+		bool			mSkeletonColorDone;
+		bool			mSkeleton3DDone;
 
 		//FACE
 		bool			mFaceDetectionReady;
@@ -81,27 +124,62 @@ namespace KinectPV2{
 		//MAPERS
 		bool			mCoordinateRGBXReady;
 
+
+		//THREADS
+		volatile bool	colorProcess;
+		volatile bool	depthProcess;
+		volatile bool	infraredProcess;
+		volatile bool	infraredLongExposureProcess;
+		volatile bool	skeletonProcess;
+		volatile bool	bodyTrackProcess;
+		volatile bool	hdFaceProcess;
+
 	public:
-		void			colorFrameReady(bool toggle = false){ mColorFrameReady = toggle; }
-		void			colorChannelsFrameReady(bool toggle = false){ mColorChannelsFrameReady = toggle; }
+		void			colorFrameReady(bool toggle = true){ mColorFrameReady = toggle; }
+		void			colorChannelsFrameReady(bool toggle = true){ mColorChannelsFrameReady = toggle; }
 
-		void			depthFrameReady(bool toggle = false){ mDepthFrameReady = toggle; }
+		void			depthFrameReady(bool toggle = true){ mDepthFrameReady = toggle; }
+		void			depthFrameDone(bool toggle = true){ mDepthFrameDone = toggle; }
 
-		void			infraredFrameReady(bool toggle = false){ mInfraredFrameReady = toggle; }
-		void			infraredlongExposureReady(bool toggle = false){ mInfraredlongExposureReady = toggle; }
+		void			setInfraredFrameReady(bool toggle = true){ mInfraredFrameReady = toggle; }
+		void			setInfraredFrameDone(bool toggle = true){ mInfraredFrameDone = toggle; }
 
-		void			bodyIndexReady(bool toggle = false){ mBodyIndexReady = toggle; }
-		void			bodyIndexDephReady(bool toggle = false){ mBodyIndexDephReady = toggle; }
+		void			infraredlongExposureReady(bool toggle = true){ mInfraredlongExposureReady = toggle; }
 
-		void			depthPointCloudPosReady(bool toggle = false){ mDepthPointCloudPosReady = toggle; }
-		void			depthPointCloudImageReady(bool toggle = false){ mDepthPointCloudImageReady = toggle; }
-		void			colorPointCloudFrameReady(bool toggle = false){ mColorPointCloudFrameReady = toggle; }
+		void			bodyIndexReady(bool toggle = true){ mBodyIndexReady = toggle; }
+		void			bodyIndexDephReady(bool toggle = true){ mBodyIndexDephReady = toggle; }
 
-		void			skeletonReady(bool toggle = false){ mSkeletonReady = toggle; }
+		void			depthPointCloudPosReady(bool toggle = true){ mDepthPointCloudPosReady = toggle; }
+		void			depthPointCloudImageReady(bool toggle = true){ mDepthPointCloudImageReady = toggle; }
+		void			colorPointCloudFrameReady(bool toggle = true){ mColorPointCloudFrameReady = toggle; }
 
-		void			faceDetectionReady(bool toggle = false){ mFaceDetectionReady = toggle; }
-		void			HDFaceDetectionReady(bool toggle = false){ mHDFaceDetectionReady = toggle; }
+		void			setSkeletonDepthReady(bool toggle = true){ mSkeletonDepthReady = toggle; }
+		void			setSkeletonDepthDone(bool toggle = true){ mSkeletonDepthDone = toggle; }
 
-		void			coordinateRGBXReady(bool toggle = false){ mCoordinateRGBXReady = toggle; }
+		void			skeletonColorReady(bool toggle = true){ mSkeletonColorReady = toggle; }
+		void			skeleton3DReady(bool toggle = true){ mSkeleton3DReady = toggle; }
+
+		void			faceDetectionReady(bool toggle = true){ mFaceDetectionReady = toggle; }
+		void			HDFaceDetectionReady(bool toggle = true){ mHDFaceDetectionReady = toggle; }
+
+		void			coordinateRGBXReady(bool toggle = true){ mCoordinateRGBXReady = toggle; }
+
+		//THREADS
+		volatile bool			isColorProcessActivated(){ return colorProcess; }
+		volatile bool			isDepthProcessActivated(){ return depthProcess; }
+		volatile bool			isInfraredProcessActivated(){ return infraredProcess; }
+		volatile bool			isInfraredLongExposureProcessActivated(){ return infraredLongExposureProcess; }
+		volatile bool			isSkeletonProcessActivated(){ return skeletonProcess; }
+		volatile bool			isBodyTrackProcessActivated(){ return bodyTrackProcess; }
+		volatile bool			isHDFaceProcessActivated(){ return hdFaceProcess; }
+
+
+		void			enableColorProcess(volatile bool toggle = true){ colorProcess = toggle; }
+		void			enableDepthProcess(volatile bool toggle = true){ depthProcess = toggle; }
+		void			enableInfraredProcess(volatile bool toggle = true){ infraredProcess = toggle; }
+		void			enableInfraredLongExposureProcess(volatile bool toggle = true){ infraredLongExposureProcess = toggle; }
+		void			enableSkeletonProcess(volatile bool toggle = true){ skeletonProcess = toggle; }
+		void			enableBodyTrackProcess(volatile bool toggle = true){ bodyTrackProcess = toggle; }
+		void			enableHDFaceProcess(volatile bool toggle = true){ hdFaceProcess = toggle; }
 	};
 }
