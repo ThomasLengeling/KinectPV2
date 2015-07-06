@@ -10,3 +10,10 @@
 /KinectPV2/build/Build/.metadata
 /KinectPV2/build/Build/.recommenders
 
+*.tlog
+*.log
+*.ipch
+*.codeanalysisast
+*.codeanalysis
+*.pch
+*.lastbuildstate
