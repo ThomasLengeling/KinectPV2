@@ -1,0 +1,12 @@
+*.sdf
+*.obj
+*.ilk
+*.obj
+*.opensdf
+*.pdb
+*.suo
+*.idb
+
+/KinectPV2/build/Build/.metadata
+/KinectPV2/build/Build/.recommenders
+
