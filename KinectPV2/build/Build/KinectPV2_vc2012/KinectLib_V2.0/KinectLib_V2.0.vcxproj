@@ -83,7 +83,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(KINECTSDK20_DIR)\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(KINECTSDK20_DIR)\lib\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>..\..\Eclipse\lib</OutDir>
+    <OutDir>..\..\KinectPV2_Eclipse\lib</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

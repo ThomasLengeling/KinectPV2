@@ -773,7 +773,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	}
 	
 	protected void cleanDevice() {
-		jniStopSignal();
+		boolean val  = jniStopSignal();
 	}
 
 	// ------JNI FUNCTIONS
