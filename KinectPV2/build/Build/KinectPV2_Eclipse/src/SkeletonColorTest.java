@@ -71,23 +71,23 @@ public class SkeletonColorTest extends PApplet{
 
 	//use different color for each skeleton tracked
 	int getIndexColor(int index) {
-		int col = color(255);
-	  if (index == 0)
-	    col = color(255, 0, 0);
-	  if (index == 1)
-	    col = color(0, 255, 0);
-	  if (index == 2)
-	    col = color(0, 0, 255);
-	  if (index == 3)
-	    col = color(255, 255, 0);
-	  if (index == 4)
-	    col = color(0, 255, 255);
-	  if (index == 5)
-	    col = color(255, 0, 255);
+		  int col = color(255);
+		  if (index == 0)
+		    col = color(0, 0, 255);
+		  else  if (index == 1)
+		    col = color(0, 255, 0);
+		  else if (index == 2)
+		    col = color(255, 0, 0);
+		  else if (index == 3)
+		    col = color(255, 255, 0);
+		  else if (index == 4)
+		    col = color(255, 0, 255);
+		  else if (index == 5)
+		    col = color(0, 255, 255);
 
-	  return col;
+		  return col;
 	}
-
+	
 	//DRAW BODY
 	void drawBody(KJoint[] joints) {
 	  drawBone(joints, KinectPV2.JointType_Head, KinectPV2.JointType_Neck);

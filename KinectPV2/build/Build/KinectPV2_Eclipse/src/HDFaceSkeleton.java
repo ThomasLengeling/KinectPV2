@@ -84,6 +84,9 @@ public class HDFaceSkeleton extends PApplet {
 				drawHandState(joints[KinectPV2.JointType_HandLeft]);
 			}
 		}
+		
+		 fill(255, 0, 0);
+		 text(frameRate, 50, 50);
 	}
 
 	// use different color for each skeleton tracked

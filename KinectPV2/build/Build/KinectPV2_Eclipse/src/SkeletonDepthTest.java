@@ -17,7 +17,7 @@ public class SkeletonDepthTest  extends PApplet{
 
 	  //Enables depth and Body tracking (mask image)
 	  kinect.enableBodyTrackImg(true);
-	//  kinect.enableDepthMaskImg(true);
+	  kinect.enableDepthMaskImg(true);
 	  //kinect.enableDepthImg(true);
 	  kinect.enableSkeletonDepthMap(true );
 
@@ -29,7 +29,7 @@ public class SkeletonDepthTest  extends PApplet{
 	public void draw() {
 	  background(0);
 	  image(kinect.getBodyTrackImage(), 0, 0);
-	  //image(kinect.getDepthMaskImage(), 512, 0);
+	  image(kinect.getDepthMaskImage(), 512, 0);
 	 // image(kinect.getDepthImage(), 0, 0);
 	  skeleton =  kinect.getSkeletonDepthMap();
 
@@ -57,22 +57,21 @@ public class SkeletonDepthTest  extends PApplet{
 	int getIndexColor(int index) {
 	  int col = color(255);
 	  if (index == 0)
-	    col = color(255, 0, 0);
-	  if (index == 1)
-	    col = color(0, 255, 0);
-	  if (index == 2)
 	    col = color(0, 0, 255);
-	  if (index == 3)
+	  else  if (index == 1)
+	    col = color(0, 255, 0);
+	  else if (index == 2)
+	    col = color(255, 0, 0);
+	  else if (index == 3)
 	    col = color(255, 255, 0);
-	  if (index == 4)
-	    col = color(0, 255, 255);
-	  if (index == 5)
+	  else if (index == 4)
 	    col = color(255, 0, 255);
+	  else if (index == 5)
+	    col = color(0, 255, 255);
 
 	  return col;
 	}
-
-
+	
 	//DRAW BODY
 	void drawBody(KJoint[] joints) {
 	  drawBone(joints, KinectPV2.JointType_Head, KinectPV2.JointType_Neck);
