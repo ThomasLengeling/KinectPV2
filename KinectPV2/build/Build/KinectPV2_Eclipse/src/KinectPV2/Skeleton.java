@@ -1,151 +1,112 @@
 package KinectPV2;
 
-import processing.core.PApplet;
+/*
+Copyright (C) 2014  Thomas Sanchez Lengeling.
+KinectPV2, Kinect for Windows v2 library for processing
 
-public class Skeleton implements Constants{
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+/**
+ * Skeleton Class
+ * @author Thomas Sanchez Lengeling
+ *
+ */
+public class Skeleton implements SkeletonProperties{
 	
-	private   PApplet parent;
 	
-	protected Joint [] joints;
+	protected KJoint [] kJoints;
 	
 	protected int leftHandState;
 	protected int rightHandState;
 	
 	private boolean tracked;
 	
-	Skeleton(PApplet p){
-		parent = p;
-		joints  = new Joint[JointType_Count + 1];
+	Skeleton(){
+		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
-			joints[i] = new Joint(0,0,0,0);
+			kJoints[i] = new KJoint(0,0,0, new KQuaternion(), 0);
 		}
 	}
 	
+	/*
+	 * if the current skeleton is being tracked
+	 */
 	public boolean isTracked(){
 		return tracked;
 	}
 	
-	public Joint [] getJoints(){
-		return joints;
+	/**
+	 * get the array of joints of the skeleton
+	 * @return  KJoint []
+	 */
+	public KJoint [] getJoints(){
+		return kJoints;
 	}
 	
+	/**
+	 * get Left Hand State of the skeleton
+	 * @return int leftHandState
+	 */
 	public int getLeftHandState(){
 		return leftHandState;
 	}
 	
+	/**
+	 * get Right Hand State of the skeleton
+	 * @return int rightHandState
+	 */
 	public int getRightHandState(){
 		return rightHandState;
 	}
 	
-	public void createSkeletons(float [] rawData, int i){
-		int index2 = i * JointType_Count * 5;
-		if(rawData[index2 + JointType_Count*5 + 0] == 1.0)
+	protected void createSkeletonData(float [] rawData, int i){
+		int index2 = i * (JointType_Count+1) * 9;
+		int indexJoint = index2 + (JointType_Count+1) * 9 - 1;
+		if(rawData[indexJoint] == 1.0){
 			tracked = true;
-		else
+		}else{
 			tracked = false;
+		}
 		
 		if(tracked){
-			for(int j = 0; j < JointType_Count; j ++){			
-				int index1 = j * 5;
-				joints[j].x = rawData[index2 + index1 + 0];
-				joints[j].y = rawData[index2 + index1 + 1];
-				joints[j].z = 0;
+			for(int j = 0; j < JointType_Count; ++j){			
+				int index1 = j * 9;
+				kJoints[j].pos.x = rawData[index2 + index1 + 0];
+				kJoints[j].pos.y = rawData[index2 + index1 + 1];
+				kJoints[j].pos.z = rawData[index2 + index1 + 2];
 				
-				int state =   (int)rawData[index2 + index1 + 3];
-				int type  =   (int)rawData[index2 + index1 + 4];
+				kJoints[j].orientation.w = rawData[index2 + index1 + 3];
+				kJoints[j].orientation.x = rawData[index2 + index1 + 4];
+				kJoints[j].orientation.y = rawData[index2 + index1 + 5];
+				kJoints[j].orientation.z = rawData[index2 + index1 + 6];
 				
-				joints[j].state = state;
-				joints[j].type  = type;
+				int state =   (int)rawData[index2 + index1 + 7];
+				int type  =   (int)rawData[index2 + index1 + 8];
+				
+				kJoints[j].state = state;
+				kJoints[j].type  = type;
 				if(type == JointType_HandLeft)
 					leftHandState = state;
 				if(type == JointType_HandRight)
 					rightHandState = state;
 			}
 		}
-	}
-	
-	public void drawBody(){
-		drawBone(JointType_Head, JointType_Neck);
-		drawBone(JointType_Neck, JointType_SpineShoulder);
-		drawBone(JointType_SpineShoulder, JointType_SpineMid);
-		drawBone(JointType_SpineMid, JointType_SpineBase);
-	    drawBone(JointType_SpineShoulder, JointType_ShoulderRight);
-	    drawBone(JointType_SpineShoulder, JointType_ShoulderLeft);
-	    drawBone(JointType_SpineBase, JointType_HipRight);
-	    drawBone(JointType_SpineBase, JointType_HipLeft);
-	    
-	    // Right Arm    
-	    drawBone(JointType_ShoulderRight, JointType_ElbowRight);
-	    drawBone(JointType_ElbowRight, JointType_WristRight);
-	    drawBone(JointType_WristRight, JointType_HandRight);
-	    drawBone(JointType_HandRight, JointType_HandTipRight);
-	    drawBone(JointType_WristRight, JointType_ThumbRight);
-
-	    // Left Arm
-	    drawBone(JointType_ShoulderLeft, JointType_ElbowLeft);
-	    drawBone(JointType_ElbowLeft, JointType_WristLeft);
-	    drawBone(JointType_WristLeft, JointType_HandLeft);
-	    drawBone(JointType_HandLeft, JointType_HandTipLeft);
-	    drawBone(JointType_WristLeft, JointType_ThumbLeft);
-
-	    // Right Leg
-	    drawBone(JointType_HipRight, JointType_KneeRight);
-	    drawBone(JointType_KneeRight, JointType_AnkleRight);
-	    drawBone(JointType_AnkleRight, JointType_FootRight);
-
-	    // Left Leg
-	    drawBone(JointType_HipLeft, JointType_KneeLeft);
-	    drawBone(JointType_KneeLeft, JointType_AnkleLeft);
-	    drawBone(JointType_AnkleLeft, JointType_FootLeft);
-	    
-	    drawJoint(JointType_HandTipLeft);
-	    drawJoint(JointType_HandTipRight);
-	    drawJoint(JointType_FootLeft);
-	    drawJoint(JointType_FootRight);
-	    
-	    drawJoint(JointType_ThumbLeft);
-	    drawJoint(JointType_ThumbRight);
-	      
-	}
-	
-	public void drawJoint(int jointType){
-		parent.noStroke();
-		parent.fill(155);
-		parent.ellipse(joints[jointType].x, joints[jointType].y, 10 ,10);
-		
-	}
-	
-	public void drawBone(int jointType1, int jointType2){
-		parent.noStroke();
-		parent.fill(155);
-		parent.ellipse(joints[jointType1].x, joints[jointType1].y, 20 ,20);
-		parent.stroke(255);
-		parent.line(joints[jointType1].x, joints[jointType1].y, joints[jointType2].x, joints[jointType2].y);
-	}
-	
-	public void drawHandStates(){
-		
-		handState(leftHandState);
-		parent.ellipse(joints[JointType_HandLeft].x, joints[JointType_HandLeft].y, 90, 90);
-		
-		handState(rightHandState);
-		parent.ellipse(joints[JointType_HandRight].x, joints[JointType_HandRight].y, 90, 90);
-	}
-	
-	public void handState(int handState){
-		switch(handState){
-		case HandState_Open:
-			parent.fill(0, 255, 0, 120);
-			break;
-		case HandState_Closed:
-			parent.fill(255, 0, 0, 120);
-			break;
-		case HandState_Lasso:
-			parent.fill(0, 0, 255, 120);
-			break;
-		case HandState_NotTracked:
-			parent.fill(100, 100, 100, 120);
-			break;
-		}	
 	}
 }

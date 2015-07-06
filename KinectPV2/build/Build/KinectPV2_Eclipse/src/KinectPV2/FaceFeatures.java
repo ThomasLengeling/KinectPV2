@@ -24,20 +24,56 @@ THE SOFTWARE.
 */
 
 /**
- * Common variables for all the classes.
+ * Face Features class, with type Feature and State.
  * @author Thomas Sanchez Lengeling
  *
  */
-public interface Constants {
+public class FaceFeatures {
 	
-	public final static int BODY_COUNT = 6;
-
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	int feature;
+	int state;
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	/**
+	 * Create Feature
+	 * @param feature
+	 * @param state
+	 */
+	FaceFeatures(int feature, int state){
+		this.feature = feature;
+		this.state = state;
+	}
 	
-	public final static int Int32 = 0;
-	public final static int Float = 1;
+	/**
+	 * Set Feature
+	 * @param feature
+	 */
+	public void setFeatureType(int feature){
+		this.feature = feature;
+	}
+	
+	/**
+	 * Set State
+	 * @param state
+	 */
+	public void setState(int state){
+		this.state = state;
+	}
+	
+	
+	/**
+	 * Get State
+	 * @return
+	 */
+	public int getState(){
+		return state;
+	}
+	
+	/**
+	 * Get Feature Type
+	 * @return
+	 */
+	public int getFeatureType(){
+		return feature;
+	}
+	
 }

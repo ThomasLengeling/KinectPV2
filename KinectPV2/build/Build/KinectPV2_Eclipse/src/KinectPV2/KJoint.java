@@ -1,4 +1,5 @@
 package KinectPV2;
+import processing.core.PVector;
 
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
@@ -24,20 +25,83 @@ THE SOFTWARE.
 */
 
 /**
- * Common variables for all the classes.
- * @author Thomas Sanchez Lengeling
+ * Simple Joint Class with (x, y, z) position, Orientation, state and type
+ * @author thomas
  *
  */
-public interface Constants {
+public class KJoint {
 	
-	public final static int BODY_COUNT = 6;
-
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	protected PVector pos;
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	protected int state;
 	
-	public final static int Int32 = 0;
-	public final static int Float = 1;
+	protected int type;
+	
+	protected  KQuaternion  orientation;
+	
+	
+	
+	KJoint(float x, float y, float z, KQuaternion ori, int state){
+		pos = new PVector(x, y, z);
+		orientation = ori;
+		this.state = state;
+	}
+	
+	KJoint(){}
+	
+	/**
+	 * Get orientation of a single Joint
+	 * @return Quartenion
+	 */
+	public KQuaternion getOrientation() {
+		return orientation;
+	}
+	
+	/**
+	 * get PVector Position
+	 * @return
+	 */
+	public PVector getPosition(){
+		return pos;
+	}
+	/**
+	 * get X position
+	 * @return float x
+	 */
+	public float getX(){
+		return pos.x;
+	}
+	
+	/**
+	 * get Y position
+	 * @return float y
+	 */
+	public float getY(){
+		return pos.y;
+	}
+	
+	/**
+	 * get Z position
+	 * @return float z
+	 */
+	public float getZ(){
+		return pos.z;
+	}
+	
+	/**
+	 * get State of a single Joint
+	 * @return state
+	 */
+	public int getState(){
+		return state;
+	}
+	
+	/**
+	 * get Joint Type 
+	 * @return int
+	 */
+	public int getType(){
+		return type;
+	}
+	
 }

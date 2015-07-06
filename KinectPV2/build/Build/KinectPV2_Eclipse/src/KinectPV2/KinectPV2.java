@@ -1,5 +1,7 @@
 package KinectPV2;
 
+import processing.core.PApplet;
+
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -24,20 +26,32 @@ THE SOFTWARE.
 */
 
 /**
- * Common variables for all the classes.
+ * 
  * @author Thomas Sanchez Lengeling
  *
  */
-public interface Constants {
+public class KinectPV2 extends Device{
 	
-	public final static int BODY_COUNT = 6;
+	public static PApplet parent;
+	
+	public KinectPV2(PApplet _p) {
+		super(_p);	
+		parent = _p;
+		
+		parent.registerMethod("dispose", this);
+	}
+	
+	public void init(){
+		initDevice();
+		runningKinect = true;
+	}
 
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	public void dispose() {
+		System.out.println("EXIT");
+		runningKinect = false;
+		stopDevice();
+		cleanDevice();
+	}
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
-	
-	public final static int Int32 = 0;
-	public final static int Float = 1;
 }
+

@@ -1,5 +1,7 @@
 package KinectPV2;
 
+import processing.core.PVector;
+
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -24,20 +26,53 @@ THE SOFTWARE.
 */
 
 /**
- * Common variables for all the classes.
+ * Face Features class, with type Feature and State.
  * @author Thomas Sanchez Lengeling
  *
  */
-public interface Constants {
+public class HDFaceData implements FaceProperties{
 	
-	public final static int BODY_COUNT = 6;
+	PVector [] HDFaceVertex;
+	boolean faceTracked;
+	
+	HDFaceData(){
+		HDFaceVertex = new PVector[ HDFaceVertexCount];
+		for(int i = 0; i < HDFaceVertexCount; i++)
+			HDFaceVertex[i] = new PVector(0, 0);
+	}
+	
+	protected void createHDFaceVertexData(float [] rawData, int iFace){
+		int index = HDFaceVertexCount * 2;
+		
+		if(rawData[BODY_COUNT * HDFaceVertexCount * 2 + iFace] == 1)
+			faceTracked = true;
+		else
+			faceTracked = false;
+		for(int i = 0; i < HDFaceVertexCount; i++) {
+			HDFaceVertex[i].x = rawData[index * iFace + i * 2 + 0];
+			HDFaceVertex[i].y = rawData[index * iFace + i * 2 + 1];
+		}	
+	}
+	
+	public PVector [] getHDFaceVertex(){
+		return HDFaceVertex;
+	}
+	
+	public boolean isTracked() {
+		return faceTracked;
+	}
+	
+	public float getX(int index) {
+		return HDFaceVertex[index].x;
+	}
+	
+	public float getY(int index) {
+		return HDFaceVertex[index].y;
+	}
+	
+	public PVector getPVector(int index) {
+		return HDFaceVertex[index];
+	}
 
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
-	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
-	
-	public final static int Int32 = 0;
-	public final static int Float = 1;
+
 }

@@ -24,20 +24,57 @@ THE SOFTWARE.
 */
 
 /**
- * Common variables for all the classes.
+ * Simple KRectangle class
  * @author Thomas Sanchez Lengeling
  *
  */
-public interface Constants {
+public class KRectangle {
 	
-	public final static int BODY_COUNT = 6;
-
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	float x;
+	float y;
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	float width;
+	float height;
 	
-	public final static int Int32 = 0;
-	public final static int Float = 1;
+	
+	KRectangle(float x, float y, float width, float height){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public void setX(float x){
+		this.x =x;
+	}
+	
+	public void setY(float y){
+		this.y =y;
+	}
+	
+	public void setWidth(float w){
+		this.width =w;
+	}
+	
+	public void setHeight(float height){
+		this.height = height;
+	}
+	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
+	}
+	
+	public float getWidth(){
+		return width;
+	}
+	
+	public float getHeight(){
+		return height;
+	}
+	
+	
 }
