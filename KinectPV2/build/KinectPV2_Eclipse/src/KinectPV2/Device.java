@@ -255,7 +255,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		depthImg.updatePixels();
 
 		if (depthImg.isProcessRawData())
-			PApplet.arrayCopy(depthData, 0, depthImg.rawIntData, 0,
+			PApplet.arrayCopy(jniGetRawDepth16Data(), 0, depthImg.rawIntData, 0,
 					depthImg.getImgSize());
 
 		// jniDepthReadyCopy(true);
@@ -273,7 +273,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		depth256Img.updatePixels();
 
 		if (depth256Img.isProcessRawData())
-			PApplet.arrayCopy(depth256Data, 0, depth256Img.rawIntData, 0,
+			PApplet.arrayCopy(jniGetRawDepth256Data(), 0, depth256Img.rawIntData, 0,
 					depth256Img.getImgSize());
 
 		// jniDepthReadyCopy(true);
@@ -842,12 +842,21 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 	private native float[] jniGetColorChannel();
 
-	// DEPTH
+	
 	private native int[] jniGetColorData();
 
+	
+	// DEPTH
 	private native int[] jniGetDepth16Data();
 	
 	private native int[] jniGetDepth256Data();
+	
+	//DEPTH RAW
+	
+	private native int[] jniGetRawDepth16Data();
+	
+	private native int[] jniGetRawDepth256Data();
+	
 
 	private native int[] jniGetInfraredData();
 

@@ -7,8 +7,8 @@
 *.suo
 *.idb
 
-/KinectPV2/build/Build/.metadata
-/KinectPV2/build/Build/.recommenders
+/KinectPV2/build/.metadata
+/KinectPV2/build/.recommenders
 
 *.tlog
 *.log

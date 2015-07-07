@@ -161,6 +161,8 @@ extern "C" {
 	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetColorData
 		(JNIEnv *, jobject);
 
+
+
 	/*
 	* Class:     KinectPV2_Device
 	* Method:    jniGetDepthData
@@ -174,8 +176,28 @@ extern "C" {
 	* Method:    jniGetDepthData
 	* Signature: ()[I
 	*/
+	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetRawDepth16Data
+		(JNIEnv *, jobject);
+
+
+
+	/*
+	* Class:     KinectPV2_Device
+	* Method:    jniGetDepthData
+	* Signature: ()[I
+	*/
+	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetRawDepth256Data
+		(JNIEnv *, jobject);
+
+	/*
+	* Class:     KinectPV2_Device
+	* Method:    jniGetDepthData
+	* Signature: ()[I
+	*/
 	JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth256Data
 		(JNIEnv *, jobject);
+
+
 
 	/*
 	* Class:     KinectPV2_Device

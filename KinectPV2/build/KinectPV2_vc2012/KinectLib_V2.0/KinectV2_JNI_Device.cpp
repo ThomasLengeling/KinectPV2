@@ -368,6 +368,38 @@ JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepth256Data
 	return buffer;
 }
 
+//Raw depth
+JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetRawDepth16Data
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+
+	jintArray buffer = env->NewIntArray((jsize)frame_size_depth);
+	const jint * pInt = (const jint *)kinect->JNI_GetDepthRaw_16_Data();
+	env->SetIntArrayRegion(buffer, 0, (jsize)frame_size_depth, (const jint *)(pInt));
+	env->DeleteLocalRef(cls);
+
+	return buffer;
+}
+
+
+JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetRawDepth256Data
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+
+	jintArray buffer = env->NewIntArray((jsize)frame_size_depth);
+	const jint * pInt = (const jint *)kinect->JNI_GetDepthRaw_256_Data();
+	env->SetIntArrayRegion(buffer, 0, (jsize)frame_size_depth, (const jint *)(pInt));
+	env->DeleteLocalRef(cls);
+
+	return buffer;
+}
+
 
 /*
 * Class:     KinectPV2_Device
@@ -448,6 +480,8 @@ JNIEXPORT jintArray JNICALL Java_KinectPV2_Device_jniGetDepthMask
 
 	return buffer;
 }
+
+
 
 /*
 * Class:     KinectPV2_Device
@@ -798,5 +832,3 @@ JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniMapCameraPointToColorSpac
 
 	return buffer;
 }
-
-
