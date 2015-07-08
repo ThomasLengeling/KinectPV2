@@ -35,7 +35,6 @@ void setup() {
 
   //Enables depth and Body tracking (mask image)
   kinect.enableDepthMaskImg(true);
-  kinect.enableSkeleton(true );
   kinect.enableSkeletonDepthMap(true);
 
   kinect.init();

@@ -27,8 +27,8 @@ import KinectPV2.*;
 KinectPV2 kinect;
 
 //Distance Threashold
-float maxD = 4.0f; //meters
-float minD = 1.0f;
+int maxD = 5000; // 4m
+int minD = 50;  //  50cm
 
 void setup() {
   size(512*2, 424, P3D);
@@ -36,8 +36,13 @@ void setup() {
   kinect = new KinectPV2(this);
 
   //Enable point cloud
+  kinect.enableDepthImg(true);
+
+  kinect.activateRawDepth(true);
   kinect.enablePointCloud(true);
+
   kinect.init();
+
 }
 
 void draw() {
@@ -51,7 +56,7 @@ void draw() {
    *  the Point cloud are mapped from (0.0 - 8.0)  to gray color (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);
-  
+
   //get each pixel as int [] 512 x 424
   //int [] rawData = kinect.getRawPointCloudDepth();
 

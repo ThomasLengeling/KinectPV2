@@ -61,7 +61,6 @@ void setup() {
 
   kinect = new KinectPV2(this);
 
-  kinect.enableSkeleton(true );
   kinect.enableSkeletonDepthMap(true);
   kinect.enableBodyTrackImg(true );
 

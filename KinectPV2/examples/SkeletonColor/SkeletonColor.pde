@@ -32,8 +32,7 @@ void setup() {
   size(1920, 1080, P3D);
 
   kinect = new KinectPV2(this);
-
-  kinect.enableSkeleton(true);
+  
   kinect.enableSkeletonColorMap(true);
   kinect.enableColorImg(true);
 

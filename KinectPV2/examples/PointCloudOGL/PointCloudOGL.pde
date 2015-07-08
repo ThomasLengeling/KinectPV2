@@ -21,72 +21,97 @@ Copyright (C) 2014  Thomas Sanchez Lengeling.
  THE SOFTWARE.
  */
 
-import java.nio.FloatBuffer;
-
+import java.nio.*;
 import KinectPV2.*;
-import javax.media.opengl.GL2;
 
-private KinectPV2 kinect;
 
+
+KinectPV2 kinect;
+
+
+PGL pgl;
+PShader sh;
+
+int  vertLoc;
+
+//transformations
 float a = 0;
 int zval = 50;
 float scaleVal = 260;
 
 //Distance Threashold
-float maxD = 4.0f; //meters
-float minD = 1.0f;
+int maxD = 4000; // 4m
+int minD = 0;  //  0m
+
 
 public void setup() {
   size(1280, 720, P3D);
 
   kinect = new KinectPV2(this);
+  
+  
   kinect.enableDepthImg(true);
-  kinect.enablePointCloud(true);
   kinect.activateRawDepth(true);
+    
+  kinect.enablePointCloud(true);
 
   kinect.setLowThresholdPC(minD);
   kinect.setHighThresholdPC(maxD);
 
   kinect.init();
+
+  sh = loadShader("frag.glsl", "vert.glsl");
 }
 
 public void draw() {
   background(0);
 
   image(kinect.getDepthImage(), 0, 0, 320, 240);
+  image(kinect.getPointCloudDepthImage(), 320, 0, 320, 240);
 
-  //Threahold of the point Cloud.
+  translate(width / 2, height / 2, zval);
+  scale(scaleVal, -1 * scaleVal, scaleVal);
+  rotate(a, 0.0f, 1.0f, 0.0f);
+
+  // Threahold of the point Cloud.
   kinect.setLowThresholdPC(minD);
   kinect.setHighThresholdPC(maxD);
 
+ //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
-  PJOGL pgl = (PJOGL)beginPGL();
-  GL2 gl2 = pgl.gl.getGL2();
+  pgl = beginPGL();
+  sh.bind();
 
-  gl2.glEnable( GL2.GL_BLEND );
-  gl2.glEnable(GL2.GL_POINT_SMOOTH);      
+  vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
+  
+  //color for each POINT of the point cloud
+  sh.set("fragColor", 1.0f, 1.0f, 1.0f, 1.0f);
+ 
+  pgl.enableVertexAttribArray(vertLoc);
 
-  gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-  gl2.glVertexPointer(3, GL2.GL_FLOAT, 0, pointCloudBuffer);
+  //data size
+  int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
 
-  gl2.glTranslatef(width/2, height/2, zval);
-  gl2.glScalef(scaleVal, -1*scaleVal, scaleVal);
-  gl2.glRotatef(a, 0.0f, 1.0f, 0.0f);
+  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
 
-  gl2.glDrawArrays(GL2.GL_POINTS, 0, kinect.WIDTHDepth * kinect.HEIGHTDepth);
-  gl2.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-  gl2.glDisable(GL2.GL_BLEND);
+  pgl.drawArrays(PGL.POINTS, 0, vertData);
+
+  pgl.disableVertexAttribArray(vertLoc);
+
+  sh.unbind(); 
   endPGL();
 
+
   stroke(255, 0, 0);
-  text(frameRate, 50, height- 50);
+  text(frameRate, 50, height - 50);
+
 }
 
 public void mousePressed() {
 
   println(frameRate);
- // saveFrame();
+  // saveFrame();
 }
 
 public void keyPressed() {
@@ -118,37 +143,23 @@ public void keyPressed() {
   }
 
   if (key == '1') {
-    minD += 0.01;
+    minD += 1;
     println("Change min: "+minD);
   }
 
   if (key == '2') {
-    minD -= 0.01;
+    minD -= 1;
     println("Change min: "+minD);
   }
 
   if (key == '3') {
-    maxD += 0.01;
+    maxD += 1;
     println("Change max: "+maxD);
   }
 
   if (key == '4') {
-    maxD -= 0.01;
+    maxD -= 1;
     println("Change max: "+maxD);
   }
 
-  if (key == '2') {
-    minD -= 0.01;
-    println("Change min: "+minD);
-  }
-
-  if (key == '3') {
-    maxD += 0.01;
-    println("Change max: "+maxD);
-  }
-
-  if (key == '4') {
-    maxD -= 0.01;
-    println("Change max: "+maxD);
-  }
 }

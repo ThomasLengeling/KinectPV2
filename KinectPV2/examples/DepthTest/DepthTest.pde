@@ -31,7 +31,7 @@ void setup() {
   kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
   kinect.enableInfraredImg(true);
-  kinect.enableLongExposureInfraredImg(true);
+  kinect.enableInfraredLongExposureImg(true);
   kinect.init();
 }
 
@@ -40,7 +40,7 @@ void draw() {
 
   image(kinect.getDepthImage(), 0, 0);
   image(kinect.getInfraredImage(), 512, 0);
-  image(kinect.getLongExposureInfraredImage(), 512*2, 0);
+  image(kinect.getInfraredLongExposureImage(), 512*2, 0);
 
   stroke(255);
   text(frameRate, 50, height - 50);

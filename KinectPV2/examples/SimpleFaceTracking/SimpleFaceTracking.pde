@@ -32,7 +32,12 @@ void setup() {
 
   kinect = new KinectPV2(this);
 
+  //for face detection based on the color Img
   kinect.enableColorImg(true);
+
+  //for face detection base on the infrared Img
+  kinect.enableInfraredImg(true);
+    
   kinect.enableFaceDetection(true);
 
   kinect.init();
@@ -41,22 +46,42 @@ void setup() {
 void draw() {
   background(0);
 
-  image(kinect.getColorImage(), 0, 0);
+  kinect.generateFaceData();
 
-  faceData =  kinect.getFaceData();
+  pushMatrix();
+  scale(0.5f);
+  image(kinect.getColorImage(), 0, 0);
+  getFaceMapColorData();
+  popMatrix();
+
+
+
+  pushMatrix();
+  translate(1920*0.5f, 0.0f);
+  image(kinect.getInfraredImage(), 0, 0);
+  getFaceMapInfraredData();
+  popMatrix();
+
+
+  fill(255);
+  text("frameRate "+frameRate, 50, 50);
+}
+
+public void getFaceMapColorData() {
+  FaceData [] faceData =  kinect.getFaceData();
 
   for (int i = 0; i < faceData.length; i++) {
     if (faceData[i].isFaceTracked()) {
       PVector [] facePointsColor = faceData[i].getFacePointsColorMap();
 
-      KRectangle rectFace = faceData[i].getBoundingRect();
+      KRectangle rectFace = faceData[i].getBoundingRectColor();
 
       FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
 
       PVector nosePos = new PVector();
       noStroke();
 
-      color col = getIndexColor(i);
+      int col = getIndexColor(i);
 
       fill(col);   
       for (int j = 0; j < facePointsColor.length; j++) {
@@ -81,9 +106,47 @@ void draw() {
       rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
     }
   }
+}
 
-  fill(255);
-  text("frameRate "+frameRate, 50, 50);
+public void getFaceMapInfraredData() {
+  FaceData [] faceData =  kinect.getFaceData();
+
+  for (int i = 0; i < faceData.length; i++) {
+    if (faceData[i].isFaceTracked()) {
+      PVector [] facePointsInfrared = faceData[i].getFacePointsInfraredMap();
+
+      KRectangle rectFace = faceData[i].getBoundingRectInfrared();
+
+      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
+
+      PVector nosePos = new PVector();
+      noStroke();
+
+      int col = getIndexColor(i);
+
+      fill(col);   
+      for (int j = 0; j < facePointsInfrared.length; j++) {
+        if (j == KinectPV2.Face_Nose)
+          nosePos.set(facePointsInfrared[j].x, facePointsInfrared[j].y);
+
+        ellipse(facePointsInfrared[j].x, facePointsInfrared[j].y, 15, 15);
+      }
+
+      if (nosePos.x != 0 && nosePos.y != 0)
+        for (int j = 0; j < 8; j++) {
+          int st   = faceFeatures[j].getState();
+          int type = faceFeatures[j].getFeatureType();
+
+          String str = getStateTypeAsString(st, type);
+
+          fill(255);
+          text(str, nosePos.x + 150, nosePos.y - 70 + j*25);
+        }
+      stroke(255, 0, 0);
+      noFill();
+      rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
+    }
+  }
 }
 
 

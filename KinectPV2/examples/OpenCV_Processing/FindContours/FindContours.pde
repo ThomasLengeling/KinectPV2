@@ -8,8 +8,9 @@ float polygonFactor = 1;
 
 int threshold = 10;
 
-float maxD = 4.0f;
-float minD = 0.5f;
+//Distance in cm
+int maxD = 4000; //4m
+int minD = 50; //50cm
 
 boolean    contourBodyIndex = false;
 
@@ -122,4 +123,3 @@ void keyPressed() {
   if (key == '6')
     polygonFactor -= 0.1;
 }
-
