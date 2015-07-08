@@ -122,7 +122,7 @@ namespace KinectPV2{
 
 		skeletonMapType = 0;
 
-		numberUsers = 6;
+		numberUsers = 0;
 	}
 
 	bool Device::init()
@@ -1084,6 +1084,8 @@ namespace KinectPV2{
 
 					if (SUCCEEDED(hr))
 					{
+						std::vector<bool> tmpUserCount(6, false);
+					
 						if ( pBodyIndexBuffer != NULL && nBodyIndexWidth == cDepthWidth && nBodyIndexHeight == cDepthHeight)
 						{
 							//uint32_t * inFraredFrameDataTemp = inFraredFrameData;
@@ -1107,35 +1109,53 @@ namespace KinectPV2{
 								//if (bodyIndex %200)
 								//std::cout <<" - "<< uint8_t(ir) << ", " << bodyColor << " - ";
 
-								if (bodyColor == 0)
+								if (bodyColor == 0){
 									bodyTackDataUser_1[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(0) = true;
+								}
+								else{
 									bodyTackDataUser_1[bodyIndex] = 0x00000000;
+								}
 
-								if (bodyColor == 1)
+								if (bodyColor == 1){
 									bodyTackDataUser_2[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(1) = true;
+								}
+								else{
 									bodyTackDataUser_2[bodyIndex] = 0x00000000;
+								}
 
-								if (bodyColor == 2)
+								if (bodyColor == 2){
 									bodyTackDataUser_3[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(2) = true;
+								}
+								else{
 									bodyTackDataUser_3[bodyIndex] = 0x00000000;
+								}
 
-								if (bodyColor == 3)
+								if (bodyColor == 3){
 									bodyTackDataUser_4[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(3) = true;
+								}
+								else{
 									bodyTackDataUser_4[bodyIndex] = 0x00000000;
+								}
 
-								if (bodyColor == 4)
+								if (bodyColor == 4){
 									bodyTackDataUser_5[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(4) = true;
+								}
+								else{
 									bodyTackDataUser_5[bodyIndex] = 0x00000000;
+								}
 
-								if (bodyColor == 5)
+								if (bodyColor == 5){
 									bodyTackDataUser_6[bodyIndex] = bodyColors[bodyColor];
-								else
+									tmpUserCount.at(5) = true;
+								}
+								else{
 									bodyTackDataUser_6[bodyIndex] = 0x00000000;
+								}
 
 
 								//uint32_t color = ((ir / 32) << 5) + ((ir / 32) << 2) + (ir / 64);
@@ -1144,6 +1164,15 @@ namespace KinectPV2{
 								++bodyIndex;
 
 							}
+
+							//obtain the current number of Users based on the tracking data
+							int mUserCounter = 0;
+							for (auto & numUser : tmpUserCount){
+								if (numUser){
+									mUserCounter++;
+								}
+							}
+							numberUsers  = mUserCounter;
 
 							//std::cout << min <<" m, max "<< max << std::endl;
 							//memcpy(infraredData, inFraredFrameDataTemp, frame_size_depth * sizeof(uint32_t));
@@ -1963,6 +1992,11 @@ namespace KinectPV2{
 		}
 		return bodyTackDataUser_1;
 	}
+	int Device::JNI_getNumOfUsers()
+	{
+		return numberUsers;
+	}
+
 
 	float * Device::JNI_getSkeletonDepthMapData()
 	{

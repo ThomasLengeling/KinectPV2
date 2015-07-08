@@ -253,6 +253,8 @@ namespace KinectPV2{
 
 		std::string						JNI_version() { return VERSION; }
 
+		int								JNI_getNumOfUsers();
+
 
 		void							setSkeletonType(int val){ skeletonMapType = val; }
 

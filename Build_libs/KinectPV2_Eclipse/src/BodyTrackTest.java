@@ -37,20 +37,9 @@ public class BodyTrackTest extends PApplet {
 		
 		for(int i = 0; i < 3; i++)
 			image(kinect.getBodyTrackUser(i + 3), 512 + 512*i, 424);
+		
+		fill(0);
+		text(kinect.getNumOfUsers(), 50, 50);
 	}
 	
-	public void keyPressed() {
-		if(key == '1') {
-			kinect.setNumberOfUsers(1);
-			println("1");
-		}
-		if(key == '2') {
-			kinect.setNumberOfUsers(2);
-			println("2");
-		}
-		if(key == '3') {
-			kinect.setNumberOfUsers(3);
-			println("3");
-		}
-	}
 }

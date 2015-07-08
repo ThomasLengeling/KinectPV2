@@ -354,15 +354,13 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 			return bodyTrackUsersImg[index].img;
 		return  bodyTrackImg.img;
 	}
-
+	
 	/**
-	 * Set number of Users to detect for bodyTrack(bodyIndex) or depthMask.
-	 * 
-	 * @param number
-	 *            int val 1 - 6
+	 * Get the Number of currently track users based on the Body Track frame
+	 * @return Number of Users
 	 */
-	public void setNumberOfUsers(int val) {
-		jniSetNumberOfUsers(val);
+	public int getNumOfUsers(){
+		return jniGetNumberOfUsers();
 	}
 
 	/**
@@ -903,6 +901,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 	private native int[] jniGetBodyIndexUser(int index);
 	
+	
+	private native int  jniGetNumberOfUsers();
 	//crists
 	
 	//MAPERS

@@ -348,6 +348,9 @@ extern "C" {
 	JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetBodyIndexUser
 		(JNIEnv *, jobject, jint);
 
+	JNIEXPORT jint JNICALL  Java_KinectPV2_Device_jniGetNumberOfUsers
+		(JNIEnv *, jobject);
+
 	/*
 	* Class:     KinectPV2_Device
 	* Method:    jniSetNumberOfUsers

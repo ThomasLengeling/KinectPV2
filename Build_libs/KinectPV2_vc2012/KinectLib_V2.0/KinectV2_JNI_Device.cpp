@@ -771,6 +771,15 @@ JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetBodyIndexUser
 	return buffer;
 }
 
+JNIEXPORT jint JNICALL  Java_KinectPV2_Device_jniGetNumberOfUsers
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+	return kinect->JNI_getNumOfUsers();
+}
+
 
 /*
 * Class:     KinectPV2_Device
