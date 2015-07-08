@@ -272,6 +272,9 @@ extern "C" {
 		(JNIEnv *, jobject);
 
 
+	JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniGetMapDethToColorSpace
+		(JNIEnv *, jobject);
+
 	/*
 	* Class:     KinectPV2_Device
 	* Method:    jniGetHDFaceDetection

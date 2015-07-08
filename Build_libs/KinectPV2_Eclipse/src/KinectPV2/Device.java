@@ -781,6 +781,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		float [] rawData = jniMapCameraPointToColorSpace(pos.x, pos.y, pos.z);
 		return new PVector(rawData[0], rawData[1]);
 	}
+	
+	public float [] getMapDepthToColor(){
+		return jniGetMapDethToColorSpace();
+	}
 		
 		
 	protected boolean updateDevice() {
@@ -906,6 +910,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	
 	private native float [] jniMapCameraPointToColorSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
 
+	private native float [] jniGetMapDethToColorSpace();
 	
 	public void run() {
 		int fr = PApplet.round(1000.0f / parent.frameRate);

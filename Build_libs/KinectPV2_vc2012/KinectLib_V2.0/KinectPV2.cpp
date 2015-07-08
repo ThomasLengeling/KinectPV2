@@ -72,6 +72,8 @@ namespace KinectPV2{
 		pointCloudColorData = (float *)malloc(frame_size_color * 3 * sizeof(float));
 		colorCameraPos = (float *)malloc(frame_size_color * 2 * sizeof(float));
 
+		mapDepthToColorData = (float *)malloc(frame_size_depth * 2 * sizeof(float));
+
 		mCamaraSpacePointDepth = new CameraSpacePoint[frame_size_depth];
 		mCamaraSpacePointColor = new CameraSpacePoint[frame_size_color];
 		mColorSpacePoint = new ColorSpacePoint[frame_size_depth];
@@ -129,141 +131,108 @@ namespace KinectPV2{
 		std::cout << "Creating Kinect object ..." << endl;
 
 		HRESULT hr = GetDefaultKinectSensor(&kSensor);
-		if (FAILED(hr))
+
+		if (!kSensor || FAILED(hr))
 		{
-			std::cout << "ERROR LOADING KINECT" << std::endl;
+			std::cerr << "Kinect Not Found" << std::endl;
 			return false;
 		}
 
-		if (kSensor)
+
+		if (SUCCEEDED(hr))
 		{
-			if (SUCCEEDED(hr))
+			
+			hr = kSensor->get_CoordinateMapper(&kCoordinateMapper);
+			
+			if (FAILED(hr))
 			{
-				hr = kSensor->get_CoordinateMapper(&kCoordinateMapper);
+				std::cerr << "Error Loading Kinect Mapper" << std::endl;
+				return false;
 			}
 
 			// Initialize the Kinect and get the color reader
 			hr = kSensor->Open();
 
-			if (DeviceOptions::isInitializedColorFrame())
+			if (FAILED(hr))
 			{
-				std::cout << "SETTING COLOR FRAME" << std::endl;
-				IColorFrameSource* pColorFrameSource = NULL;
-
-				if (SUCCEEDED(hr))
-				{
-					hr = kSensor->get_ColorFrameSource(&pColorFrameSource);
-				}
-
-				if (SUCCEEDED(hr))
-				{
-					hr = pColorFrameSource->OpenReader(&kColorFrameReader);
-				}
-
-				SafeRelease(pColorFrameSource);
+				std::cerr << "Error Opening" << std::endl;
+				return false;
 			}
 
-			if (DeviceOptions::isInitializedDepthFrame())
+			if (SUCCEEDED(hr))
 			{
-				std::cout << "SETTING DEPTH FRAME" << std::endl;
-				IDepthFrameSource* pDepthFrameSource = NULL;
-
-				if (SUCCEEDED(hr))
+				if (DeviceOptions::isInitializedColorFrame())
 				{
-					hr = kSensor->get_DepthFrameSource(&pDepthFrameSource);
+					
+					IColorFrameSource* pColorFrameSource = NULL;
+
+					if (SUCCEEDED(hr))
+					{
+						std::cout << "Setting Color Frame" << std::endl;
+						hr = kSensor->get_ColorFrameSource(&pColorFrameSource);
+					}
+
+					if (FAILED(hr))
+					{
+						std::cerr << "Error Opening Color Frame" << std::endl;
+						SafeRelease(pColorFrameSource);
+						return false;
+					}
+
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pColorFrameSource->OpenReader(&kColorFrameReader);
+					}
+
+					if (FAILED(hr))
+					{
+						std::cerr << "Error Opening Color Frame" << std::endl;
+						SafeRelease(pColorFrameSource);
+						return false;
+					}
+
+			
+					SafeRelease(pColorFrameSource);		
 				}
 
-				if (SUCCEEDED(hr))
+				if (DeviceOptions::isInitializedDepthFrame())
 				{
-					hr = pDepthFrameSource->OpenReader(&kDepthFrameReader);
+					std::cout << "Setting Depth Frame" << std::endl;
+					IDepthFrameSource* pDepthFrameSource = NULL;
+
+					if (SUCCEEDED(hr))
+					{
+						hr = kSensor->get_DepthFrameSource(&pDepthFrameSource);
+					}
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pDepthFrameSource->OpenReader(&kDepthFrameReader);
+					}
+
+					SafeRelease(pDepthFrameSource);
 				}
-
-				SafeRelease(pDepthFrameSource);
-			}
-			if (DeviceOptions::isInitializedInfraredFrame())
-			{
-				std::cout << "SETTING INFRARED FRAME" << std::endl;
-				IInfraredFrameSource* pInfraredFrameSource = NULL;
-
-				if (SUCCEEDED(hr))
+				if (DeviceOptions::isInitializedInfraredFrame())
 				{
-					hr = kSensor->get_InfraredFrameSource(&pInfraredFrameSource);
-				}
+					std::cout << "Setting Infrared Frame" << std::endl;
+					IInfraredFrameSource* pInfraredFrameSource = NULL;
 
-				if (SUCCEEDED(hr))
+					if (SUCCEEDED(hr))
+					{
+						hr = kSensor->get_InfraredFrameSource(&pInfraredFrameSource);
+					}
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pInfraredFrameSource->OpenReader(&kInfraredFrameReader);
+					}
+
+					SafeRelease(pInfraredFrameSource);
+				}
+				if (DeviceOptions::isInitializedSkeleton())
 				{
-					hr = pInfraredFrameSource->OpenReader(&kInfraredFrameReader);
-				}
-
-				SafeRelease(pInfraredFrameSource);
-			}
-			if (DeviceOptions::isInitializedSkeleton())
-			{
-				std::cout << "SETTING SKELETON" << std::endl;
-				IBodyFrameSource* pBodyFrameSource = NULL;
-
-				if (SUCCEEDED(hr))
-				{
-					hr = kSensor->get_BodyFrameSource(&pBodyFrameSource);
-				}
-
-				if (SUCCEEDED(hr))
-				{
-					hr = pBodyFrameSource->OpenReader(&kBodyFrameReader);
-				}
-
-
-				SafeRelease(pBodyFrameSource);
-
-			}
-			if (DeviceOptions::isInitializedBodyIndexFrame())
-			{
-				std::cout << "SETTING BODY INDEX" << std::endl;
-				IBodyIndexFrameSource * pBodyIndexFrameSource = NULL;
-
-				if (SUCCEEDED(hr))
-				{
-					hr = kSensor->get_BodyIndexFrameSource(&pBodyIndexFrameSource);
-				}
-
-				if (SUCCEEDED(hr))
-				{
-					hr = pBodyIndexFrameSource->OpenReader(&kBodyIndexFrameReader);
-				}
-
-				SafeRelease(pBodyIndexFrameSource);
-
-				//BODY TRACK AND MASK
-				bodyTrackData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-
-				bodyTackDataUser_1 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-				bodyTackDataUser_2 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-				bodyTackDataUser_3 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-				bodyTackDataUser_4 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-				bodyTackDataUser_5 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-				bodyTackDataUser_6 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-			}
-
-			if (DeviceOptions::isInitializedLongExposureInfraredFrame())
-			{
-				std::cout << "SETTING LONG EXPOSURE INFRARED" << std::endl;
-				ILongExposureInfraredFrameSource * pLongExposureInFraredSource = NULL;
-
-				if (SUCCEEDED(hr))
-				{
-					hr = kSensor->get_LongExposureInfraredFrameSource(&pLongExposureInFraredSource);
-				}
-
-				if (SUCCEEDED(hr))
-				{
-					hr = pLongExposureInFraredSource->OpenReader(&kLongExposureFrameReader);
-				}
-			}
-			if (DeviceOptions::isInitializedFaceDetection())
-			{
-				cout << "SETTING FACE TRACKING" << std::endl;
-
-				if (!DeviceOptions::isEnableSkeleton()){
+					std::cout << "Setting Skeleton" << std::endl;
 					IBodyFrameSource* pBodyFrameSource = NULL;
 
 					if (SUCCEEDED(hr))
@@ -275,96 +244,161 @@ namespace KinectPV2{
 					{
 						hr = pBodyFrameSource->OpenReader(&kBodyFrameReader);
 					}
-					SafeRelease(pBodyFrameSource);
-				}
 
-				// create a face frame source + reader to track each body in the fov
-				for (int i = 0; i < BODY_COUNT; i++){
-					//cout << i << endl;
-					// create the face frame source by specifying the required face frame features
-					hr = CreateFaceFrameSource(kSensor, 0, c_FaceFrameFeatures, &kFaceFrameSources[i]);
-					//cout << "frace source" << endl;
+
+					SafeRelease(pBodyFrameSource);
+
+				}
+				if (DeviceOptions::isInitializedBodyIndexFrame())
+				{
+					std::cout << "Setting Body Index" << std::endl;
+					IBodyIndexFrameSource * pBodyIndexFrameSource = NULL;
+
 					if (SUCCEEDED(hr))
 					{
-						// open the corresponding reader
-						//cout << "open face reader" << std::endl;
-						hr = kFaceFrameSources[i]->OpenReader(&kFaceFrameReaders[i]);
+						hr = kSensor->get_BodyIndexFrameSource(&pBodyIndexFrameSource);
 					}
-					else{
-						cout << "ERROR FACE READER " << i << std::endl;
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pBodyIndexFrameSource->OpenReader(&kBodyIndexFrameReader);
+					}
+
+					SafeRelease(pBodyIndexFrameSource);
+
+					//BODY TRACK AND MASK
+					bodyTrackData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+
+					bodyTackDataUser_1 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTackDataUser_2 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTackDataUser_3 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTackDataUser_4 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTackDataUser_5 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTackDataUser_6 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+				}
+
+				if (DeviceOptions::isInitializedLongExposureInfraredFrame())
+				{
+					std::cout << "Setting Long Exposure Infrared" << std::endl;
+					ILongExposureInfraredFrameSource * pLongExposureInFraredSource = NULL;
+
+					if (SUCCEEDED(hr))
+					{
+						hr = kSensor->get_LongExposureInfraredFrameSource(&pLongExposureInFraredSource);
+					}
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pLongExposureInFraredSource->OpenReader(&kLongExposureFrameReader);
 					}
 				}
-			}
-			if (DeviceOptions::isInitializedHDFaceDetection())
-			{
+				if (DeviceOptions::isInitializedFaceDetection())
+				{
+					cout << "Setting Face Tracking" << std::endl;
 
-				//HD FACE
-				hdFaceDeformations = (float *)malloc(BODY_COUNT * FaceShapeDeformations::FaceShapeDeformations_Count * sizeof(float));
-				hdFaceVertex = (float *)malloc(HDFACEVERTEX *  sizeof(float));
+					if (!DeviceOptions::isEnableSkeleton()){
+						IBodyFrameSource* pBodyFrameSource = NULL;
 
-				for (int count = 0; count < BODY_COUNT; count++){
-					// Source
-					hr = CreateHighDefinitionFaceFrameSource(kSensor, &kHDFaceSource[count]);
+						if (SUCCEEDED(hr))
+						{
+							hr = kSensor->get_BodyFrameSource(&pBodyFrameSource);
+						}
 
-					if (FAILED(hr)){
-						cout << "Error : CreateHighDefinitionFaceFrameSource()" << std::endl;
-						return false;
+						if (SUCCEEDED(hr))
+						{
+							hr = pBodyFrameSource->OpenReader(&kBodyFrameReader);
+						}
+						SafeRelease(pBodyFrameSource);
 					}
 
-					// Reader
-					hr = kHDFaceSource[count]->OpenReader(&kHDFaceReader[count]);
-					if (FAILED(hr)){
-						cout << "Error : IHighDefinitionFaceFrameSource::OpenReader()" << std::endl;
-						return false;
+					// create a face frame source + reader to track each body in the fov
+					for (int i = 0; i < BODY_COUNT; i++){
+						//cout << i << endl;
+						// create the face frame source by specifying the required face frame features
+						hr = CreateFaceFrameSource(kSensor, 0, c_FaceFrameFeatures, &kFaceFrameSources[i]);
+						//cout << "frace source" << endl;
+						if (SUCCEEDED(hr))
+						{
+							// open the corresponding reader
+							//cout << "open face reader" << std::endl;
+							hr = kFaceFrameSources[i]->OpenReader(&kFaceFrameReaders[i]);
+						}
+						else{
+							std::cerr << "Error Face Reader " << i << std::endl;
+						}
 					}
-
-					// Open Face Model Builder
-					hr = kHDFaceSource[count]->OpenModelBuilder(FaceModelBuilderAttributes::FaceModelBuilderAttributes_None, &kFaceModelBuilder[count]);
-					if (FAILED(hr)){
-						std::cerr << "Error : IHighDefinitionFaceFrameSource::OpenModelBuilder()" << std::endl;
-						return -1;
-					}
-
-					// Start Collection Face Data
-					hr = kFaceModelBuilder[count]->BeginFaceDataCollection();
-					if (FAILED(hr)){
-						std::cerr << "Error : IFaceModelBuilder::BeginFaceDataCollection()" << std::endl;
-						return -1;
-					}
-
-					hr = CreateFaceAlignment(&kFaceAlignment[count]);
-					if (FAILED(hr)){
-						std::cout << "Error : CreateFaceAlignment()" << std::endl;
-						return false;
-					}
-
-					// Create Face Model
-					hr = CreateFaceModel(1.0f, FaceShapeDeformations::FaceShapeDeformations_Count, &hdFaceDeformations[count*FaceShapeDeformations::FaceShapeDeformations_Count], &kFaceModel[count]);
-					if (FAILED(hr)){
-						std::cout << "Error : CreateFaceModel()" << std::endl;
-						return false;
-					}
-
-					hr = GetFaceModelVertexCount(&hdFaceVertexCount); // 1347
-					//cout << "HDFace Vertex :" << hdFaceVertexCount << std::endl;
-					if (FAILED(hr)){
-						std::cout << "Error : GetFaceModelVertexCount()" << std::endl;
-						return false;
-					}
-
-
 				}
-				std::cout << "ENABLE HDFACE" << std::endl;
+				if (DeviceOptions::isInitializedHDFaceDetection())
+				{
+
+					//HD FACE
+					hdFaceDeformations = (float *)malloc(BODY_COUNT * FaceShapeDeformations::FaceShapeDeformations_Count * sizeof(float));
+					hdFaceVertex = (float *)malloc(HDFACEVERTEX *  sizeof(float));
+
+					for (int count = 0; count < BODY_COUNT; count++){
+						// Source
+						hr = CreateHighDefinitionFaceFrameSource(kSensor, &kHDFaceSource[count]);
+
+						if (FAILED(hr)){
+							std::cerr << "Error : CreateHighDefinitionFaceFrameSource()" << std::endl;
+							return false;
+						}
+
+						// Reader
+						hr = kHDFaceSource[count]->OpenReader(&kHDFaceReader[count]);
+						if (FAILED(hr)){
+							std::cerr << "Error : IHighDefinitionFaceFrameSource::OpenReader()" << std::endl;
+							return false;
+						}
+
+						// Open Face Model Builder
+						hr = kHDFaceSource[count]->OpenModelBuilder(FaceModelBuilderAttributes::FaceModelBuilderAttributes_None, &kFaceModelBuilder[count]);
+						if (FAILED(hr)){
+							std::cerr << "Error : IHighDefinitionFaceFrameSource::OpenModelBuilder()" << std::endl;
+							return -1;
+						}
+
+						// Start Collection Face Data
+						hr = kFaceModelBuilder[count]->BeginFaceDataCollection();
+						if (FAILED(hr)){
+							std::cerr << "Error : IFaceModelBuilder::BeginFaceDataCollection()" << std::endl;
+							return -1;
+						}
+
+						hr = CreateFaceAlignment(&kFaceAlignment[count]);
+						if (FAILED(hr)){
+							std::cerr << "Error : CreateFaceAlignment()" << std::endl;
+							return false;
+						}
+
+						// Create Face Model
+						hr = CreateFaceModel(1.0f, FaceShapeDeformations::FaceShapeDeformations_Count, &hdFaceDeformations[count*FaceShapeDeformations::FaceShapeDeformations_Count], &kFaceModel[count]);
+						if (FAILED(hr)){
+							std::cerr << "Error : CreateFaceModel()" << std::endl;
+							return false;
+						}
+
+						hr = GetFaceModelVertexCount(&hdFaceVertexCount); // 1347
+						//cout << "HDFace Vertex :" << hdFaceVertexCount << std::endl;
+						if (FAILED(hr)){
+							std::cerr<< "Error : GetFaceModelVertexCount()" << std::endl;
+							return false;
+						}
+
+
+					}
+					std::cout << "Enable HDFace" << std::endl;
+				}
 			}
 		}
 		else{
-			cout << "Problem with the Device" << std::endl;
+			std::cerr << "Problem with the Device" << std::endl;
 			return false;
 		}
 
 		if (!kSensor || FAILED(hr))
 		{
-			cout << "KINECT NOT FOUND" << std::endl;
+			std::cerr << "Kinect Not Found" << std::endl;
 			kSensor->Close();
 			return false;
 		}
@@ -425,7 +459,7 @@ namespace KinectPV2{
 		}
 
 
-		cout << "Done Kinect V2" << endl;
+		std::cout << "Done Kinect V2" << endl;
 
 		return true;
 	}
@@ -523,6 +557,8 @@ namespace KinectPV2{
 		SafeArrayDelete(mColorSpacePoint);
 		SafeArrayDelete(mDepthCoordinates);
 		SafeArrayDelete(mDepthToColorPoints);
+
+		SafeDeletePointer(mapDepthToColorData);
 
 		//close the kinect
 		if (kSensor) {
@@ -849,10 +885,14 @@ namespace KinectPV2{
 
 								hr = kCoordinateMapper->MapDepthFrameToCameraSpace(frame_size_depth, pBufferPC, frame_size_depth, mCamaraSpacePointDepth);
 
+								hr = kCoordinateMapper->MapDepthFrameToColorSpace(frame_size_depth, pBufferPC, frame_size_depth, mDepthToColorPoints);
+
+
 								if (SUCCEEDED(hr) && mCamaraSpacePointDepth != NULL){
 									const UINT16 * pBufferEnd = pBufferPC + (frame_size_depth);
 									int depthIndex = 0;
 									int cameraSpaceIndex = 0;
+									int deptToColorIndex = 0;
 
 									while (pBufferPC < pBufferEnd){
 										USHORT depth = *pBufferPC; //0 -4500 depth
@@ -862,6 +902,9 @@ namespace KinectPV2{
 											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].Y;
 											pointCloudPosData[cameraSpaceIndex++] = mCamaraSpacePointDepth[depthIndex].Z;
 
+											mapDepthToColorData[deptToColorIndex++] = mDepthToColorPoints[depthIndex].X;
+											mapDepthToColorData[deptToColorIndex++] = mDepthToColorPoints[depthIndex].Y;
+											
 											pointCloudDepthImage[depthIndex] = colorByte2Int(uint32_t(((float)depth*0.056666f)));
 										}
 										else{
@@ -1889,6 +1932,12 @@ namespace KinectPV2{
 	{
 		return bodyTrackData;
 	}
+
+	float *	Device::JNI_getMapDepthToColor()
+	{
+		return mapDepthToColorData;
+	}
+
 
 	uint32_t *	Device::JNI_getBodyIndexUser(int index)
 	{

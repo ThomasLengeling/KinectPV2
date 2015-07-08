@@ -832,3 +832,20 @@ JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniMapCameraPointToColorSpac
 
 	return buffer;
 }
+
+JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniGetMapDethToColorSpace(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+	//kinect->enableMapDepthToColorData();
+
+	jfloat * pfloat = (jfloat *)kinect->JNI_getMapDepthToColor();
+
+	jfloatArray buffer = env->NewFloatArray((jsize)frame_size_depth * 2);
+	env->SetFloatArrayRegion(buffer, 0, (jsize)frame_size_depth * 2, (jfloat *)(pfloat));
+
+	env->DeleteLocalRef(cls);
+
+	return buffer;
+}

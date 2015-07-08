@@ -28,13 +28,14 @@ public class MapDepthToColorTest extends PApplet {
 		kinect.enableColorImg(true);
 		kinect.activateRawDepth(true);
 		kinect.activateRawColor(true);
+		kinect.enablePointCloud(true);
 		kinect.init();
 	}
 
 	public void draw() {
 		background(0);
 
-	/*	float[] mapDCT = kinect.get
+		float[] mapDCT = kinect.getMapDepthToColor();
 
 		// get the raw data from depth and color
 		int[] colorRaw = kinect.getRawColor();
@@ -71,7 +72,7 @@ public class MapDepthToColorTest extends PApplet {
 			}
 		}
 		depthToColorImg.updatePixels();
-		*/
+	
 
 		image(depthToColorImg, 0, 424);
 		image(kinect.getColorImage(), 0, 0, 512, 424);

@@ -119,6 +119,8 @@ namespace KinectPV2{
 		float	 *   faceColorData;
 		float    *   faceInfraredData;
 
+		//Color - depth mappers
+		float	 * mapDepthToColorData;
 
 		//HD FACE
 		float	 *   hdFaceDeformations;
@@ -242,7 +244,9 @@ namespace KinectPV2{
 		float *							JNI_getSkeleton3DMapData();
 		float *							JNI_getSkeletonColorMapData();
 
+		//mappers
 		float *							JNI_getColorChannel();
+		float *							JNI_getMapDepthToColor();
 
 		//USERS
 		uint32_t *						JNI_getBodyIndexUser(int index);
