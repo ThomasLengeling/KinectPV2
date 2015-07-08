@@ -1,4 +1,6 @@
 
+import java.util.ArrayList;
+
 import KinectPV2.KinectPV2;
 import KinectPV2.Skeleton;
 import KinectPV2.FaceData;
@@ -25,21 +27,26 @@ public class BodyTrackTest extends PApplet {
 	}
 	
 	public void draw() {
-		background(255, 0, 0);
+		background(255);
 	
 		image(kinect.getBodyTrackImage(), 0, 0);
 		image(kinect.getDepthMaskImage(), 0, 424);
 		
-		kinect.generteBodyTrackUsers();
 		
-		for(int i = 0; i < 3; i++)
-			image(kinect.getBodyTrackUser(i), 512 + 512*i, 0);
+		ArrayList<PImage> bodyTrackList = kinect.getBodyTrackUser();
 		
-		for(int i = 0; i < 3; i++)
-			image(kinect.getBodyTrackUser(i + 3), 512 + 512*i, 424);
+		for(int i = 0; i < bodyTrackList.size(); i++){
+			PImage bodyTrackImg = (PImage)bodyTrackList.get(i);
+			if(i <= 2)
+				image(bodyTrackImg, 512 + 512*i, 0);
+			else
+				image(bodyTrackImg, 512 + 512*(i - 3), 424);
+		}
+		
 		
 		fill(0);
 		text(kinect.getNumOfUsers(), 50, 50);
+		text(bodyTrackList.size(), 50, 70);
 	}
 	
 }

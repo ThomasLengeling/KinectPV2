@@ -120,14 +120,17 @@ namespace KinectPV2{
 		float    *   faceInfraredData;
 
 		//Color - depth mappers
-		float	 * mapDepthToColorData;
+		float	 *   mapDepthToColorData;
 
 		//HD FACE
 		float	 *   hdFaceDeformations;
 		float    *   hdFaceVertex;
 		UINT32		 hdFaceVertexCount;
 
+		//track data
 		uint32_t *   bodyTrackData;
+
+		uint32_t *	 bodyTrackIds;
 
 		//get independent bodytrackData
 		uint32_t *	 bodyTackDataUser_1;
@@ -254,6 +257,7 @@ namespace KinectPV2{
 		std::string						JNI_version() { return VERSION; }
 
 		int								JNI_getNumOfUsers();
+		uint32_t *						JNI_getTrackedIds();
 
 
 		void							setSkeletonType(int val){ skeletonMapType = val; }

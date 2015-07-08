@@ -780,6 +780,21 @@ JNIEXPORT jint JNICALL  Java_KinectPV2_Device_jniGetNumberOfUsers
 	return kinect->JNI_getNumOfUsers();
 }
 
+JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetBodyTrackIds
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+
+	const jint * pInt = (const jint *)kinect->JNI_getTrackedIds();
+	jintArray buffer = env->NewIntArray((jsize)BODY_COUNT);
+	env->SetIntArrayRegion(buffer, 0, (jsize)BODY_COUNT, (const jint *)(pInt));
+
+	env->DeleteLocalRef(cls);
+
+	return buffer;
+}
 
 /*
 * Class:     KinectPV2_Device

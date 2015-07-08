@@ -24,6 +24,7 @@ package KinectPV2;
  */
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import com.jogamp.common.nio.Buffers;
 
@@ -108,7 +109,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	
 		bodyTrackUsersImg = new Image[BODY_COUNT];
 		for (int i = 0; i < BODY_COUNT; i++) {
-			bodyTrackUsersImg[i] = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
+			bodyTrackUsersImg[i] = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ARGB);
 		}  
 		
 
@@ -349,10 +350,19 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 * @param index
 	 * @return
 	 */
-	public PImage getBodyTrackUser(int index) {
-		if(index >= 0 && index <= 5)
-			return bodyTrackUsersImg[index].img;
-		return  bodyTrackImg.img;
+	public ArrayList getBodyTrackUser() {
+		ArrayList<PImage> listBodyTack = new ArrayList<PImage>(0);
+		int [] usersIds = jniGetBodyTrackIds();
+		
+		for(int i = 0; i < usersIds.length; i++){
+			if( usersIds[i] == 1){
+				int[] rawData = jniGetBodyIndexUser(i);
+				PApplet.arrayCopy(rawData, 0, bodyTrackUsersImg[i].pixels(), 0, bodyTrackUsersImg[i].getImgSize());
+				bodyTrackUsersImg[i].updatePixels();
+				listBodyTack.add(bodyTrackUsersImg[i].img);
+			}
+		}
+		return listBodyTack;
 	}
 	
 	/**
@@ -799,118 +809,121 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	}
 
 	// ------JNI FUNCTIONS
-	private native void jniDevice();
+	private native void 	jniDevice();
 
-	private native boolean jniInit();
+	private native boolean 	jniInit();
 
-	private native String jniVersion();
+	private native String 	jniVersion();
 
-	private native boolean jniUpdate();
+	private native boolean 	jniUpdate();
 
 	// STOP
-	private native void jniStopDevice();
+	private native void 	jniStopDevice();
 
-	private native boolean jniStopSignal();
+	private native boolean 	jniStopSignal();
 
 	// ENABLE FRAMES
-	private native void jniEnableColorFrame(boolean toggle);
+	private native void 	jniEnableColorFrame(boolean toggle);
 
-	private native void jniEnableColorChannelsFrame(boolean toggle);
+	private native void 	jniEnableColorChannelsFrame(boolean toggle);
 
-	private native void jniEnableDepthFrame(boolean toggle);
+	private native void 	jniEnableDepthFrame(boolean toggle);
 
-	private native void jniEnableDepthMaskFrame(boolean toggle);
+	private native void 	jniEnableDepthMaskFrame(boolean toggle);
 
-	private native void jniEnableInfraredFrame(boolean toggle);
+	private native void 	jniEnableInfraredFrame(boolean toggle);
 
-	private native void jniEnableBodyTrackFrame(boolean toggle);
+	private native void 	jniEnableBodyTrackFrame(boolean toggle);
 
-	private native void jniEnableInfraredLongExposure(boolean toggle);
+	private native void 	jniEnableInfraredLongExposure(boolean toggle);
 
-	private native void jniEnableSkeletonDepth(boolean toggle);
+	private native void 	jniEnableSkeletonDepth(boolean toggle);
 
-	private native void jniEnableSkeletonColor(boolean toggle);
+	private native void 	jniEnableSkeletonColor(boolean toggle);
 
-	private native void jniEnableSkeleton3D(boolean toggle);
+	private native void 	jniEnableSkeleton3D(boolean toggle);
 
-	private native void jniEnableFaceDetection(boolean toggle);
+	private native void 	jniEnableFaceDetection(boolean toggle);
 
-	private native void jniEnableHDFaceDetection(boolean toggle);
+	private native void 	jniEnableHDFaceDetection(boolean toggle);
 
-	private native void jniEnablePointCloud(boolean toggle);
+	private native void 	jniEnablePointCloud(boolean toggle);
+	
 
 	// COLOR CHANNEL
-	private native void jniEnableColorChannel(boolean toggle);
+	private native void 	jniEnableColorChannel(boolean toggle);
 
-	private native float[] jniGetColorChannel();
+	private native float[] 	jniGetColorChannel();
 
 	
-	private native int[] jniGetColorData();
+	private native int[] 	jniGetColorData();
 
 	
 	// DEPTH
-	private native int[] jniGetDepth16Data();
+	private native int[] 	jniGetDepth16Data();
 	
-	private native int[] jniGetDepth256Data();
+	private native int[] 	jniGetDepth256Data();
 	
 	//DEPTH RAW
 	
-	private native int[] jniGetRawDepth16Data();
+	private native int[] 	jniGetRawDepth16Data();
 	
-	private native int[] jniGetRawDepth256Data();
+	private native int[] 	jniGetRawDepth256Data();
 	
 
-	private native int[] jniGetInfraredData();
+	private native int[] 	jniGetInfraredData();
 
-	private native int[] jniGetInfraredLongExposure();
+	private native int[] 	jniGetInfraredLongExposure();
 
-	private native int[] jniGetBodyTrack();
+	private native int[] 	jniGetBodyTrack();
 
-	private native int[] jniGetDepthMask();
+	private native int[] 	jniGetDepthMask();
 
-	private native float[] jniGetSkeleton3D();
+	private native float[] 	jniGetSkeleton3D();
 
-	private native float[] jniGetSkeletonDepth();
+	private native float[] 	jniGetSkeletonDepth();
 
-	private native float[] jniGetSkeletonColor();
+	private native float[] 	jniGetSkeletonColor();
 
-	private native float[] jniGetFaceColorData();
+	private native float[] 	jniGetFaceColorData();
 
-	private native float[] jniGetFaceInfraredData();
+	private native float[] 	jniGetFaceInfraredData();
 
-	private native float[] jniGetHDFaceDetection();
+	private native float[] 	jniGetHDFaceDetection();
 
 	// POINT CLOUD
-	private native float[] jniGetPointCloudDeptMap();
+	private native float[] 	jniGetPointCloudDeptMap();
 
-	private native float[] jniGetPointCloudColorMap();
+	private native float[] 	jniGetPointCloudColorMap();
 
-	private native int[] jniGetPointCloudDepthImage();
+	private native int[] 	jniGetPointCloudDepthImage();
 
 	// PC THRESHOLDS
-	private native void jniSetLowThresholdDepthPC(int val);
+	private native void 	jniSetLowThresholdDepthPC(int val);
 
-	private native int jniGetLowThresholdDepthPC();
+	private native int 		jniGetLowThresholdDepthPC();
 
-	private native void jniSetHighThresholdDepthPC(int val);
+	private native void 	jniSetHighThresholdDepthPC(int val);
 
-	private native int jniGetHighThresholdDepthPC();
+	private native int     	jniGetHighThresholdDepthPC();
 
 	// BODY INDEX
-	private native void jniSetNumberOfUsers(int index);
+	private native void     jniSetNumberOfUsers(int index);
 
-	private native int[] jniGetBodyIndexUser(int index);
+	private native int[] 	jniGetBodyIndexUser(int index);
+	
+	private native int[]   	jniGetBodyTrackIds();
 	
 	
-	private native int  jniGetNumberOfUsers();
+	private native int      jniGetNumberOfUsers();
 	//crists
 	
 	//MAPERS
-	private native float [] jniMapCameraPointToDepthSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
+	private native float[]	jniMapCameraPointToDepthSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
 	
-	private native float [] jniMapCameraPointToColorSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
+	private native float[]  jniMapCameraPointToColorSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
 
-	private native float [] jniGetMapDethToColorSpace();
+	private native float[]  jniGetMapDethToColorSpace();
 	
 	public void run() {
 		int fr = PApplet.round(1000.0f / parent.frameRate);

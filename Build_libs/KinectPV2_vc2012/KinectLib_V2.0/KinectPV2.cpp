@@ -23,8 +23,8 @@ static const double c_FaceRotationIncrementInDegrees = 5.0f;
 
 static const long long kThreadSleepDuration = 5L;
 
-
-uint32_t  bodyColors[] = { 0x0000ff, 0x00ff00, 0xff0000, 0xffff00, 0xff00ff, 0x00ffff, 0x00ffffff, 0xffffff };
+//uint32_t  bodyColors[] = { 0x0000ff, 0x00ff00, 0xff0000, 0xffff00, 0xff00ff, 0x00ffff, 0x00ffff, 0xffffff };
+uint32_t  bodyColors[] = { 0xff0000ff, 0xff00ff00, 0xffff0000, 0xffffff00, 0xffff00ff, 0xff00ffff, 0xffffff };
 
 namespace KinectPV2{
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,7 +267,14 @@ namespace KinectPV2{
 					SafeRelease(pBodyIndexFrameSource);
 
 					//BODY TRACK AND MASK
-					bodyTrackData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+					bodyTrackData      = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+
+					//boyd Ids
+					bodyTrackIds       = (uint32_t *)malloc(BODY_COUNT * sizeof(uint32_t));
+
+					for (int i = 0; i < BODY_COUNT; i++){
+						bodyTrackIds[i] = 0;
+					}
 
 					bodyTackDataUser_1 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 					bodyTackDataUser_2 = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
@@ -545,6 +552,7 @@ namespace KinectPV2{
 		SafeDeletePointer(hdFaceVertex);
 		SafeDeletePointer(hdFaceDeformations);
 
+		SafeDeletePointer(bodyTrackIds);
 		SafeDeletePointer(bodyTackDataUser_1);
 		SafeDeletePointer(bodyTackDataUser_2);
 		SafeDeletePointer(bodyTackDataUser_3);
@@ -1167,10 +1175,16 @@ namespace KinectPV2{
 
 							//obtain the current number of Users based on the tracking data
 							int mUserCounter = 0;
+							int ids = 0;
 							for (auto & numUser : tmpUserCount){
 								if (numUser){
+									bodyTrackIds[ids] = 1;
 									mUserCounter++;
 								}
+								else{
+									bodyTrackIds[ids] = 0;
+								}
+								ids++;
 							}
 							numberUsers  = mUserCounter;
 
@@ -1995,6 +2009,11 @@ namespace KinectPV2{
 	int Device::JNI_getNumOfUsers()
 	{
 		return numberUsers;
+	}
+
+	uint32_t * Device::JNI_getTrackedIds()
+	{
+		return bodyTrackIds;
 	}
 
 
