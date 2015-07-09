@@ -13,8 +13,8 @@ import KinectPV2.*;
 KinectPV2 kinect;
 
 //Distance Threashold
-int maxD = 5000; // 4m
-int minD = 50;  //  50cm
+int maxD = 4500; // 4.5mx
+int minD = 0;  //  50cm
 
 void setup() {
   size(512*2, 424, P3D);
@@ -23,8 +23,6 @@ void setup() {
 
   //Enable point cloud
   kinect.enableDepthImg(true);
-
-  kinect.activateRawDepth(true);
   kinect.enablePointCloud(true);
 
   kinect.init();
@@ -39,12 +37,12 @@ void draw() {
   /* Get the point cloud as a PImage
    * Each pixel of the PointCloudDepthImage correspondes to the value 
    * of the Z in the Point Cloud or distances, the values of 
-   *  the Point cloud are mapped from (0.0 - 8.0)  to gray color (0 - 255)
+   *  the Point cloud are mapped from (0 - 4500) mm  to gray color (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);
 
-  //get each pixel as int [] 512 x 424
-  //int [] rawData = kinect.getRawPointCloudDepth();
+  //raw Data int valeus from [0 - 4500]
+  int [] rawData = kinect.getRawDepthData();
 
   //Threahold of the point Cloud.
   kinect.setLowThresholdPC(minD);
@@ -53,22 +51,22 @@ void draw() {
 
 void keyPressed() {
   if (key == '1') {
-    minD += 0.01;
+    minD += 10;
     println("Change min: "+minD);
   }
 
   if (key == '2') {
-    minD -= 0.01;
+    minD -= 10;
     println("Change min: "+minD);
   }
 
   if (key == '3') {
-    maxD += 0.01;
+    maxD += 10;
     println("Change max: "+maxD);
   }
 
   if (key == '4') {
-    maxD -= 0.01;
+    maxD -=10;
     println("Change max: "+maxD);
   }
 }
