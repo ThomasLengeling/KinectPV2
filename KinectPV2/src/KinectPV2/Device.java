@@ -1,862 +1,803 @@
 package KinectPV2;
 
 /*
-Copyright (C) 2014  Thomas Sanchez Lengeling.
-KinectPV2, Kinect for Windows v2 library for processing
+ Copyright (C) 2014  Thomas Sanchez Lengeling.
+ KinectPV2, Kinect for Windows v2 library for processing
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import com.jogamp.common.nio.Buffers;
 
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PVector;
 
 /**
  * Initilice Device
+ * 
  * @author Thomas Sanchez Lengeling
  *
  */
-public class Device implements Constants, FaceProperties, SkeletonProperties, Runnable {
-		
-	static { 
+public class Device implements Constants, FaceProperties, SkeletonProperties,
+		Runnable {
+
+	static {
 		int arch = Integer.parseInt(System.getProperty("sun.arch.data.model"));
 		String platformName = System.getProperty("os.name");
 		platformName = platformName.toLowerCase();
-		System.out.println(arch +" "+platformName);
+		System.out.println(arch + " " + platformName);
 		if (arch == 64) {
 			System.loadLibrary("Kinect20.Face");
 			System.loadLibrary("KinectPV2");
 			System.out.println("Loading KinectV2");
 		} else {
-			System.out.println("error loading 32bits");
+			System.out.println("not compatible with 32bits");
 		}
 	}
+
+	// IMAGES
+	private Image colorImg;
+	private Image depthImg;
+	private Image depth256Img;
+	private Image infraredImg;
+	private Image infraredLongExposureImg;
+	private Image bodyTrackImg;
+	private Image []  bodyTrackUsersImg;
+	private Image depthMaskImg;
+
 	
-	private  Image colorImg;
-	private  Image depthImg;
-	private  short[] depthDataRaw;
-	private  Image infraredImg;
-	private  Image longExposureImg;
-	private  Image bodyTrackImg;
-	private  Image depthMaskImg;
-	private  Image pointCloudDepthImg;
-	private  Image coordinateRGBDepthImg;
-	
-	private Skeleton   [] skeletonDepth;
-	private Skeleton   [] skeleton3d;
-	private Skeleton   [] skeletonColor;
-	
-	private HDFaceData [] HDFace;
-	
-	private FaceData   [] faceData; 
-	
+	private Image pointCloudDepthImg;
+
+	// SKELETON
+	private Skeleton[] skeletonDepth;
+	private Skeleton[] skeleton3d;
+	private Skeleton[] skeletonColor;
+
+	private HDFaceData[] HDFace;
+
+	private FaceData[] faceData;
+
+	protected boolean runningKinect;
+	protected boolean stopDevice;
+
 	FloatBuffer pointCloudDepthPos;
 	FloatBuffer pointCloudColorPos;
 	FloatBuffer colorChannelBuffer;
-	
-	private boolean runningKinect;
-	public boolean isRunningKinect() {
-		return runningKinect;
-	}
 
-	protected void setRunningKinect(boolean runningKinect) {
-		this.runningKinect = runningKinect;
-	}
-
-	
 	private PApplet parent;
 	private long ptr;
-	
+
 	private boolean startSensor;
-	
-	
-	
+
 	/**
 	 * Start device
-	 * @param _p PApplet
+	 * 
+	 * @param _p
+	 *            PApplet
 	 */
-	public Device(PApplet _p){
+	public Device(PApplet _p) {
 		parent = _p;
-		colorImg        = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
-		coordinateRGBDepthImg =  new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
-		depthImg        = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
-		depthDataRaw = new short[WIDTHDepth*HEIGHTDepth];
+		// SETUP IMAGES
+		colorImg = new Image(parent, WIDTHColor, HEIGHTColor, PImage.ARGB);
+		depthImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+		depth256Img = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+		infraredImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+
+		bodyTrackImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
+		depthMaskImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
 		
-		infraredImg     = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
+	
+		bodyTrackUsersImg = new Image[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
+			bodyTrackUsersImg[i] = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
+		}  
 		
-		bodyTrackImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
-		depthMaskImg    = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
-		
-		longExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
-		
-		pointCloudDepthImg = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ALPHA);
-				
-		skeletonDepth 		= new Skeleton[BODY_COUNT];
-		for(int i = 0; i < BODY_COUNT; i++){
+
+		infraredLongExposureImg = new Image(parent, WIDTHDepth, HEIGHTDepth,
+				PImage.ALPHA);
+
+		pointCloudDepthImg = new Image(parent, WIDTHDepth, HEIGHTDepth,
+				PImage.ALPHA);
+
+		pointCloudDepthPos = Buffers.newDirectFloatBuffer(WIDTHDepth
+				* HEIGHTDepth * 3);
+		pointCloudColorPos = Buffers.newDirectFloatBuffer(WIDTHColor
+				* HEIGHTColor * 3);
+		colorChannelBuffer = Buffers.newDirectFloatBuffer(WIDTHColor
+				* HEIGHTColor * 3);
+
+		// SETUP SKELETON
+		skeletonDepth = new Skeleton[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
 			skeletonDepth[i] = new Skeleton();
 		}
-		
-		skeleton3d 		= new Skeleton[BODY_COUNT];
-		for(int i = 0; i < BODY_COUNT; i++){
+
+		skeleton3d = new Skeleton[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
 			skeleton3d[i] = new Skeleton();
 		}
-		
-		skeletonColor 	= new Skeleton[BODY_COUNT];
-		for(int i = 0; i < BODY_COUNT; i++){
+
+		skeletonColor = new Skeleton[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
 			skeletonColor[i] = new Skeleton();
 		}
-		
-		faceData 		= new FaceData[BODY_COUNT];
-		for(int i = 0; i < BODY_COUNT; i++){
+
+		// SETUP FACEDATA
+		faceData = new FaceData[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
 			faceData[i] = new FaceData();
 		}
-		
-		HDFace  = new HDFaceData[BODY_COUNT];
-		for(int i = 0; i < BODY_COUNT; i++) {
+
+		HDFace = new HDFaceData[BODY_COUNT];
+		for (int i = 0; i < BODY_COUNT; i++) {
 			HDFace[i] = new HDFaceData();
 		}
 		
-		pointCloudDepthPos  = Buffers.newDirectFloatBuffer(WIDTHDepth * HEIGHTDepth * 3);
-		pointCloudColorPos  = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
-		colorChannelBuffer  = Buffers.newDirectFloatBuffer(WIDTHColor * HEIGHTColor * 3);
-				
-		//FloatBuffer.allocate( WIDTHDepth * HEIGHTDepth * 3);
 		startSensor = false;
+
 		jniDevice();
-		
+
 	}
-	
-	protected void initDevice(){
+
+	protected void initDevice() {
 		startSensor = jniInit();
-		if(startSensor == false){
+		String load = jniVersion();
+		System.out.println("Version: " + load);
+		
+		if (startSensor == false) {
 			System.out.println("ERROR STARTING KINECT V2");
 			parent.exit();
 		}
-		
-		if(startSensor){
-			setRunningKinect(true);
+
+		if (startSensor) {
+			runningKinect = true;
 			(new Thread(this)).start();
 		}
-		
-		String load = jniVersion();
-		System.out.println("Version: "+load);
-	}
-	
-	//COPY IMAGES TYPES FROM JNI FUNTIONS
-	private void copyColorImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, colorImg.pixels(), 0, colorImg.getImgSize());
-		colorImg.updatePixels();
-			
-		if(colorImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0, colorImg.getImgSize());
-	}
-	
-	//independet channels Color Image
-	private void copyColorChannelImg(float [] rawData) {
-		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
-			colorChannelBuffer.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
-			colorChannelBuffer.rewind();
-		}
 	}
 
-	
-	private void copyDepthImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0, depthImg.getImgSize());
-		depthImg.updatePixels();
-		if(depthImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
-	}
-	
-	private void copyDepthRawData(short [] rawData){
-		PApplet.arrayCopy(rawData, 0, depthDataRaw, 0, depthImg.getImgSize());
-//		depthImg.updatePixels();
-//		if(depthImg.isProcessRawData())
-//			PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
-	}
-	
-	private void copyDepthMaskImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, depthMaskImg.pixels(), 0, depthMaskImg.getImgSize());
-		depthMaskImg.updatePixels();
-		if(depthMaskImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, depthMaskImg.rawIntData, 0, depthMaskImg.getImgSize());
-		
-	}
-	
-	private void copyInfraredImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, infraredImg.pixels(), 0, infraredImg.getImgSize());
-		infraredImg.updatePixels();
-			
-		if(infraredImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, infraredImg.rawIntData, 0, infraredImg.getImgSize());
-	}
-	
-	private void copyBodyTrackImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, bodyTrackImg.pixels(), 0, bodyTrackImg.getImgSize());
-		bodyTrackImg.updatePixels();
-		
-		if(bodyTrackImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, bodyTrackImg.rawIntData, 0, bodyTrackImg.getImgSize());
-	}
-	
-	private void copyLongExposureImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, longExposureImg.pixels(), 0, longExposureImg.getImgSize());
-		longExposureImg.updatePixels();
-		
-		if(longExposureImg.isProcessRawData())
-			PApplet.arrayCopy(rawData, 0, longExposureImg.rawIntData, 0, longExposureImg.getImgSize());
-	}
-	
-	//POINT CLOUD DEPTH
-	private void copyPointCloudImage(int [] rawData) {
-		if(rawData.length ==  WIDTHDepth * HEIGHTDepth) {
-			PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.rawIntData, 0, pointCloudDepthImg.getImgSize());
-			PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.pixels(), 0, pointCloudDepthImg.getImgSize());
-			pointCloudDepthImg.updatePixels();
-		}
-	}
-	
-	//SKELETON DEPTH
-	private void copySkeletonDepthData(float [] rawData){
-		if(rawData.length == JOINTSIZE){
-			for(int i = 0; i < BODY_COUNT; i++){
-				skeletonDepth[i].createSkeletonDepth(rawData, i);
-			}
-		}
-	}
-	
-	//Color Data 
-	private void copySkeletonColorData(float [] rawData){
-		if(rawData.length == JOINTSIZE)
-			for(int i = 0; i < BODY_COUNT; i++){
-				skeletonColor[i].createSkeletonDepth(rawData, i);
-			}
-	}
-	
-	//SKELETON 3D
-	private void copySkeleton3DData(float [] rawData){
-		if(rawData.length == JOINTSIZE) {
-			for(int i = 0; i < BODY_COUNT; i++){
-				skeleton3d[i].createSkeleton3D(rawData, i);
-			}
-		}
-	}
-	
-	private void copyRawDepthImg(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0, depthImg.getImgSize());
-	}
-	
-	private void copyPointCloudPos(float [] rawData){
-		if(rawData.length == WIDTHDepth * HEIGHTDepth * 3){
-			pointCloudDepthPos.put(rawData, 0, WIDTHDepth * HEIGHTDepth * 3);
-			pointCloudDepthPos.rewind();
-		}
-	}
-
-	//positions
-	private void copyPointCloudColor(float [] rawData){
-		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
-			pointCloudColorPos.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
-			pointCloudColorPos.rewind();
-		}
-	}
-	
-	private void copyColorBuffer(float [] rawData){
-		if(rawData.length == WIDTHColor * HEIGHTColor * 3){
-			colorChannelBuffer.put(rawData, 0, WIDTHColor * HEIGHTColor * 3);
-			colorChannelBuffer.rewind();
-		}
-	}
-	
-	//FACE DATA
-	private void copyFaceRawData(float [] rawData){
-		if(rawData.length == FACESIZE){
-			for(int i = 0; i < BODY_COUNT; i++)
-				faceData[i].createFaceData(rawData, i);
-		}
-	}
-	
-	//HDFACE
-	private void copyHDFaceVertexRawData(float [] rawData) {
-		if(rawData.length == HDFaceVertexCount * BODY_COUNT * 2 + BODY_COUNT){
-			for(int i = 0; i < BODY_COUNT; i++)
-				HDFace[i].createHDFaceVertexData(rawData, i);
-		}
-	}
-	
-	//Coordinate Mappers
-	private void copyCoordinateMapper(int [] rawData){
-		PApplet.arrayCopy(rawData, 0, coordinateRGBDepthImg.pixels(), 0, coordinateRGBDepthImg.getImgSize());
-		coordinateRGBDepthImg.updatePixels();
-	}
-	
-	
-	
-
+	// IMAGES
 	/**
-	 * Get Point Cloud Depth Map as FloatBuffer
-	 * @return FloatBuffer
-	 */
-	public FloatBuffer getPointCloudDepthPos(){
-		return pointCloudDepthPos;
-	}
-	
-	public FloatBuffer getPointCloudColorPos() {
-		return pointCloudColorPos;
-	}
-	
-	public FloatBuffer getColorChannelBuffer(){
-		return colorChannelBuffer;
-	}
-	
-	
-	//HD FACE RELATED
-	public HDFaceData [] getHDFaceVertex() {
-		return HDFace;
-	}
-	
-	/**
-	 * Get Face Data, up to 6 users
-	 * @return Array of FaceData 
-	 */
-	public FaceData [] getFaceData(){
-		return faceData;
-	}
-	
-	/**
-	 * Get Skeleton as Joints with Positions and Tracking states
-	 * in 3D, (x,y,z) joint and orientation,  Skeleton up to 6 users
-	 * @return Skeleton []
-	 */
-	public Skeleton [] getSkeleton3d(){
-		return skeleton3d;
-	}
-	
-	/**
-	 * Get Skeleton as Joints with Positions and Tracking states
-	 * base on Depth Image, Skeleton with only (x, y) skeleton position mapped
-	 * to the depth Image, get z value from the Depth Image.
-	 * @return Skeleton []
-	 */
-	public Skeleton [] getSkeletonDepthMap(){
-		return skeletonDepth;
-	}
-	
-	/**
-	 * Get Skeleton as Joints with Positions and Tracking states
-	 * base on color Image, 
-	 * @return Skeleton []
-	 */
-	public Skeleton [] getSkeletonColorMap(){
-		return skeletonColor;
-	}
-	
-	//IMAGES
-	/**
-	 * Get Color Image as PImage
-	 * 1920 x 1080
+	 * Get Color Image as PImage 1920 x 1080
+	 * 
 	 * @return PImage
 	 */
-	public PImage getColorImage(){
+	public PImage getColorImage() {
+		int[] colorData = jniGetColorData();
+		PApplet.arrayCopy(colorData, 0, colorImg.pixels(), 0,
+				colorImg.getImgSize());
+		colorImg.updatePixels();
+
+        PApplet.arrayCopy(colorData, 0, colorImg.rawIntData, 0,
+                colorImg.getImgSize());
+
+		
 		return colorImg.img;
 	}
 	
-	/**
-	 * Get Depth Image as PImage
-	 * 512 x 424
-	 * @return PImage
-	 */
-	public PImage getDepthImage(){
-		return depthImg.img;
-	}
 	
-	/**
-	 * get Depth Mask Image, outline color of the users.
-	 * @return PImage
-	 */
-	public PImage getDepthMaskImage(){
-		return depthMaskImg.img;
-	}
-	
-	/**
-	 * Get InfraredImage as PImage
-	 * 512 x 424
-	 * @return PImage
-	 */
-	public PImage getInfraredImage(){
-		return infraredImg.img;
-	}
-	
-	/**
-	 * Get BodyTracking as PImage
-	 * 512 x 424
-	 * @return PImage
-	 */
-	public PImage getBodyTrackImage(){
-		return bodyTrackImg.img;
-	}
-	
-	/**
-	 * Get Long Exposure Infrared Image as PImage
-	 * 512 x 424
-	 * @return PImage
-	 */
-	public PImage getLongExposureInfraredImage(){
-		return longExposureImg.img;
-	}
-	
-	
-	public PImage getPointCloudDepthImage() {
-		return pointCloudDepthImg.img;
-	}
-	
-	
-	/**
-	 * Get Raw Depth Data
-	 *  512 x 424
-	 * @return short []
-	 */
-	public short [] getRawDepth(){
-		return depthDataRaw;
-	}
-	
-	/**
-	 * Get Raw DepthMask Data
-	 *  512 x 424
-	 * @return int []
-	 */
-	public int [] getRawDepthMask(){
-		return depthMaskImg.rawIntData;
-	}
-	
-	/**
-	 * Get Raw Color Data
-	 * 1920 x 1080
-	 * @return int []
-	 */
 	public int [] getRawColor(){
 		return colorImg.rawIntData;
 	}
-	
+
+
 	/**
-	 * Get Raw Infrared Data
-	 *  512 x 424
-	 * @return int []
+	 * Get Depth Image as PImage 512 x 424
+	 * 
+	 * @return PImage
 	 */
-	public int [] getRawInfrared(){
-		return infraredImg.rawIntData;
+	public PImage getDepthImage() {
+		int [] depthData = jniGetDepth16Data();
+		PApplet.arrayCopy(depthData, 0, depthImg.pixels(), 0,
+				depthImg.getImgSize());
+		depthImg.updatePixels();
+
+		return depthImg.img;
+	}
+
+	/**
+	 * Get Depth 256 strip data 512 x 424
+	 * @return PImage
+	 */ 
+	public PImage getDepth256Image() {
+		int[] depth256Data = jniGetDepth256Data();
+		PApplet.arrayCopy(depth256Data, 0, depth256Img.pixels(), 0,
+				depth256Img.getImgSize());
+		depth256Img.updatePixels();
+
+		// jniDepthReadyCopy(true);
+		return depth256Img.img;
 	}
 	
 	/**
-	 * Get Raw BodyTracking Data
-	 *  512 x 424
-	 * @return int []
+	 * Obtain the raw depth data values in mm from 0 to 4500
+	 * @return array of int
 	 */
-	public int [] getRawBodyTrack(){
-		return bodyTrackImg.rawIntData;
+	public int []  getRawDepthData(){
+		return jniGetRawDepth16Data();
 	}
 	
+	
 	/**
-	 *  Get Raw LongExposure Data
-	 *  512 x 424
-	 * @return int []
+	 * Obtain the raw depth data values in mm from 0 to 256 
+	 * Data based on the  getDepth256Image
+	 * @return array of int
 	 */
-	public int [] getRawLongExposure(){
-		return longExposureImg.rawIntData;
+	public int []  getRawDepth256Data(){
+		return jniGetRawDepth256Data();
 	}
 	
-	public int [] getRawPointCloudDepth() {
-		return pointCloudDepthImg.rawIntData;
-	}
 	
-	public PImage getCoordinateRGBDepthImage() {
-		return coordinateRGBDepthImg.img;
-	}
-	
-	//ACTIVATE RAW DATA
 	/**
-	 * Activate Raw Color Image Capture.
-	 * Use getRawColor() Method
-	 * @param boolean toggle 
+	 * Get Depth Mask Image, outline color of the users.
+	 * 
+	 * @return PImage
 	 */
-	public void activateRawColor(boolean toggle){
-		colorImg.activateRawData(toggle);
+	public PImage getDepthMaskImage() {
+		int[] depthMaskData = jniGetDepthMask();
+		PApplet.arrayCopy(depthMaskData, 0, depthMaskImg.pixels(), 0,
+				depthMaskImg.getImgSize());
+		depthMaskImg.updatePixels();
+
+		// jniDepthReadyCopy(true);
+		return depthMaskImg.img;
+	}
+
+	/**
+	 * Get InfraredImage as PImage 512 x 424
+	 * 
+	 * @return PImage
+	 */
+	public PImage getInfraredImage() {
+		int[] infraredData = jniGetInfraredData();
+		PApplet.arrayCopy(infraredData, 0, infraredImg.pixels(), 0,
+				infraredImg.getImgSize());
+		infraredImg.updatePixels();
+
+		return infraredImg.img;
+	}
+
+	/**
+	 * Get BodyTracking as PImage 512 x 424
+	 * 
+	 * @return PImage
+	 */
+	public PImage getBodyTrackImage() {
+		int[] bodyTrackData = jniGetBodyTrack();
+		PApplet.arrayCopy(bodyTrackData, 0, bodyTrackImg.pixels(), 0,
+				bodyTrackImg.getImgSize());
+		bodyTrackImg.updatePixels();
+
+		return bodyTrackImg.img;
+	}
+
+	/**
+	 * Get Independent Body Index Track
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public ArrayList getBodyTrackUser() {
+		ArrayList<PImage> listBodyTack = new ArrayList<PImage>(0);
+		int [] usersIds = jniGetBodyTrackIds();
+		
+		for(int i = 0; i < usersIds.length; i++){
+			if( usersIds[i] == 1){
+				int[] rawData = jniGetBodyIndexUser(i);
+				PApplet.arrayCopy(rawData, 0, bodyTrackUsersImg[i].pixels(), 0, bodyTrackUsersImg[i].getImgSize());
+				bodyTrackUsersImg[i].updatePixels();
+				listBodyTack.add(bodyTrackUsersImg[i].img);
+			}
+		}
+		return listBodyTack;
 	}
 	
-	/**
-	 * Activate Raw Depth Image Capture
-	 * Use getRawDepth() Method
-	 * @param boolean toggle 
-	 */
-	public void activateRawDepth(boolean toggle){
-		depthImg.activateRawData(toggle);
-	}
+	
 	
 	/**
-	 * Activate Raw Depth Image Capture
-	 * Use getDepthMaskRaw() Method
-	 * @param boolean toggle 
+	 * Get the Number of currently track users based on the Body Track frame
+	 * @return Number of Users
 	 */
-	public void activateRawDepthMaskImg(boolean toggle){
-		depthMaskImg.activateRawData(toggle);
+	public int getNumOfUsers(){
+		return jniGetNumberOfUsers();
 	}
-	
+
 	/**
-	 * Activate Raw Infrared Image Capture
-	 * Use getRawInfrared() Method
-	 * @param boolean toggle 
+	 * Get Long Exposure Infrared Image as PImage 512 x 424
+	 * 
+	 * @return PImage
 	 */
-	public void activateRawInfrared(boolean toggle){
-		infraredImg.activateRawData(toggle);
+	public PImage getInfraredLongExposureImage() {
+		int[] longExposureData = jniGetInfraredLongExposure();
+		PApplet.arrayCopy(longExposureData, 0,
+				infraredLongExposureImg.pixels(), 0,
+				infraredLongExposureImg.getImgSize());
+		infraredLongExposureImg.updatePixels();
+
+		return infraredLongExposureImg.img;
 	}
-	
+
 	/**
-	 * Activate Raw BodyTrack Image Capture
-	 * Use getRawBodyTrack() Method
-	 * @param boolean toggle 
+	 * Get Skeleton as Joints with Positions and Tracking states in 3D, (x,y,z)
+	 * joint and orientation, Skeleton up to 6 users
+	 * 
+	 * @return Skeleton []
 	 */
-	public void activateRawBodyTrack(boolean toggle){
-		bodyTrackImg.activateRawData(toggle);
+	public Skeleton[] getSkeleton3d() {
+		float[] rawData = jniGetSkeleton3D();
+		for (int i = 0; i < BODY_COUNT; i++) {
+			skeleton3d[i].createSkeletonData(rawData, i);
+		}
+		return skeleton3d;
 	}
+
 	/**
-	 * Activate Raw LongExposureInfrared Image Capture
-	 * use getRawLongExposure() method
-	 * @param boolean toggle 
+	 * Get Skeleton as Joints with Positions and Tracking states base on Depth
+	 * Image, Skeleton with only (x, y) skeleton position mapped to the depth
+	 * Image, get z value from the Depth Image.
+	 * 
+	 * @return Skeleton []
 	 */
-	public void activateRawLongExposure(boolean toggle){
-		longExposureImg.activateRawData(toggle);
+	public Skeleton[] getSkeletonDepthMap() {
+		float[] rawData = jniGetSkeletonDepth();
+		for (int i = 0; i < BODY_COUNT; i++) {
+			skeletonDepth[i].createSkeletonData(rawData, i);
+		}
+		return skeletonDepth;
 	}
-	
+
 	/**
-	 * Enable or Disable Color Image Capture
-	 * @param boolean toggle 
+	 * Get Skeleton as Joints with Positions and Tracking states base on color
+	 * Image,
+	 * 
+	 * @return Skeleton []
 	 */
-	public void enableColorImg(boolean toggle){
-		jniEnableColorFrame(toggle);
+	public Skeleton[] getSkeletonColorMap() {
+		float[] rawData = jniGetSkeletonColor();
+		for (int i = 0; i < BODY_COUNT; i++) {
+			skeletonColor[i].createSkeletonData(rawData, i);
+		}
+		return skeletonColor;
 	}
-	
+
+	// FACE DATA
+
 	/**
-	 * Enable or disable enableColorChannel
-	 * 3 independent color channels 1920 x 1080 x 3 from 0-1
-	 * Ideally for openGL calls
+	 * Generate Face Data for color map and infrared map
+	 */
+	public void generateFaceData() {
+		float[] rawFaceColorData = jniGetFaceColorData();
+		float[] rawFaceInfraredData = jniGetFaceInfraredData();
+
+		for (int i = 0; i < BODY_COUNT; i++)
+			faceData[i].createFaceData(rawFaceColorData, rawFaceInfraredData, i);
+
+	}
+
+	/**
+	 * Obtain Vertex positions corresponding the HD Color frame
+	 * @return
+	 */
+	public HDFaceData[] getHDFaceVertex() {
+		float[] rawData = jniGetHDFaceDetection();
+		for (int i = 0; i < BODY_COUNT; i++)
+			HDFace[i].createHDFaceVertexData(rawData, i);
+		return HDFace;
+	}
+
+	public FaceData[] getFaceData() {
+		return faceData;
+	}
+
+	// POINT CLOUDS
+
+	/**
+	 * Get Point Cloud Depth Map as FloatBuffer, transform to a float array with .array(), or get values with get(index)
+	 * 
+	 * @return FloatBuffer
+	 */
+	public FloatBuffer getPointCloudDepthPos() {
+		float[] pcRawData = jniGetPointCloudDeptMap();
+		pointCloudDepthPos.put(pcRawData, 0, WIDTHDepth * HEIGHTDepth * 3);
+		pointCloudDepthPos.rewind();
+
+		return pointCloudDepthPos;
+	}
+
+	/**
+	 * Get Point Cloud Color Positions as a FloatBuffer, transform to a float array with .array(), or get values with get(index)
+	 * @return FloatBuffer
+	 */
+	public FloatBuffer getPointCloudColorPos() {
+		float[] pcRawData = jniGetPointCloudColorMap();
+		pointCloudColorPos.put(pcRawData, 0, WIDTHColor * HEIGHTColor * 3);
+		pointCloudColorPos.rewind();
+
+		return pointCloudColorPos;
+	}
+
+	/**
+	 * Get the color channel buffer, 3 channels, 1920 x 1080 x 3 from [0-1]
+	 * transform to a float array with .array(), or get values with get(index)
+	 * Ideal method for load level openGL calls
+	 * @return FloatBuffer
+	 */
+	public FloatBuffer getColorChannelBuffer() {
+		float[] pcRawData = jniGetColorChannel();
+		colorChannelBuffer.put(pcRawData, 0, WIDTHColor * HEIGHTColor * 3);
+		colorChannelBuffer.rewind();
+
+		return colorChannelBuffer;
+	}
+
+	/**
+	 * Enable point cloud capture
 	 * @param toggle
 	 */
-	public void enableColorChannel(boolean toggle) {
-		jniEnableColorChannelsFrame(toggle);
+	public void enablePointCloud(boolean toggle) {
+		jniEnablePointCloud(toggle);
 	}
-	
+
+	/**
+	 * Get Point cloud Depth Image
+	 * @return PImage
+	 */
+	public PImage getPointCloudDepthImage() {
+		int[] rawData = jniGetPointCloudDepthImage();
+		PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.pixels(), 0,
+				pointCloudDepthImg.getImgSize());
+		pointCloudDepthImg.updatePixels();
+
+		return pointCloudDepthImg.img;
+	}
+
+	/**
+	 * Set Threshold Depth Value Z for Point Cloud
+	 * 
+	 * @param float val
+	 */
+	public void setLowThresholdPC(int val) {
+		jniSetLowThresholdDepthPC(val);
+	}
+
+	/**
+	 * Get Threshold Depth Value Z from Point Cloud Default 1.9
+	 * 
+	 * @return default Threshold
+	 */
+	public int getLowThresholdDepthPC() {
+		return jniGetLowThresholdDepthPC();
+	}
+
+	/**
+	 * Set Threshold Depth Value Z for Point Cloud
+	 * 
+	 * @param float val
+	 */
+	public void setHighThresholdPC(int val) {
+		jniSetHighThresholdDepthPC(val);
+	}
+
+	/**
+	 * Get Threshold Depth Value Z from Point Cloud Default 1.9
+	 * 
+	 * @return default Threshold
+	 */
+	public int getHighThresholdDepthPC() {
+		return jniGetHighThresholdDepthPC();
+	}
+
+
+	/**
+	 * Get Raw BodyTracking Data 512 x 424
+	 * 
+	 * @return int []
+	 */
+	public int[] getRawBodyTrack() {
+		return jniGetRawBodyTrack();
+	}
+
+
+	/**
+	 * Enable or Disable Color Image Capture
+	 * 
+	 * @param boolean toggle
+	 */
+	public void enableColorImg(boolean toggle) {
+		jniEnableColorFrame(toggle);
+	}
+
+	/**
+	 * Enable or disable color Point cloud.
+	 * Which is used to obtain getPointCloudColorPos() and getColorChannelBuffer();
+	 * The FloatBuffer getColorChannelBuffer is a 3 independent color channels of 1920 x 1080 x 3,
+	 * Values form between 0 and 1,  ideally for openGL calls
+	 * 
+	 * @param toggle
+	 */
+	public void enableColorPointCloud(boolean toggle) {
+		jniEnableColorChannel(toggle);
+	}
+
 	/**
 	 * Enable or Disable Depth Image Capture
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableDepthImg(boolean toggle){
+	public void enableDepthImg(boolean toggle) {
 		jniEnableDepthFrame(toggle);
 	}
-	
-	
-	
+
 	/**
 	 * Enable or Disable DepthMask Image Capture
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableDepthMaskImg(boolean toggle){
+	public void enableDepthMaskImg(boolean toggle) {
 		jniEnableDepthMaskFrame(toggle);
 	}
-	
+
 	/**
 	 * Enable or Disable Infrared Image Capture
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableInfraredImg(boolean toggle){
+	public void enableInfraredImg(boolean toggle) {
 		jniEnableInfraredFrame(toggle);
 	}
-	
+
 	/**
 	 * Enable or Disable BodyTrack Image Capture
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableBodyTrackImg(boolean toggle){
+	public void enableBodyTrackImg(boolean toggle) {
 		jniEnableBodyTrackFrame(toggle);
 	}
-	
+
 	/**
 	 * Enable or Disable LongExposure Infrared Image Capture
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableLongExposureInfraredImg(boolean toggle){
-		jniEnableLongExposureInfrared(toggle);
+	public void enableInfraredLongExposureImg(boolean toggle) {
+		jniEnableInfraredLongExposure(toggle);
 	}
-	
+
 	/**
-	 * Enable or Disable Skeleton tracking
-	 * @param boolean toggle 
+	 * Enable or Disable Skeleton Depth Map Capture
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableSkeleton(boolean toggle){
-		jniEnableSkeleton(toggle);
+	public void enableSkeletonDepthMap(boolean toggle) {
+		jniEnableSkeletonDepth(toggle);
 	}
-	
+
 	/**
-	 * Enable or Disable Skeleton tracking Color Map
-	 * @param boolean toggle 
+	 * Enable or Disable Skeleton Color Map Capture
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableSkeletonColorMap(boolean toggle){
-		jniEnableSkeletonColorMap(toggle);
+	public void enableSkeletonColorMap(boolean toggle) {
+		jniEnableSkeletonColor(toggle);
 	}
-	
+
 	/**
-	 * Enable or Disable Skeleton tracking 3d Map
-	 * @param boolean toggle 
+	 * Enable or Disable Skeleton 3D Map Capture
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableSkeleton3dMap(boolean toggle){
-		jniEnableSkeleton3dMap(toggle);
+	public void enableSkeleton3DMap(boolean toggle) {
+		jniEnableSkeleton3D(toggle);
 	}
-	
-	/**
-	 * Enable or Disable Skeleton tracking Depth Map
-	 * @param boolean toggle 
-	 */
-	public void enableSkeletonDepthMap(boolean toggle){
-		jniEnableSkeletonDepthMap(toggle);
-	}
-	
-	
+
 	/**
 	 * Enable or Disable Face Tracking
-	 * @param boolean toggle 
+	 * 
+	 * @param boolean toggle
 	 */
-	public void enableFaceDetection(boolean toggle){
+	public void enableFaceDetection(boolean toggle) {
 		jniEnableFaceDetection(toggle);
 	}
-	
+
 	/**
 	 * Enable HDFace detection
+	 * 
 	 * @param toggle
 	 */
 	public void enableHDFaceDetection(boolean toggle) {
 		jniEnableHDFaceDetection(toggle);
 	}
 	
-	
-	/**
-	 * Enable or Disable Point Cloud from Depth 
-	 * @param boolean toggle 
-	 */
-	public void enablePointCloud(boolean toggle){
-		jniEnablePointCloud(toggle);
+	public void  enableCoordinateMapperRGBDepth(boolean toggle){
+		jniEnableCoordinateMapperRGBDepth();
 	}
-	
-	/**
-	 * Enable Coordinate Mapper RGB Depth
-	 * Green screen effect 
-	 * @param toggle
-	 */
-	public void enableCoordinateMapperRGBDepth(boolean toggle) {
-		jniEnableCoordinateMappingRGBDepth(toggle);
-	}
-	
-	/**
-	 * Set Threshold Depth Value Z for Point Cloud
-	 * @param float val
-	 */
-	public void setLowThresholdPC(float val){
-		jniSetLowThresholdDepthPC(val);
-	}
-	
-	/**
-	 * Get Threshold Depth Value Z from Point Cloud
-	 * Default 1.9
-	 * @return default Threshold
-	 */
-	public float  getLowThresholdDepthPC(){
-		return jniGetLowThresholdDepthPC();
-	}
-	
-	
-	/**
-	 * Set Threshold Depth Value Z for Point Cloud
-	 * @param float val
-	 */
-	public void setHighThresholdPC(float val){
-		jniSetHighThresholdDepthPC(val);
-	}
-	
-	/**
-	 * Get Threshold Depth Value Z from Point Cloud
-	 * Default 1.9
-	 * @return default Threshold
-	 */
-	public float  getHighThresholdDepthPC(){
-		return jniGetHighThresholdDepthPC();
-	}
-	
-	/**
-	 * Set the background Image for the Coordinate Mapper
-	 * @param array of pixels
-	 */
-	public void setCoordBkgImg(int [] pixels) {
-		int [] sendPixels = new int[pixels.length*4];
-		for(int i = 0; i < pixels.length; i++) {
-			int index = i;
-			int pixel = pixels[i];
-			int  r = (pixel >> 24) & 0xFF;
-			int  g = (pixel >> 16) & 0xFF;
-			int  b = (pixel >> 8) & 0xFF;
-			int  a  = pixel & 0xFF;
-			
-			sendPixels[index*4 + 0] = a;  //R
-			sendPixels[index*4 + 1] = b;//G
-			sendPixels[index*4 + 2] = g; //B
-			sendPixels[index*4 + 3] = r;//ALPHA
-		}
-		jniSendArrayInts(sendPixels);
-	}
-	
-	/**
-	 * Enable point cloud color 
-	 * @param toggle
-	 */
-	public void enablePointCloudColor(boolean toggle){
-		jniEnablePointCloudColor(toggle);
-	}
-	
-	/**
-	 * Map Depth to Camara Table
-	 * unsupported
-	 * @return
-	 */
-	public float []  getMapDethCamaraTable(){
-		return jniEnableMapDethCamaraTable();
-	}
-	
-	
-	/**
-	 * Map Depth to color frame
-	 * @return
-	 */
-	public float [] getMapDepthToColor (){
-		return jniEnableMapDethToColorSpace();
-	}
-	
-	/*
-	public void enableMirror(boolean toggle){
-		jniSetMirror(toggle);
-	}
-	*/
 
-	protected boolean updateDevice(){
-		boolean result =  jniUpdate();
+	/*
+	 * public void enableMirror(boolean toggle){ jniSetMirror(toggle); }
+	 */
+	
+	//MAPPERS
+	public PVector MapCameraPointToDepthSpace(PVector pos){
+		float [] rawData = jniMapCameraPointToDepthSpace(pos.x, pos.y, pos.z);
+		return new PVector(rawData[0], rawData[1]);
+	}
+	
+	public PVector MapCameraPointToColorSpace(PVector pos){
+		float [] rawData = jniMapCameraPointToColorSpace(pos.x, pos.y, pos.z);
+		return new PVector(rawData[0], rawData[1]);
+	}
+	
+	public float [] getMapDepthToColor(){
+		return jniGetMapDethToColorSpace();
+	}
+		
+		
+	protected boolean updateDevice() {
+		boolean result = jniUpdate();
 		return result;
 	}
-	
 
-	protected void stopDevice(){
-		skeleton3d = null;
-		skeletonDepth = null;
-		skeletonColor = null;
-		colorImg = null;
-		depthImg = null;
-		infraredImg = null;
-		longExposureImg = null;
-		bodyTrackImg= null;
+	protected void stopDevice() {
 		jniStopDevice();
 	}
 	
-	//------JNI FUNCTIONS
-	private native void jniDevice();
-	
-	private native boolean jniInit();
-	
-	private native String jniVersion();
-	
-	private native boolean jniUpdate();
-	
-	private native void jniStopDevice();
-	
-	private native void jniEnableColorFrame(boolean toggle);
-	
-	private native void jniEnableColorChannelsFrame(boolean toggle);
-	
-	private native void jniEnableDepthFrame(boolean toggle);
-	
-	private native void jniEnableDepthMaskFrame(boolean toggle);
-	
-	private native void jniEnableInfraredFrame(boolean toggle);
-	
-	private native void jniEnableBodyTrackFrame(boolean toggle);
-	
-	private native void jniEnableLongExposureInfrared(boolean toggle);
-	
-	
-	private native void jniEnableSkeleton(boolean toggle);
-	
-	private native void jniEnableSkeletonColorMap(boolean toggle);
-	
-	private native void jniEnableSkeletonDepthMap(boolean toggle);
-	
-	private native void jniEnableSkeleton3dMap(boolean toggle);
-	
-	//SEND IMAGE FOR COODINATOR
-	private native void jniSendArrayInts (int [] array);
-	
-	
-	private native void jniEnableFaceDetection(boolean toggle);
-	
-	private native void jniEnableHDFaceDetection(boolean toggle);
-	
-	private native void jniEnableCoordinateMappingRGBDepth(boolean toggle);
-	
-	private native void jniEnablePointCloud(boolean toggle);
-	
-	private native void jniEnablePointCloudColor(boolean toggle);
-	
-	
-	
-	private native void jniSetLowThresholdDepthPC(float val);
-	
-	private native float jniGetLowThresholdDepthPC();
+	protected void cleanDevice() {
+		jniStopSignal();
+	}
+
+	// ------JNI FUNCTIONS
+	private native void 	jniDevice();
+
+	private native boolean 	jniInit();
+
+	private native String 	jniVersion();
+
+	private native boolean 	jniUpdate();
+
+	// STOP
+	private native void 	jniStopDevice();
+
+	private native boolean 	jniStopSignal();
+
+	// ENABLE FRAMES
+	private native void 	jniEnableColorFrame(boolean toggle);
+
+	private native void 	jniEnableDepthFrame(boolean toggle);
+
+	private native void 	jniEnableDepthMaskFrame(boolean toggle);
+
+	private native void 	jniEnableInfraredFrame(boolean toggle);
+
+	private native void 	jniEnableBodyTrackFrame(boolean toggle);
+
+	private native void 	jniEnableInfraredLongExposure(boolean toggle);
+
+	private native void 	jniEnableSkeletonDepth(boolean toggle);
+
+	private native void 	jniEnableSkeletonColor(boolean toggle);
+
+	private native void 	jniEnableSkeleton3D(boolean toggle);
+
+	private native void 	jniEnableFaceDetection(boolean toggle);
+
+	private native void 	jniEnableHDFaceDetection(boolean toggle);
+
+	private native void 	jniEnablePointCloud(boolean toggle);
 	
 
-	private native void  jniSetHighThresholdDepthPC(float val);
+	// COLOR CHANNEL
+	private native void     jniEnableColorChannel(boolean toggle);
 	
-	private native float jniGetHighThresholdDepthPC();
+	private native float[] 	jniGetColorChannel();
+
 	
-	//mappers
-	private native float []  jniEnableMapDethCamaraTable();
+	private native int[] 	jniGetColorData();
+
 	
-	private native float []  jniEnableMapDethToColorSpace();
+	// DEPTH
+	private native int[] 	jniGetDepth16Data();
+	
+	private native int[] 	jniGetDepth256Data();
+	
+	//DEPTH RAW
+	
+	private native int[] 	jniGetRawDepth16Data();
+	
+	private native int[] 	jniGetRawDepth256Data();
 	
 
+	private native int[] 	jniGetInfraredData();
+
+	private native int[] 	jniGetInfraredLongExposure();
+
+	private native int[] 	jniGetBodyTrack();
+
+	private native int[] 	jniGetDepthMask();
+
+	private native float[] 	jniGetSkeleton3D();
+
+	private native float[] 	jniGetSkeletonDepth();
+
+	private native float[] 	jniGetSkeletonColor();
+
+	private native float[] 	jniGetFaceColorData();
+
+	private native float[] 	jniGetFaceInfraredData();
+
+	private native float[] 	jniGetHDFaceDetection();
+
+	// POINT CLOUD
+	private native float[] 	jniGetPointCloudDeptMap();
+
+	private native float[] 	jniGetPointCloudColorMap();
+
+	private native int[] 	jniGetPointCloudDepthImage();
+
+	// PC THRESHOLDS
+	private native void 	jniSetLowThresholdDepthPC(int val);
+
+	private native int 		jniGetLowThresholdDepthPC();
+
+	private native void 	jniSetHighThresholdDepthPC(int val);
+
+	private native int     	jniGetHighThresholdDepthPC();
+
+	// BODY INDEX
+	private native void     jniSetNumberOfUsers(int index);
+
+	private native int[] 	jniGetBodyIndexUser(int index);
+	
+	private native int[]   	jniGetBodyTrackIds();
+	
+	private native int[]    jniGetRawBodyTrack();
+	
+	private native int      jniGetNumberOfUsers();
+	//crists
+	
+	//MAPERS
+	private native float[]	jniMapCameraPointToDepthSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
+	
+	private native float[]  jniMapCameraPointToColorSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
+
+	private native float[]  jniGetMapDethToColorSpace();
+	
+	private native void     jniEnableCoordinateMapperRGBDepth();
+	
 	public void run() {
-		//int fr = PApplet.round(1000.0f / parent.frameRate);
-		while (isRunningKinect()) {
-			boolean result = updateDevice();
-			if(!result){
-				System.out.println("Error updating Kinect EXIT");
-			}
+		int fr = PApplet.round(1000.0f / parent.frameRate);
+		while (runningKinect) {
+			// boolean result = updateDevice();
+
+			// if(!result){
+			// System.out.println("Error updating Kinect EXIT");
+			// }
 			try {
-				Thread.sleep(2); //2
+				Thread.sleep(fr); // 2
 			} catch (InterruptedException e) {
-					e.printStackTrace();
+				e.printStackTrace();
+				return;
 			}
 		}
-		
+
 	}
 }

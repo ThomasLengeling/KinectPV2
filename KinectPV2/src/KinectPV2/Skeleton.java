@@ -41,7 +41,7 @@ public class Skeleton implements SkeletonProperties{
 	Skeleton(){
 		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
-			kJoints[i] = new KJoint(0,0,0, new KQuartenion(), 0);
+			kJoints[i] = new KJoint(0,0,0, new KQuaternion(), 0);
 		}
 	}
 	
@@ -76,7 +76,7 @@ public class Skeleton implements SkeletonProperties{
 		return rightHandState;
 	}
 	
-	protected void createSkeleton3D(float [] rawData, int i){
+	protected void createSkeletonData(float [] rawData, int i){
 		int index2 = i * (JointType_Count+1) * 9;
 		int indexJoint = index2 + (JointType_Count+1) * 9 - 1;
 		if(rawData[indexJoint] == 1.0){
@@ -88,44 +88,15 @@ public class Skeleton implements SkeletonProperties{
 		if(tracked){
 			for(int j = 0; j < JointType_Count; ++j){			
 				int index1 = j * 9;
-				kJoints[j].x = rawData[index2 + index1 + 0];
-				kJoints[j].y = rawData[index2 + index1 + 1];
-				kJoints[j].z = rawData[index2 + index1 + 2];
+				kJoints[j].pos.x = rawData[index2 + index1 + 0];
+				kJoints[j].pos.y = rawData[index2 + index1 + 1];
+				kJoints[j].pos.z = rawData[index2 + index1 + 2];
 				
 				kJoints[j].orientation.w = rawData[index2 + index1 + 3];
 				kJoints[j].orientation.x = rawData[index2 + index1 + 4];
 				kJoints[j].orientation.y = rawData[index2 + index1 + 5];
 				kJoints[j].orientation.z = rawData[index2 + index1 + 6];
 				
-				int state =   (int)rawData[index2 + index1 + 7];
-				int type  =   (int)rawData[index2 + index1 + 8];
-				
-				kJoints[j].state = state;
-				kJoints[j].type  = type;
-				if(type == JointType_HandLeft)
-					leftHandState = state;
-				if(type == JointType_HandRight)
-					rightHandState = state;
-			}
-		}
-	}
-	
-	protected void createSkeletonDepth(float [] rawData, int i){
-		int index2 = i * (JointType_Count+1) * 9;
-		int indexJoint = index2 + (JointType_Count+1) * 9 - 1;
-		if(rawData[indexJoint] == 1.0){
-			tracked = true;
-		}else{
-			tracked = false;
-		}
-		
-		if(tracked){
-			for(int j = 0; j < JointType_Count; ++j){			
-				int index1 = j * 9;
-				kJoints[j].x = rawData[index2 + index1 + 0];
-				kJoints[j].y = rawData[index2 + index1 + 1];
-				kJoints[j].z = rawData[index2 + index1 + 2];
-		
 				int state =   (int)rawData[index2 + index1 + 7];
 				int type  =   (int)rawData[index2 + index1 + 8];
 				

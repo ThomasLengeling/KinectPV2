@@ -1,5 +1,7 @@
 package KinectPV2;
 
+import processing.core.PVector;
+
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -28,7 +30,7 @@ THE SOFTWARE.
  * @author Thomas Sanchez Lengeling
  *
  */
-public class KQuartenion {
+public class KQuaternion {
 	
 	float x;
 	float y;
@@ -36,15 +38,43 @@ public class KQuartenion {
 	
 	float w;
 	
-	KQuartenion(float x, float y, float z, float w){
+	KQuaternion(float w, float x, float y, float z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.w = w;
 	}
 	
-	KQuartenion(){}
+	KQuaternion(){
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.w = 0;
+	}
 	
+	
+	 public PVector rotate(float x1, float y1, float z1)
+     {
+		 KQuaternion q = new KQuaternion(0.0f, x1, y1, z1);
+		 KQuaternion r =  mult(new KQuaternion(w, x, y, z), q);
+		 KQuaternion conj = Conj();
+		 KQuaternion retult = mult(r, conj);
+         return new PVector( retult.x, retult.y, retult.z);
+     }
+	 
+	 public KQuaternion Conj()
+     {
+         return new KQuaternion(w, -x, -y, -z);
+     }
+	 
+	 public KQuaternion mult(KQuaternion q1, KQuaternion q2)
+	 {
+		 return new KQuaternion(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z
+	                , q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y
+	                , q1.w * q2.y + q1.y * q2.w + q1.z * q2.x - q1.x * q2.z
+	                , q1.w * q2.z + q1.z * q2.w + q1.x * q2.y - q1.y * q2.x);
+	 }
+	 
 	public float getX(){
 		return x;
 	}

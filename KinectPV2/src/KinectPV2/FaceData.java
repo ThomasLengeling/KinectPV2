@@ -34,29 +34,33 @@ import processing.core.PVector;
  */
 public class FaceData implements FaceProperties{
 	
-	PVector [] facePointsColor;
-	PVector [] facePointsInfrared;
+	PVector [] faceColorPoints;
+	PVector [] faceInfraredPoints;
 	
 	FaceFeatures [] facefeatures;
 	
 	boolean faceTracked;
 	
-	KRectangle rect;
+	KRectangle rectColor;
+	KRectangle rectInfrared;
+	
 	
 	float pitch;
 	float yaw;
 	float roll;
 	
 	FaceData(){
-		facePointsColor = new PVector[5];
-		for(int i = 0; i < facePointsColor.length; i++)
-			facePointsColor[i] =  new PVector();
+		faceColorPoints = new PVector[5];
+		for(int i = 0; i < faceColorPoints.length; i++)
+			faceColorPoints[i] =  new PVector();
 		
-		facePointsInfrared = new PVector[5];
-		for(int i = 0; i < facePointsInfrared.length; i++)
-			facePointsInfrared[i] =  new PVector();
+		faceInfraredPoints = new PVector[5];
+		for(int i = 0; i < faceInfraredPoints.length; i++)
+			faceInfraredPoints[i] =  new PVector();
 		
-		rect = new KRectangle(0, 0, 0, 0);
+		rectColor = new KRectangle(0, 0, 0, 0);
+		rectInfrared = new KRectangle(0, 0, 0, 0);
+		
 		faceTracked = false;
 		
 		facefeatures = new FaceFeatures[8];
@@ -67,36 +71,43 @@ public class FaceData implements FaceProperties{
 	}
 
 	
-	protected void createFaceData(float [] rawData, int iFace){
+	protected void createFaceData(float [] rawFaceColorData, float [] rawFaceInfraredData, int iFace){
 		int index = iFace * 36;
-		if(rawData[index + 35] == 0.0)
+		if(rawFaceColorData[index + 35] == 0.0 || rawFaceInfraredData[index +32] == 0.0)
 			faceTracked = false;
 		else
 			faceTracked = true;
 
 		for(int i = 0; i < 5; i++){
-			facePointsColor[i].x = rawData[index + i*2 + 0];
-			facePointsColor[i].y = rawData[index + i*2 + 1];
+			faceColorPoints[i].x = rawFaceColorData[index + i*2 + 0];
+			faceColorPoints[i].y = rawFaceColorData[index + i*2 + 1];
+			faceInfraredPoints[i].x = rawFaceInfraredData[index + i*2 + 0];
+			faceInfraredPoints[i].y = rawFaceInfraredData[index + i*2 + 1];
 		}
 		
-		for(int i = 0; i < 5; i++){
-			facePointsInfrared[i].x = rawData[index + i*2 + 10 + 0];
-			facePointsInfrared[i].y = rawData[index + i*2 + 10 + 1];
-		}
 		int index2 = index +20;
-		rect.setX(rawData[index2 + 0]);
-		rect.setY(rawData[index2 + 1]);
-		rect.setWidth(rawData[index2 + 2]);
-		rect.setHeight(rawData[index2 + 3]);
+		rectColor.setX(rawFaceColorData[index2 + 0]);
+		rectColor.setY(rawFaceColorData[index2 + 1]);
+		rectColor.setWidth(rawFaceColorData[index2 + 2]);
+		rectColor.setHeight(rawFaceColorData[index2 + 3]);
 		
-		pitch = rawData[index2 + 4];
-		yaw   = rawData[index2 + 5];
-		roll  = rawData[index2 + 6];
+		rectInfrared.setX(rawFaceInfraredData[index2 + 0]);
+		rectInfrared.setY(rawFaceInfraredData[index2 + 1]);
+		rectInfrared.setWidth(rawFaceInfraredData[index2 + 2]);
+		rectInfrared.setHeight(rawFaceInfraredData[index2 + 3]);
+		
+		pitch = rawFaceColorData[index2 + 4];
+		yaw   = rawFaceColorData[index2 + 5];
+		roll  = rawFaceColorData[index2 + 6];
+		
+		pitch = rawFaceInfraredData[index2 + 4];
+		yaw   = rawFaceInfraredData[index2 + 5];
+		roll  = rawFaceInfraredData[index2 + 6];
 		
 		//System.out.println(iFace+" "+pitch+" "+yaw+" "+roll);
 		for(int i =0; i < 8; i++){
 			facefeatures[i].setFeatureType(i);
-			facefeatures[i].setState((int)rawData[index2 + 7 + i]);
+			facefeatures[i].setState((int)rawFaceColorData[index2 + 7 + i]);
 			//System.out.println(iFace+" "+facefeatures[i].getFeatureType()+" "+(int)rawData[index2 + 7 + i] );
 		}
 	}
@@ -110,11 +121,19 @@ public class FaceData implements FaceProperties{
 	}
 	
 	/**
-	 * get Bounding Face Rectangle
+	 * get Bounding Face Rectangle Color
 	 * @return Rectangle
 	 */
-	public KRectangle getBoundingRect(){
-		return rect;
+	public KRectangle getBoundingRectColor(){
+		return rectColor;
+	}
+	
+	/**
+	 * get Bounding Face Rectangle Infrared
+	 * @return Rectangle
+	 */
+	public KRectangle getBoundingRectInfrared(){
+		return rectInfrared;
 	}
 	
 	/**
@@ -130,14 +149,14 @@ public class FaceData implements FaceProperties{
 	 * @return PVector []
 	 */
 	public PVector [] getFacePointsColorMap(){
-		return facePointsColor;
+		return faceColorPoints;
 	}
 	
 	/**
-	 * get Face Points mapped to Infrared Space (InFrared Image)
-	 * @return
+	 * get Face Points mapped to infrared Space (Infrared Image)
+	 * @return PVector []
 	 */
 	public PVector [] getFacePointsInfraredMap(){
-		return facePointsInfrared;
+		return faceInfraredPoints;
 	}
 }

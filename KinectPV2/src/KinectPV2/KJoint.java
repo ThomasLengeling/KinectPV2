@@ -1,4 +1,5 @@
 package KinectPV2;
+import processing.core.PVector;
 
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
@@ -30,20 +31,18 @@ THE SOFTWARE.
  */
 public class KJoint {
 	
-	protected float x;
-	protected float y;
-	protected float z;
+	protected PVector pos;
 	
 	protected int state;
 	
 	protected int type;
 	
-	protected  KQuartenion  orientation;
+	protected  KQuaternion  orientation;
 	
-	KJoint(float x, float y, float z, KQuartenion ori, int state){
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	
+	
+	KJoint(float x, float y, float z, KQuaternion ori, int state){
+		pos = new PVector(x, y, z);
 		orientation = ori;
 		this.state = state;
 	}
@@ -54,16 +53,23 @@ public class KJoint {
 	 * Get orientation of a single Joint
 	 * @return Quartenion
 	 */
-	public KQuartenion getOrientation() {
+	public KQuaternion getOrientation() {
 		return orientation;
 	}
 	
+	/**
+	 * get PVector Position
+	 * @return
+	 */
+	public PVector getPosition(){
+		return pos;
+	}
 	/**
 	 * get X position
 	 * @return float x
 	 */
 	public float getX(){
-		return x;
+		return pos.x;
 	}
 	
 	/**
@@ -71,7 +77,7 @@ public class KJoint {
 	 * @return float y
 	 */
 	public float getY(){
-		return y;
+		return pos.y;
 	}
 	
 	/**
@@ -79,7 +85,7 @@ public class KJoint {
 	 * @return float z
 	 */
 	public float getZ(){
-		return z;
+		return pos.z;
 	}
 	
 	/**

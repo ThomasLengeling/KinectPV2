@@ -71,6 +71,13 @@ public class Image{
 	}
 	
 	/**
+	 * load Pixels, img.loadPixels()
+	 */
+	public void loadPixels(){
+		img.loadPixels();
+	}
+	
+	/**
 	 * get Pixels Image,  img.pixels
 	 * @return int []
 	 */
@@ -82,7 +89,7 @@ public class Image{
 	 * get Image
 	 * @return PImage
 	 */
-	public PImage getColorImage() {		
+	public PImage getImage() {		
 		return img;
 	}
 	
