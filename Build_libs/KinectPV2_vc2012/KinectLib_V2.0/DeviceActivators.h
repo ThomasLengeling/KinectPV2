@@ -57,6 +57,7 @@ namespace KinectPV2{
 			skeletonProcess = false;
 			bodyTrackProcess = false;
 			hdFaceProcess = false;
+			coordinateMapperProcess = false;
 		}
 
 		bool			isColorFrameReady(){ return mColorFrameReady; }
@@ -133,6 +134,7 @@ namespace KinectPV2{
 		volatile bool	skeletonProcess;
 		volatile bool	bodyTrackProcess;
 		volatile bool	hdFaceProcess;
+		volatile bool   coordinateMapperProcess;
 
 	public:
 		void			colorFrameReady(bool toggle = true){ mColorFrameReady = toggle; }
@@ -172,6 +174,7 @@ namespace KinectPV2{
 		volatile bool			isSkeletonProcessActivated(){ return skeletonProcess; }
 		volatile bool			isBodyTrackProcessActivated(){ return bodyTrackProcess; }
 		volatile bool			isHDFaceProcessActivated(){ return hdFaceProcess; }
+		volatile bool			isCoordinateMapperActivated(){ return coordinateMapperProcess; }
 
 
 		void			enableColorProcess(volatile bool toggle = true){ colorProcess = toggle; }
@@ -181,5 +184,6 @@ namespace KinectPV2{
 		void			enableSkeletonProcess(volatile bool toggle = true){ skeletonProcess = toggle; }
 		void			enableBodyTrackProcess(volatile bool toggle = true){ bodyTrackProcess = toggle; }
 		void			enableHDFaceProcess(volatile bool toggle = true){ hdFaceProcess = toggle; }
+		void			enableCoordinateMapperProcess(volatile bool toggle = true){ coordinateMapperProcess = toggle; }
 	};
 }

@@ -5,7 +5,7 @@ http://codigogenerativo.com/
 KinectPV2, Kinect for Windows v2 library for processing
  
 3D Skeleton.
-So features a not implemented, such as orientation
+Some features a not implemented, such as orientation
 */
 
 import KinectPV2.KJoint;

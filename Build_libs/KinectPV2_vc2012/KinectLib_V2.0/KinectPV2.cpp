@@ -161,6 +161,7 @@ namespace KinectPV2{
 
 			if (SUCCEEDED(hr))
 			{
+				
 				if (DeviceOptions::isInitializedColorFrame())
 				{
 					
@@ -268,6 +269,8 @@ namespace KinectPV2{
 
 					//BODY TRACK AND MASK
 					bodyTrackData      = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+
+					bodyTrackRaw		= (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
 					//boyd Ids
 					bodyTrackIds       = (uint32_t *)malloc(BODY_COUNT * sizeof(uint32_t));
@@ -459,12 +462,18 @@ namespace KinectPV2{
 
 		}
 
-		if (DeviceOptions::isInitializedHDFaceDetection()){
-
+		if (DeviceOptions::isInitializedHDFaceDetection())
+		{
 			DeviceActivators::enableHDFaceProcess();
 			mThreadHDFace = std::thread(&Device::hdFaceProcess, this);
 		}
 
+
+		if (DeviceOptions::isEnableCoordinateMapper()){
+			DeviceActivators::enableCoordinateMapperProcess(true);
+			cout << " Coordinate mapper RGB depth" << std::endl;
+			mThreadCoodinateMapper = std::thread(&Device::coordinateMapperProcess, this);
+		}
 
 		std::cout << "Done Kinect V2" << endl;
 
@@ -1165,7 +1174,7 @@ namespace KinectPV2{
 									bodyTackDataUser_6[bodyIndex] = 0x00000000;
 								}
 
-
+								bodyTrackRaw[bodyIndex] = bodyColor;
 								//uint32_t color = ((ir / 32) << 5) + ((ir / 32) << 2) + (ir / 64);
 								bodyTrackData[bodyIndex]  = colorByte2Int((uint32_t)bodyColor);
 								++pBodyIndexBuffer; //(unsigned int)
@@ -1853,6 +1862,115 @@ namespace KinectPV2{
 		}
 	}
 
+	void Device::coordinateMapperProcess()
+	{
+		while (DeviceActivators::isCoordinateMapperActivated()){
+
+			//DEPTH
+			{
+				if (!kDepthFrameReader)
+				{
+					std::cout << "ERROR READING DEPTH FRAME" << std::endl;
+					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+					continue;
+				}
+
+				if (!kColorFrameReader)
+				{
+					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+					continue;
+				}
+
+				if (!kBodyIndexFrameReader)
+				{
+					std::cout << "ERROR LOADING BODY TRACK FRAME" << std::endl;
+					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+					continue;
+				}
+
+
+				IBodyIndexFrame * pBodyIndexFrame = NULL;
+				HRESULT hr = kBodyIndexFrameReader->AcquireLatestFrame(&pBodyIndexFrame);
+
+				IColorFrame* pColorFrame = NULL;
+			    hr = kColorFrameReader->AcquireLatestFrame(&pColorFrame);
+
+				IDepthFrame* pDepthFrame = NULL;
+				hr = kDepthFrameReader->AcquireLatestFrame(&pDepthFrame);
+
+				if (SUCCEEDED(hr))
+				{
+					IFrameDescription* pDepthDescription = NULL;
+					UINT nDepthBufferSize = 0;
+					UINT16 * pBufferDepth = NULL;
+
+					IFrameDescription* pBodyIndexFrameDescription = NULL;
+					UINT nBodyIndexBufferSize = 0;
+					BYTE *pBodyIndexBuffer = NULL;
+
+					IFrameDescription* pColorDescription = NULL;
+					UINT nColorBufferSize = 0;
+					uint8_t * pBufferColor = NULL;
+
+					//depth
+					if (SUCCEEDED(hr))
+					{
+						hr = pDepthFrame->get_FrameDescription(&pDepthDescription);
+					}
+
+					//color
+					if (SUCCEEDED(hr))
+					{
+						hr = pColorFrame->get_FrameDescription(&pColorDescription);
+					}
+
+					//bodyIndex
+					if (SUCCEEDED(hr))
+					{
+						hr = pBodyIndexFrame->get_FrameDescription(&pBodyIndexFrameDescription);
+					}
+
+
+					if (SUCCEEDED(hr))
+					{
+						//depth
+						hr = pDepthFrame->AccessUnderlyingBuffer(&nDepthBufferSize, &pBufferDepth);
+						if (FAILED(hr)){
+							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+							continue;
+						}
+
+						//color
+						hr = pColorFrame->CopyConvertedFrameDataToArray(frame_size_color * 4 * sizeof(uint8_t), reinterpret_cast<BYTE*>(pBufferColor), ColorImageFormat_Bgra);
+						if (FAILED(hr)){
+							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+							continue;
+						}
+
+						//body index
+						hr = pBodyIndexFrame->AccessUnderlyingBuffer(&nBodyIndexBufferSize, &pBodyIndexBuffer);
+						if (FAILED(hr)){
+							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+							continue;
+						}
+
+					}
+					SafeRelease(pDepthDescription);
+					SafeRelease(pColorDescription);
+					SafeRelease(pBodyIndexFrameDescription);
+				}
+				else{
+					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
+					continue;
+				}
+
+				SafeRelease(pDepthFrame);
+				SafeRelease(pColorFrame);
+				SafeRelease(pBodyIndexFrame);
+			}
+		}
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	float Device::lmap(float val, float inMin, float inMax, float outMin, float outMax)
 	{
@@ -1974,6 +2092,11 @@ namespace KinectPV2{
 	uint32_t * Device::JNI_GetBodyTrack()
 	{
 		return bodyTrackData;
+	}
+
+	uint32_t * Device::JNI_GetRawBodyTrack()
+	{
+		return bodyTrackRaw;
 	}
 
 	float *	Device::JNI_getMapDepthToColor()

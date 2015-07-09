@@ -354,6 +354,10 @@ extern "C" {
 	JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetBodyTrackIds
 		(JNIEnv *, jobject);
 
+	JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetRawBodyTrack
+		(JNIEnv *, jobject);
+
+
 	/*
 	* Class:     KinectPV2_Device
 	* Method:    jniSetNumberOfUsers
@@ -378,6 +382,14 @@ extern "C" {
 	*/
 	JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniMapCameraPointToColorSpace
 		(JNIEnv *, jobject, jfloat, jfloat, jfloat);
+
+
+	JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniMapCameraPointToColorSpace
+		(JNIEnv *, jobject, jfloat, jfloat, jfloat);
+
+	JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableCoordinateMapperRGBDepth
+		(JNIEnv *, jobject);
+
 
 
 #ifdef __cplusplus

@@ -130,6 +130,8 @@ namespace KinectPV2{
 		//track data
 		uint32_t *   bodyTrackData;
 
+		uint32_t *   bodyTrackRaw;
+
 		uint32_t *	 bodyTrackIds;
 
 		//get independent bodytrackData
@@ -186,6 +188,7 @@ namespace KinectPV2{
 		std::thread					mThreadSkeleton;
 		std::thread					mThreadBodyTrack;
 		std::thread					mThreadHDFace;
+		std::thread					mThreadCoodinateMapper;
 
 	public:
 		Device(void);
@@ -205,6 +208,7 @@ namespace KinectPV2{
 		void	setWindowSize(int appWidth, int appHeight);
 
 
+		//thread Process
 		void			colorProcess();
 		void			depthProcess();
 		void			infraredProcess();
@@ -212,6 +216,7 @@ namespace KinectPV2{
 		void			skeletonProcess();
 		void			bodyTrackProcess();
 		void			hdFaceProcess();
+		void			coordinateMapperProcess();
 
 		//-----JNI
 		uint32_t  *						JNI_GetImage();
@@ -228,7 +233,9 @@ namespace KinectPV2{
 
 		uint32_t *						JNI_GetDepthMask();
 
+
 		uint32_t *						JNI_GetBodyTrack();
+		uint32_t *						JNI_GetRawBodyTrack();
 
 		//FACE
 		float *						    JNI_getFaceColorRawData();

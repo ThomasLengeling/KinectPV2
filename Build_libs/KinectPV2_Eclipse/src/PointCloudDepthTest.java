@@ -51,7 +51,6 @@ public class PointCloudDepthTest extends PApplet {
 		kinect = new KinectPV2(this);
 		
 		kinect.enableDepthImg(true);
-		kinect.activateRawDepth(true);
 		
 		kinect.enablePointCloud(true);
 

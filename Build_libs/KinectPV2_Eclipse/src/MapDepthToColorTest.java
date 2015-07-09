@@ -26,8 +26,6 @@ public class MapDepthToColorTest extends PApplet {
 		kinect = new KinectPV2(this);
 		kinect.enableDepthImg(true);
 		kinect.enableColorImg(true);
-		kinect.activateRawDepth(true);
-		kinect.activateRawColor(true);
 		kinect.enablePointCloud(true);
 		kinect.init();
 	}
@@ -39,7 +37,7 @@ public class MapDepthToColorTest extends PApplet {
 
 		// get the raw data from depth and color
 		int[] colorRaw = kinect.getRawColor();
-		int[] depthRaw = kinect.getRawDepth();
+		int[] depthRaw = kinect.getRawDepthData();// [0, 4500]
 
 		// clean de pixels
 		PApplet.arrayCopy(depthZero, depthToColorImg.pixels);

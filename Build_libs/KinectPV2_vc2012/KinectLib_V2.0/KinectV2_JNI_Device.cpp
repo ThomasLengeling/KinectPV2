@@ -796,6 +796,22 @@ JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetBodyTrackIds
 	return buffer;
 }
 
+JNIEXPORT jintArray JNICALL  Java_KinectPV2_Device_jniGetRawBodyTrack
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+
+	const jint * pInt = (const jint *)kinect->JNI_GetRawBodyTrack();
+	jintArray buffer = env->NewIntArray((jsize)frame_size_depth);
+	env->SetIntArrayRegion(buffer, 0, (jsize)frame_size_depth, (const jint *)(pInt));
+
+	env->DeleteLocalRef(cls);
+
+	return buffer;
+}
+
 /*
 * Class:     KinectPV2_Device
 * Method:    jni_MapCameraPointToDepthSpace
@@ -872,4 +888,16 @@ JNIEXPORT jfloatArray JNICALL Java_KinectPV2_Device_jniGetMapDethToColorSpace(JN
 	env->DeleteLocalRef(cls);
 
 	return buffer;
+}
+
+JNIEXPORT void JNICALL Java_KinectPV2_Device_jniEnableCoordinateMapperRGBDepth
+(JNIEnv * env, jobject obj)
+{
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "ptr", "J");
+	KinectPV2::Device * kinect = (KinectPV2::Device *) env->GetLongField(obj, fid);
+	
+	kinect->enableCoordinateMapper(true);
+
+	env->DeleteLocalRef(cls);
 }

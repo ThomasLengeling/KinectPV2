@@ -16,13 +16,13 @@ public class CoordinateMapperRGBDepth extends PApplet{
 	  kinect.init();
 
 	  //SETUP A BACKGROUND IMAGE
-	  PImage img = loadImage("mars.png");
-	  img.loadPixels();
-	  kinect.setCoordBkgImg(img.pixels);
+	//  PImage img = loadImage("mars.png");
+	//  img.loadPixels();
+	 // kinect.setCoordBkgImg(img.pixels);
 	}
 
 	public void draw() {
 		background(0);
-		image(kinect.getCoordinateRGBDepthImage(), 0, 0);
+		//image(kinect.getCoordinateRGBDepthImage(), 0, 0);
 	}
 }

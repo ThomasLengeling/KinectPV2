@@ -187,12 +187,18 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				colorImg.getImgSize());
 		colorImg.updatePixels();
 
-		if (colorImg.isProcessRawData())
-			PApplet.arrayCopy(colorData, 0, colorImg.rawIntData, 0,
-					colorImg.getImgSize());
+        PApplet.arrayCopy(colorData, 0, colorImg.rawIntData, 0,
+                colorImg.getImgSize());
 
+		
 		return colorImg.img;
 	}
+	
+	
+	public int [] getRawColor(){
+		return colorImg.rawIntData;
+	}
+
 
 	/**
 	 * Get Depth Image as PImage 512 x 424
@@ -205,11 +211,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				depthImg.getImgSize());
 		depthImg.updatePixels();
 
-		if (depthImg.isProcessRawData())
-			PApplet.arrayCopy(jniGetRawDepth16Data(), 0, depthImg.rawIntData, 0,
-					depthImg.getImgSize());
-
-		// jniDepthReadyCopy(true);
 		return depthImg.img;
 	}
 
@@ -223,16 +224,31 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				depth256Img.getImgSize());
 		depth256Img.updatePixels();
 
-		if (depth256Img.isProcessRawData())
-			PApplet.arrayCopy(jniGetRawDepth256Data(), 0, depth256Img.rawIntData, 0,
-					depth256Img.getImgSize());
-
 		// jniDepthReadyCopy(true);
 		return depth256Img.img;
 	}
 	
 	/**
-	 * get Depth Mask Image, outline color of the users.
+	 * Obtain the raw depth data values in mm from 0 to 4500
+	 * @return array of int
+	 */
+	public int []  getRawDepthData(){
+		return jniGetRawDepth16Data();
+	}
+	
+	
+	/**
+	 * Obtain the raw depth data values in mm from 0 to 256 
+	 * Data based on the  getDepth256Image
+	 * @return array of int
+	 */
+	public int []  getRawDepth256Data(){
+		return jniGetRawDepth256Data();
+	}
+	
+	
+	/**
+	 * Get Depth Mask Image, outline color of the users.
 	 * 
 	 * @return PImage
 	 */
@@ -241,10 +257,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		PApplet.arrayCopy(depthMaskData, 0, depthMaskImg.pixels(), 0,
 				depthMaskImg.getImgSize());
 		depthMaskImg.updatePixels();
-
-		if (depthMaskImg.isProcessRawData())
-			PApplet.arrayCopy(depthMaskData, 0, depthMaskImg.rawIntData, 0,
-					depthMaskImg.getImgSize());
 
 		// jniDepthReadyCopy(true);
 		return depthMaskImg.img;
@@ -261,10 +273,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				infraredImg.getImgSize());
 		infraredImg.updatePixels();
 
-		if (infraredImg.isProcessRawData())
-			PApplet.arrayCopy(infraredData, 0, infraredImg.rawIntData, 0,
-					infraredImg.getImgSize());
-
 		return infraredImg.img;
 	}
 
@@ -278,10 +286,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		PApplet.arrayCopy(bodyTrackData, 0, bodyTrackImg.pixels(), 0,
 				bodyTrackImg.getImgSize());
 		bodyTrackImg.updatePixels();
-
-		if (bodyTrackImg.isProcessRawData())
-			PApplet.arrayCopy(bodyTrackData, 0, bodyTrackImg.rawIntData, 0,
-					bodyTrackImg.getImgSize());
 
 		return bodyTrackImg.img;
 	}
@@ -326,11 +330,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				infraredLongExposureImg.pixels(), 0,
 				infraredLongExposureImg.getImgSize());
 		infraredLongExposureImg.updatePixels();
-
-		if (infraredLongExposureImg.isProcessRawData())
-			PApplet.arrayCopy(infraredLongExposureImg, 0,
-					infraredLongExposureImg.rawIntData, 0,
-					infraredLongExposureImg.getImgSize());
 
 		return infraredLongExposureImg.img;
 	}
@@ -466,11 +465,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				pointCloudDepthImg.getImgSize());
 		pointCloudDepthImg.updatePixels();
 
-		if (pointCloudDepthImg.isProcessRawData())
-			PApplet.arrayCopy(pointCloudDepthImg, 0,
-					pointCloudDepthImg.rawIntData, 0,
-					pointCloudDepthImg.getImgSize());
-
 		return pointCloudDepthImg.img;
 	}
 
@@ -510,50 +504,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		return jniGetHighThresholdDepthPC();
 	}
 
-	/**
-	 * Get Raw Depth Data 512 x 424
-	 * 
-	 * @return int []
-	 */
-	public int[] getRawDepth() {
-		return depthImg.rawIntData;
-	}
-
-	/**
-	 * Get Raw Depth Data 512 x 424
-	 * 
-	 * @return int []
-	 */
-	public int[] getRaw256Depth() {
-		return depthImg.rawIntData;
-	}
-	
-	/**
-	 * Get Raw DepthMask Data 512 x 424
-	 * 
-	 * @return int []
-	 */
-	public int[] getRawDepthMask() {
-		return depthMaskImg.rawIntData;
-	}
-
-	/**
-	 * Get Raw Color Data 1920 x 1080
-	 * 
-	 * @return int []
-	 */
-	public int[] getRawColor() {
-		return colorImg.rawIntData;
-	}
-
-	/**
-	 * Get Raw Infrared Data 512 x 424
-	 * 
-	 * @return int []
-	 */
-	public int[] getRawInfrared() {
-		return infraredImg.rawIntData;
-	}
 
 	/**
 	 * Get Raw BodyTracking Data 512 x 424
@@ -561,73 +511,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 * @return int []
 	 */
 	public int[] getRawBodyTrack() {
-		return bodyTrackImg.rawIntData;
+		return jniGetRawBodyTrack();
 	}
 
-	/**
-	 * Get Raw LongExposure Data 512 x 424
-	 * 
-	 * @return int []
-	 */
-	public int[] getRawLongExposure() {
-		return infraredLongExposureImg.rawIntData;
-	}
-
-	// ACTIVATE RAW DATA
-	/**
-	 * Activate Raw Color Image Capture. Use getRawColor() Method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawColor(boolean toggle) {
-		colorImg.activateRawData(toggle);
-	}
-
-	/**
-	 * Activate Raw Depth Image Capture Use getRawDepth() Method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawDepth(boolean toggle) {
-		depthImg.activateRawData(toggle);
-	}
-
-	/**
-	 * Activate Raw Depth Image Capture Use getDepthMaskRaw() Method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawDepthMaskImg(boolean toggle) {
-		depthMaskImg.activateRawData(toggle);
-	}
-
-	/**
-	 * Activate Raw Infrared Image Capture Use getRawInfrared() Method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawInfrared(boolean toggle) {
-		infraredImg.activateRawData(toggle);
-	}
-
-	/**
-	 * Activate Raw BodyTrack Image Capture Use getRawBodyTrack() Method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawBodyTrack(boolean toggle) {
-		bodyTrackImg.activateRawData(toggle);
-	}
-
-	/**
-	 * Activate Raw LongExposureInfrared Image Capture use getRawLongExposure()
-	 * method
-	 * 
-	 * @param boolean toggle
-	 */
-	public void activateRawLongExposure(boolean toggle) {
-		infraredLongExposureImg.activateRawData(toggle);
-	}
 
 	/**
 	 * Enable or Disable Color Image Capture
@@ -736,6 +622,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 */
 	public void enableHDFaceDetection(boolean toggle) {
 		jniEnableHDFaceDetection(toggle);
+	}
+	
+	public void  enableCoordinateMapperRGBDepth(boolean toggle){
+		jniEnableCoordinateMapperRGBDepth();
 	}
 
 	/*
@@ -877,6 +767,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	
 	private native int[]   	jniGetBodyTrackIds();
 	
+	private native int[]    jniGetRawBodyTrack();
 	
 	private native int      jniGetNumberOfUsers();
 	//crists
@@ -887,6 +778,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	private native float[]  jniMapCameraPointToColorSpace(float camaraSpacePointX, float cameraSpacePointY, float cameraSpacePointZ);
 
 	private native float[]  jniGetMapDethToColorSpace();
+	
+	private native void     jniEnableCoordinateMapperRGBDepth();
 	
 	public void run() {
 		int fr = PApplet.round(1000.0f / parent.frameRate);

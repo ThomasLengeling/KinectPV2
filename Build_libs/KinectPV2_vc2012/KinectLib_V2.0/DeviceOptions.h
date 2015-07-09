@@ -10,7 +10,8 @@ namespace KinectPV2{
 			toggleRawDepthData(false), toggleBodyIndexFrame(false), toggleSkeleton(false), togglCoodinateMappingColor(false), toggleHDFaceDetection(false),
 			toggleColorChannelsFrame(false),
 			initToggleDepthFrame(false), initToggleColorFrame(false), initToggleInfraredFrame(false), initToggleSkeleton(false), initToggleBodyIndexFrame(false),
-			initToggleFaceDetection(false), initToggleLongExposureInfraredFrame(false), initToggleHDFaceDetection(false) { }
+			initToggleFaceDetection(false), initToggleLongExposureInfraredFrame(false), initToggleHDFaceDetection(false),
+			initToggleCoordinateRGBDepth(false){}
 
 		~DeviceOptions(){}
 
@@ -39,6 +40,7 @@ namespace KinectPV2{
 			initToggleFaceDetection = false;
 			initToggleLongExposureInfraredFrame = false;
 			initToggleHDFaceDetection = false;
+			initToggleCoordinateRGBDepth = false;
 		}
 
 		void			enableColorImage(bool toggle = true){
@@ -128,6 +130,13 @@ namespace KinectPV2{
 			//toggleColorFrame = toggle;
 		}
 
+		void enableCoordinateMapper(bool toggle = true){
+			initToggleColorFrame = toggle;
+			initToggleDepthFrame = toggle;
+			initToggleBodyIndexFrame = toggle;
+			initToggleCoordinateRGBDepth = toggle;
+		}
+
 		inline bool		isEnableColorFrame(){ return toggleColorFrame; }
 		inline bool		isEnableColorChannelsFrame(){ return toggleColorChannelsFrame; }
 
@@ -160,6 +169,8 @@ namespace KinectPV2{
 		inline bool     isEnableSkeleton3DMap(){ return toggleSkeleton3DMap; }
 
 		inline bool		isEnableCoordinateMappingColor(){ return togglCoodinateMappingColor; }
+
+		inline bool		isEnableCoordinateMapper(){ return initToggleCoordinateRGBDepth; }
 
 		//starters
 	protected:
@@ -200,6 +211,7 @@ namespace KinectPV2{
 
 		bool		togglCoodinateMappingColor;
 
+
 		//STARTERS FUNCTIONS
 		bool		initToggleColorFrame;
 		bool		initToggleInfraredFrame;
@@ -209,7 +221,6 @@ namespace KinectPV2{
 		bool		initToggleFaceDetection;
 		bool		initToggleLongExposureInfraredFrame;
 		bool		initToggleHDFaceDetection;
-
-
+		bool		initToggleCoordinateRGBDepth;
 	};
 }
