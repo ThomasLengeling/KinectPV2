@@ -1,3 +1,5 @@
+package test;
+
 import KinectPV2.KinectPV2;
 import KinectPV2.Skeleton;
 import KinectPV2.FaceData;

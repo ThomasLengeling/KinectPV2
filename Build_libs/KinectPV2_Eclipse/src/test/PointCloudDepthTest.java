@@ -21,14 +21,13 @@ Copyright (C) 2014  Thomas Sanchez Lengeling.
  THE SOFTWARE.
  */
 
+package test;
+
 import java.nio.FloatBuffer;
 
-import javax.media.opengl.GL2;
 
 import KinectPV2.KinectPV2;
-import processing.core.PApplet;
-import processing.opengl.PGL;
-import processing.opengl.PJOGL;
+import processing.core.*;
 
 
 public class PointCloudDepthTest extends PApplet {
@@ -44,9 +43,17 @@ public class PointCloudDepthTest extends PApplet {
 	int minD = 50;  //  1m
 	//max 8000cm and min 5cm
 	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "tests.PointCloudDepthTest"});
+	}
+	
+	public void settings(){
+		size(1280, 720, P3D);
+	}
+	
 
 	public void setup() {
-		size(1280, 720, P3D);
+		
 
 		kinect = new KinectPV2(this);
 		

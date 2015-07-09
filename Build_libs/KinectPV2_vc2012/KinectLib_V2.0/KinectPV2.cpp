@@ -71,7 +71,6 @@ namespace KinectPV2{
 		pointCloudPosData = (float *)malloc(frame_size_depth * 3 * sizeof(float));
 
 		pointCloudDepthImage = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
-		pointCloudDepthNormalized = (float *)malloc(frame_size_depth * sizeof(float));
 
 		pointCloudColorData = (float *)malloc(frame_size_color * 3 * sizeof(float));
 		colorCameraPos = (float *)malloc(frame_size_color * 2 * sizeof(float));
@@ -562,10 +561,11 @@ namespace KinectPV2{
 		SafeDeletePointer(skeletonDataDepthMap);
 		SafeDeletePointer(skeletonDataColorMap);
 		SafeDeletePointer(pointCloudDepthImage);
-		SafeDeletePointer(pointCloudDepthNormalized);
 		SafeDeletePointer(hdFaceVertex);
 		SafeDeletePointer(hdFaceDeformations);
 
+
+		SafeDeletePointer(colorChannelsDataTemp);
 
 		SafeDeletePointer(bodyTrackIds);
 		SafeDeletePointer(bodyTackDataUser_1);
@@ -667,49 +667,32 @@ namespace KinectPV2{
 							colorFrameReady = true;
 						}
 
-						/*
-						const uint8_t * pBufferEnd = pBufferColor + (frame_size_color);
-						int colorIndex = 0;
-						while (colorIndex < frame_size_color)
-						{
-						pixelsData[colorIndex] = (*(++pBufferColor) << 24) | (*(++pBufferColor) << 16) | (*(++pBufferColor) << 8) | *(++pBufferColor);
-						++colorIndex;
-						}
-
-						if (SUCCEEDED(hr)) {
-						memcpy(pixelsData, pBuffer, frame_size_color * sizeof(uint32_t));
-						colorFrameReady = true;
-						}
-						*/
-
 						if (DeviceOptions::isEnableColorChannelsFrame()){
-
-							RGBQUAD *pBufferColor = NULL;
-							pBufferColor = colorChannelsDataTemp;// new uint32_t[frame_size_color * 4];
-							hr = pColorFrame->CopyConvertedFrameDataToArray(BUFFER_SIZE_COLOR, reinterpret_cast<BYTE*>(pBufferColor), ColorImageFormat_Bgra);
 
 							if (SUCCEEDED(hr) && pBufferColor && kCoordinateMapper)
 							{
 
-								hr = kCoordinateMapper->MapColorFrameToCameraSpace(frame_size_depth, reinterpret_cast<UINT16*>(depthRaw_16_temp), frame_size_color, mCamaraSpacePointColor);
+								hr = kCoordinateMapper->MapColorFrameToCameraSpace(frame_size_depth, (depthRaw_16_temp), frame_size_color, mCamaraSpacePointColor);
 
 								if (SUCCEEDED(hr) && mCamaraSpacePointColor != NULL){
 									int indexColor = 0;
 									int pixelColor = 0;
+									int pixelBuffer = 0;
 									int cameraSpaceIndex = 0;
+
 
 									//cout << "passing color" << std::endl;
 									while (indexColor < frame_size_color)
 									{  //pixelsData
-										RGBQUAD  pSrc = pBufferColor[indexColor];
-
 										pointCloudColorData[cameraSpaceIndex++] = mCamaraSpacePointColor[indexColor].X;
 										pointCloudColorData[cameraSpaceIndex++] = mCamaraSpacePointColor[indexColor].Y;
 										pointCloudColorData[cameraSpaceIndex++] = mCamaraSpacePointColor[indexColor].Z;
 
-										colorChannelsData[pixelColor++] = pSrc.rgbRed   * 0.00390625;
-										colorChannelsData[pixelColor++] = pSrc.rgbGreen * 0.00390625;
-										colorChannelsData[pixelColor++] = pSrc.rgbBlue  * 0.00390625;
+									
+										colorChannelsData[pixelColor++] = pBufferColor[pixelBuffer++]; //  *0.00390625;
+										colorChannelsData[pixelColor++] = pBufferColor[pixelBuffer++]; // *0.00390625;
+										colorChannelsData[pixelColor++] = pBufferColor[pixelBuffer++];  // *0.00390625;
+										pixelBuffer++;
 										++indexColor;
 									}
 								}
@@ -881,7 +864,7 @@ namespace KinectPV2{
 								depthRaw_16_Data[depthIndex] = static_cast<uint32_t>(depth);
 								depthRaw_256_Data[depthIndex] = static_cast<uint32_t>(intensity);
 
-								depthRaw_16_temp[depthIndex] = uint16_t( depth);// (uint16_t(((float)intensity * 0.056666f)));
+								depthRaw_16_temp[depthIndex] = static_cast<uint16_t>((depth >= nDepthMinReliableDistance) && (depth <= nDepthMaxReliableDistance) ? depth : 0);// (uint16_t(((float)intensity * 0.056666f)));
 
 								//(value/4500)*255 ->  0.056666f
 								depth_16_Data[depthIndex]  = colorByte2Int(uint32_t( ((float)depth * 0.056666f) ));
@@ -2177,11 +2160,6 @@ namespace KinectPV2{
 	uint32_t * Device::JNI_pointCloudDepthImage()
 	{
 		return pointCloudDepthImage;
-	}
-
-	float * Device::JNI_pointCloudDepthNormalized()
-	{
-		return pointCloudDepthNormalized;
 	}
 
 

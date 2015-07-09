@@ -21,6 +21,8 @@
  THE SOFTWARE.
  */
 
+package test;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 import KinectPV2.*;

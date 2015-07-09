@@ -104,7 +104,6 @@ namespace KinectPV2{
 		float    *   pointCloudColorData;
 
 		uint32_t *   pointCloudDepthImage;
-		float    *   pointCloudDepthNormalized;
 
 		float	 *   pointCloudRawImage;
 
@@ -248,7 +247,6 @@ namespace KinectPV2{
 		float *							JNI_pointCloudPosData();
 
 		uint32_t   *					JNI_pointCloudDepthImage();
-		float      *					JNI_pointCloudDepthNormalized();
 
 		float *							JNI_pointCloudColorData();
 
