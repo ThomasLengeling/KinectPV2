@@ -24,7 +24,8 @@ static const double c_FaceRotationIncrementInDegrees = 5.0f;
 static const long long kThreadSleepDuration = 5L;
 
 //uint32_t  bodyColors[] = { 0x0000ff, 0x00ff00, 0xff0000, 0xffff00, 0xff00ff, 0x00ffff, 0x00ffff, 0xffffff };
-uint32_t  bodyColors[] = { 0xff0000ff, 0xff00ff00, 0xffff0000, 0xffffff00, 0xffff00ff, 0xff00ffff, 0xffffff };
+//uint32_t  bodyColors[] = { 0xff0000ff, 0xff00ff00, 0xffff0000, 0xffffff00, 0xffff00ff, 0xff00ffff, 0xffffffff };
+uint32_t  bodyColors[] = { 0x0000ff, 0x00ff00, 0xff0000, 0xffff00, 0xff00ff, 0x00ffff, 0x00ffff, 0xffffff };
 
 namespace KinectPV2{
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,11 +39,11 @@ namespace KinectPV2{
 		colorFrameData = (uint32_t *)malloc(frame_size_color * sizeof(uint32_t));
 
 		//COLOR
-		depth_16_Data = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		depth_16_Data  = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 		depth_256_Data = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
-		depthRaw_16_Data = (uint16_t *)malloc(frame_size_depth * sizeof(uint16_t));
-		depthRaw_256_Data = (uint16_t *)malloc(frame_size_depth * sizeof(uint16_t));
+		depthRaw_16_Data  = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
+		depthRaw_256_Data = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
 
 		//INFRARED
@@ -872,8 +873,8 @@ namespace KinectPV2{
 								USHORT depth = *pBufferDepth;
 								BYTE intensity = static_cast<BYTE>((depth >= nDepthMinReliableDistance) && (depth <= nDepthMaxReliableDistance) ? (depth % 256) : 0);
 
-								depthRaw_16_Data[depthIndex]  = depth;
-								depthRaw_256_Data[depthIndex] = intensity;
+								depthRaw_16_Data[depthIndex] = static_cast<uint32_t>(depth);
+								depthRaw_256_Data[depthIndex] = static_cast<uint32_t>(intensity);
 
 								//(value/4500)*255 ->  0.056666f
 								depth_16_Data[depthIndex]  = colorByte2Int(uint32_t( ((float)depth * 0.056666f) ));
@@ -881,6 +882,7 @@ namespace KinectPV2{
 
 								++pBufferDepth;
 								++depthIndex;
+
 							}
 							//std::cout << "depth" << std::endl;
 							//mtx.unlock();
@@ -2069,12 +2071,12 @@ namespace KinectPV2{
 		return depthMaskData;
 	}
 
-	uint16_t * Device::JNI_GetDepthRaw_16_Data()
+	uint32_t * Device::JNI_GetDepthRaw_16_Data()
 	{
 		return depthRaw_16_Data;
 	}
 
-	uint16_t * Device::JNI_GetDepthRaw_256_Data()
+	uint32_t * Device::JNI_GetDepthRaw_256_Data()
 	{
 		return depthRaw_256_Data;
 	}

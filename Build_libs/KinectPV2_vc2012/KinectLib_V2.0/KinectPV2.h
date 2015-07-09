@@ -92,8 +92,8 @@ namespace KinectPV2{
 		uint32_t *	  depth_256_Data; //depth 256 color
 
 		//uint8_t -> 16 int java 
-		uint16_t *	  depthRaw_16_Data;
-		uint16_t *	  depthRaw_256_Data;
+		uint32_t *	  depthRaw_16_Data;
+		uint32_t *	  depthRaw_256_Data;
 
 		uint32_t *	  depthMaskData;
 
@@ -224,8 +224,8 @@ namespace KinectPV2{
 		uint32_t *						JNI_GetDepth_16_Data();
 		uint32_t *						JNI_GetDepth_256_Data();
 
-		uint16_t *						JNI_GetDepthRaw_16_Data();
-		uint16_t *						JNI_GetDepthRaw_256_Data();
+		uint32_t *						JNI_GetDepthRaw_16_Data();
+		uint32_t *						JNI_GetDepthRaw_256_Data();
 
 		uint32_t *						JNI_GetDepthSha();
 		uint32_t *						JNI_GetInfrared();

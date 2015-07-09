@@ -9,7 +9,7 @@ float polygonFactor = 1;
 int threshold = 10;
 
 //Distance in cm
-int maxD = 4000; //4m
+int maxD = 4500; //4.5m
 int minD = 50; //50cm
 
 boolean    contourBodyIndex = false;
@@ -18,9 +18,11 @@ void setup() {
   size(512*3, 424, P3D);
   opencv = new OpenCV(this, 512, 424);
   kinect = new KinectPV2(this);
-  kinect.enablePointCloud(true);
+  
+  kinect.enableDepthImg(true);
   kinect.enableBodyTrackImg(true);
-
+  kinect.enablePointCloud(true);
+  
   //kinect.enableDepthImg(true);
   kinect.init();
 }
@@ -33,7 +35,7 @@ void draw() {
 
   image(kinect.getDepthImage(), 0, 0);
   
-  //change contour extraction from bodyIndexImg or to PointCloudDepth
+  //change contour extraction from bodyIndexImg or to Depth
   if (contourBodyIndex)
     image(kinect.getBodyTrackImage(), 512, 0);
   else
@@ -102,19 +104,19 @@ void keyPressed() {
   }
 
   if (key == '1') {
-    minD += 0.01;
+    minD += 10;
   }
 
   if (key == '2') {
-    minD -= 0.01;
+    minD -= 10;
   }
 
   if (key == '3') {
-    maxD += 0.01;
+    maxD += 10;
   }
 
   if (key == '4') {
-    maxD -= 0.01;
+    maxD -= 10;
   }
 
   if (key == '5')

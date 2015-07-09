@@ -33,7 +33,7 @@ public void setup() {
   kinect = new KinectPV2(this);
   
   kinect.enableDepthImg(true);
-    
+  
   kinect.enablePointCloud(true);
 
   kinect.setLowThresholdPC(minD);

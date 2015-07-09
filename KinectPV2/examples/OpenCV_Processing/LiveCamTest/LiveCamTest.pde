@@ -1,7 +1,6 @@
 import KinectPV2.*;
 
 import gab.opencv.*;
-import processing.video.*;
 import java.awt.*;
 
 OpenCV opencv;
@@ -22,4 +21,3 @@ void draw() {
   PImage img = opencv.getInput();
   image(img, 0, 0);
 }
-

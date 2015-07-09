@@ -109,7 +109,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	
 		bodyTrackUsersImg = new Image[BODY_COUNT];
 		for (int i = 0; i < BODY_COUNT; i++) {
-			bodyTrackUsersImg[i] = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.ARGB);
+			bodyTrackUsersImg[i] = new Image(parent, WIDTHDepth, HEIGHTDepth, PImage.RGB);
 		}  
 		
 
@@ -310,6 +310,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		}
 		return listBodyTack;
 	}
+	
+	
 	
 	/**
 	 * Get the Number of currently track users based on the Body Track frame

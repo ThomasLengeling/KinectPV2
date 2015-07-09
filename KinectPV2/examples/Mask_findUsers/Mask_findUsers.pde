@@ -4,7 +4,7 @@ http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
  
-Mask test of the Body
+Mask test, number of users and find user test
 */
 
 import KinectPV2.*;
@@ -27,9 +27,9 @@ void setup() {
 void draw() {
   background(0);
 
-  image(kinect.getDepthImage(), 0, 0);
-  image(kinect.getBodyTrackImage(), 512, 0);
-  
+  image(kinect.getBodyTrackImage(), 0, 0);
+  image(kinect.getDepthImage(), 512, 0);
+ 
     //raw body data 0-6 users 255 nothing
   int [] rawData = kinect.getRawBodyTrack();
   
@@ -41,9 +41,10 @@ void draw() {
      break;
     }
   }
-  
 
-  fill(255, 0, 0);
+
+  fill(0);
+  textSize(16);
   text(kinect.getNumOfUsers(), 50, 50);
   text("Found User: "+foundUsers, 50, 70);
   text(frameRate, 50, 90);

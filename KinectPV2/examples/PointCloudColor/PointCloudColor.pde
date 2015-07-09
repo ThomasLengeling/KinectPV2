@@ -37,6 +37,7 @@ public void setup() {
   kinect.enableDepthImg(true);
   kinect.enableColorImg(true);
   kinect.enableColorChannel(true);
+  kinect.enablePointCloud(true);
 
   // kinect.enableDepthImg(true);
   // kinect.enableColorImg(true);
@@ -66,10 +67,10 @@ public void draw() {
 
   int vertData = kinect.WIDTHColor * kinect.WIDTHColor;
 
-  pgl.vertexAttribPointer(vertLoc, vertData, PGL.FLOAT, false, 3, pointCloudBuffer);
-  pgl.vertexAttribPointer(colorLoc, vertData, PGL.FLOAT, false, 3, colorBuffer);
+  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3, pointCloudBuffer);
+  pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 3, colorBuffer);
 
-  pgl.drawArrays(PGL.POINTS, 0, vertData-1);
+  pgl.drawArrays(PGL.POINTS, 0, vertData);
 
   pgl.disableVertexAttribArray(vertLoc);
   pgl.disableVertexAttribArray(colorLoc);

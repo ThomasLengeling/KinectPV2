@@ -21,6 +21,7 @@ public class TestImg extends PApplet {
 		kinect.enableDepthImg(true);
 		kinect.enableInfraredImg(true);
 		kinect.enableInfraredLongExposureImg(true);
+		kinect.enableBodyTrackImg(true);
 
 		kinect.init();
 	}
