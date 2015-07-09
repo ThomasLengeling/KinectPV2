@@ -3,10 +3,12 @@ KinectPV2
 
 ### Kinect for Windows v2 library for Processing
 
-=======
+---
 Version 0.7.3
 
-Library is curretly on develop, with SDK Version 1409 (9/16/2014)
+Library is curretly on develop with the Windows SDK Version 1409 (9/16/2014)
+
+Library for Mac check out  the [OpenKinect-for-Processing library](https://github.com/shiffman/OpenKinect-for-Processing).
 
 ---
 
@@ -14,7 +16,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
 - A Kinect for Windows v2 Device (K4W2)
 - [Kinect SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
-- Computer with a dedicated USB 3.0 and 64bits
+- 64bit computer with a dedicated USB 3.0.
 - Windows 8, 8.1
 - [Processing 3.0 or 2.2.1](http://processing.org/)
 - Update your latest video card driver
@@ -26,6 +28,7 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
 
 - Install [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
+- Enjoy
 
 
 ---
@@ -51,10 +54,11 @@ Library is curretly on develop, with SDK Version 1409 (9/16/2014)
   - Live Capture App
   - Find Contours with depth or bodyIndex
 
+#### Build
 
 To build the library from source, look at the Build_libs folder
-- KinectPV2_vc2012, build the .dll library with JNI code
-- KinectPV2_Eclipse, build the .jar library.
+- KinectPV2_vc2012, builds the .dll library with JNI code.
+- KinectPV2_Eclipse, builds the .jar library for processing.
 
 ---
 
