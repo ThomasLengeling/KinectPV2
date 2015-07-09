@@ -152,8 +152,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		for (int i = 0; i < BODY_COUNT; i++) {
 			HDFace[i] = new HDFaceData();
 		}
-
-		// FloatBuffer.allocate( WIDTHDepth * HEIGHTDepth * 3);
+		
 		startSensor = false;
 
 		jniDevice();
@@ -174,55 +173,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 			runningKinect = true;
 			(new Thread(this)).start();
 		}
-	}
-
-	// COPY IMAGES TYPES FROM JNI FUNTIONS
-	// private static synchronized int [] copyColorImg(int [] rawData){
-	private void copyColorImg(int[] rawData) {
-
-		// if(copyColorReady) {
-		if (rawData.length == colorImg.getImgSize()) {
-			// colorImg.loadPixels();
-			// if(jniColorReady()) {
-			PApplet.arrayCopy(rawData, 0, colorImg.pixels(), 0,
-					colorImg.getImgSize());
-			colorImg.updatePixels();
-
-			if (colorImg.isProcessRawData())
-				PApplet.arrayCopy(rawData, 0, colorImg.rawIntData, 0,
-						colorImg.getImgSize());
-
-			// copyColorReady = false;
-			// jniColorReadyCopy(true);
-		}
-
-		// System.out.println("got");
-	}
-
-	public PImage copyColorImg() {
-		int[] rawData = jniGetColorData();
-		if (rawData.length == colorImg.getImgSize()) {
-			PApplet.arrayCopy(rawData, 0, colorImg.pixels(), 0,
-					colorImg.getImgSize());
-			colorImg.updatePixels();
-			// jniColorReadyCopy(true);
-		}
-
-		return colorImg.getImage();
-	}
-
-	private void copyDepthImg(int[] rawData) {
-		if (rawData.length == depthImg.getImgSize()) {
-			PApplet.arrayCopy(rawData, 0, depthImg.pixels(), 0,
-					depthImg.getImgSize());
-			depthImg.updatePixels();
-
-			if (depthImg.isProcessRawData())
-				PApplet.arrayCopy(rawData, 0, depthImg.rawIntData, 0,
-						depthImg.getImgSize());
-
-		}
-
 	}
 
 	// IMAGES
@@ -335,17 +285,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 		return bodyTrackImg.img;
 	}
-	
-	public void generteBodyTrackUsers(){
-		for(int  i  = 0; i < BODY_COUNT; i++){
-			int[] rawData = jniGetBodyIndexUser(i);
-			PApplet.arrayCopy(rawData, 0, bodyTrackUsersImg[i].pixels(), 0, bodyTrackUsersImg[i].getImgSize());
-			bodyTrackUsersImg[i].updatePixels();
-		}
-	}
 
 	/**
-	 * Get Independe Body Index Track
+	 * Get Independent Body Index Track
 	 * 
 	 * @param index
 	 * @return
@@ -450,6 +392,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 	}
 
+	/**
+	 * Obtain Vertex positions corresponding the HD Color frame
+	 * @return
+	 */
 	public HDFaceData[] getHDFaceVertex() {
 		float[] rawData = jniGetHDFaceDetection();
 		for (int i = 0; i < BODY_COUNT; i++)
@@ -464,7 +410,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	// POINT CLOUDS
 
 	/**
-	 * Get Point Cloud Depth Map as FloatBuffer
+	 * Get Point Cloud Depth Map as FloatBuffer, transform to a float array with .array(), or get values with get(index)
 	 * 
 	 * @return FloatBuffer
 	 */
@@ -476,6 +422,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		return pointCloudDepthPos;
 	}
 
+	/**
+	 * Get Point Cloud Color Positions as a FloatBuffer, transform to a float array with .array(), or get values with get(index)
+	 * @return FloatBuffer
+	 */
 	public FloatBuffer getPointCloudColorPos() {
 		float[] pcRawData = jniGetPointCloudColorMap();
 		pointCloudColorPos.put(pcRawData, 0, WIDTHColor * HEIGHTColor * 3);
@@ -485,9 +435,10 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	}
 
 	/**
-	 * Get the color channel buffer
-	 * 
-	 * @return
+	 * Get the color channel buffer, 3 channels, 1920 x 1080 x 3 from [0-1]
+	 * transform to a float array with .array(), or get values with get(index)
+	 * Ideal method for load level openGL calls
+	 * @return FloatBuffer
 	 */
 	public FloatBuffer getColorChannelBuffer() {
 		float[] pcRawData = jniGetColorChannel();
@@ -497,15 +448,18 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		return colorChannelBuffer;
 	}
 
+	/**
+	 * Enable point cloud capture
+	 * @param toggle
+	 */
 	public void enablePointCloud(boolean toggle) {
 		jniEnablePointCloud(toggle);
 	}
 
-	// positions
-	private void copyPointCloudColor(float[] rawData) {
-
-	}
-
+	/**
+	 * Get Point cloud Depth Image
+	 * @return PImage
+	 */
 	public PImage getPointCloudDepthImage() {
 		int[] rawData = jniGetPointCloudDepthImage();
 		PApplet.arrayCopy(rawData, 0, pointCloudDepthImg.pixels(), 0,
@@ -565,6 +519,15 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		return depthImg.rawIntData;
 	}
 
+	/**
+	 * Get Raw Depth Data 512 x 424
+	 * 
+	 * @return int []
+	 */
+	public int[] getRaw256Depth() {
+		return depthImg.rawIntData;
+	}
+	
 	/**
 	 * Get Raw DepthMask Data 512 x 424
 	 * 

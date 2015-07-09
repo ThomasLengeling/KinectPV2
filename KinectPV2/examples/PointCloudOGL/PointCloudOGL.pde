@@ -1,33 +1,16 @@
 /*
-Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect for Windows v2 library for processing
+Thomas Sanchez Lengeling.
+http://codigogenerativo.com/
+
+KinectPV2, Kinect for Windows v2 library for processing
  
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- */
+Point Cloud example using openGL and Shaders
+*/
 
 import java.nio.*;
 import KinectPV2.*;
 
-
-
 KinectPV2 kinect;
-
 
 PGL pgl;
 PShader sh;
@@ -35,7 +18,7 @@ PShader sh;
 int  vertLoc;
 
 //transformations
-float a = 0;
+float a = 1.2;
 int zval = 50;
 float scaleVal = 260;
 
@@ -49,9 +32,7 @@ public void setup() {
 
   kinect = new KinectPV2(this);
   
-  
   kinect.enableDepthImg(true);
-  kinect.activateRawDepth(true);
     
   kinect.enablePointCloud(true);
 
@@ -66,9 +47,11 @@ public void setup() {
 public void draw() {
   background(0);
 
+  //draw the depth capture images
   image(kinect.getDepthImage(), 0, 0, 320, 240);
   image(kinect.getPointCloudDepthImage(), 320, 0, 320, 240);
 
+  //translate the scene to the center
   translate(width / 2, height / 2, zval);
   scale(scaleVal, -1 * scaleVal, scaleVal);
   rotate(a, 0.0f, 1.0f, 0.0f);
@@ -79,6 +62,7 @@ public void draw() {
 
  //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
+
 
   pgl = beginPGL();
   sh.bind();
@@ -94,14 +78,12 @@ public void draw() {
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
 
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
-
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 
   pgl.disableVertexAttribArray(vertLoc);
 
   sh.unbind(); 
   endPGL();
-
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
@@ -134,31 +116,31 @@ public void keyPressed() {
   }
 
   if (key == 'q') {
-    a += 1;
+    a += 0.1;
     println(a);
   }
   if (key == 'w') {
-    a -= 1;
+    a -= 0.1;
     println(a);
   }
 
   if (key == '1') {
-    minD += 1;
+    minD += 10;
     println("Change min: "+minD);
   }
 
   if (key == '2') {
-    minD -= 1;
+    minD -= 10;
     println("Change min: "+minD);
   }
 
   if (key == '3') {
-    maxD += 1;
+    maxD += 10;
     println("Change max: "+maxD);
   }
 
   if (key == '4') {
-    maxD -= 1;
+    maxD -= 10;
     println("Change max: "+maxD);
   }
 
