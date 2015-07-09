@@ -8,9 +8,17 @@ import processing.core.PImage;
 public class CoordinateMapperRGBDepth extends PApplet{
 	
 	KinectPV2 kinect;
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.CoordinateMapperRGBDepth"});
+	}
+	
+	public void settings(){
+		size(1280, 720,  P3D);
+	}
+	
 
 	public void setup() {
-	  size(1920, 1080);
 
 	  kinect = new KinectPV2(this);
 	  kinect.enableCoordinateMapperRGBDepth(true);

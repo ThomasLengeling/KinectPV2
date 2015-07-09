@@ -474,7 +474,6 @@ namespace KinectPV2{
 
 		if (DeviceOptions::isEnableCoordinateMapper()){
 			DeviceActivators::enableCoordinateMapperProcess(true);
-			cout << " Coordinate mapper RGB depth" << std::endl;
 			mThreadCoodinateMapper = std::thread(&Device::coordinateMapperProcess, this);
 		}
 
@@ -1858,108 +1857,7 @@ namespace KinectPV2{
 	{
 		while (DeviceActivators::isCoordinateMapperActivated()){
 
-			//DEPTH
-			{
-				if (!kDepthFrameReader)
-				{
-					std::cout << "ERROR READING DEPTH FRAME" << std::endl;
-					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-					continue;
-				}
 
-				if (!kColorFrameReader)
-				{
-					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-					continue;
-				}
-
-				if (!kBodyIndexFrameReader)
-				{
-					std::cout << "ERROR LOADING BODY TRACK FRAME" << std::endl;
-					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-					continue;
-				}
-
-
-				IBodyIndexFrame * pBodyIndexFrame = NULL;
-				HRESULT hr = kBodyIndexFrameReader->AcquireLatestFrame(&pBodyIndexFrame);
-
-				IColorFrame* pColorFrame = NULL;
-			    hr = kColorFrameReader->AcquireLatestFrame(&pColorFrame);
-
-				IDepthFrame* pDepthFrame = NULL;
-				hr = kDepthFrameReader->AcquireLatestFrame(&pDepthFrame);
-
-				if (SUCCEEDED(hr))
-				{
-					IFrameDescription* pDepthDescription = NULL;
-					UINT nDepthBufferSize = 0;
-					UINT16 * pBufferDepth = NULL;
-
-					IFrameDescription* pBodyIndexFrameDescription = NULL;
-					UINT nBodyIndexBufferSize = 0;
-					BYTE *pBodyIndexBuffer = NULL;
-
-					IFrameDescription* pColorDescription = NULL;
-					UINT nColorBufferSize = 0;
-					uint8_t * pBufferColor = NULL;
-
-					//depth
-					if (SUCCEEDED(hr))
-					{
-						hr = pDepthFrame->get_FrameDescription(&pDepthDescription);
-					}
-
-					//color
-					if (SUCCEEDED(hr))
-					{
-						hr = pColorFrame->get_FrameDescription(&pColorDescription);
-					}
-
-					//bodyIndex
-					if (SUCCEEDED(hr))
-					{
-						hr = pBodyIndexFrame->get_FrameDescription(&pBodyIndexFrameDescription);
-					}
-
-
-					if (SUCCEEDED(hr))
-					{
-						//depth
-						hr = pDepthFrame->AccessUnderlyingBuffer(&nDepthBufferSize, &pBufferDepth);
-						if (FAILED(hr)){
-							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-							continue;
-						}
-
-						//color
-						hr = pColorFrame->CopyConvertedFrameDataToArray(frame_size_color * 4 * sizeof(uint8_t), reinterpret_cast<BYTE*>(pBufferColor), ColorImageFormat_Bgra);
-						if (FAILED(hr)){
-							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-							continue;
-						}
-
-						//body index
-						hr = pBodyIndexFrame->AccessUnderlyingBuffer(&nBodyIndexBufferSize, &pBodyIndexBuffer);
-						if (FAILED(hr)){
-							this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-							continue;
-						}
-
-					}
-					SafeRelease(pDepthDescription);
-					SafeRelease(pColorDescription);
-					SafeRelease(pBodyIndexFrameDescription);
-				}
-				else{
-					this_thread::sleep_for(chrono::milliseconds(kThreadSleepDuration));
-					continue;
-				}
-
-				SafeRelease(pDepthFrame);
-				SafeRelease(pColorFrame);
-				SafeRelease(pBodyIndexFrame);
-			}
 		}
 	}
 

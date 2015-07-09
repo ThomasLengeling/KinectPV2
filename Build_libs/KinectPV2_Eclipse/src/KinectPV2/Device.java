@@ -51,7 +51,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 			System.loadLibrary("KinectPV2");
 			System.out.println("Loading KinectV2");
 		} else {
-			System.out.println("error loading 32bits");
+			System.out.println("not compatible with 32bits");
 		}
 	}
 

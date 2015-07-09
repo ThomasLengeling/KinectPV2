@@ -5,6 +5,8 @@ http://codigogenerativo.com/
 KinectPV2, Kinect for Windows v2 library for processing
  
 Green background example
+
+Not working, check library version 0.7.2
 */
 
 import KinectPV2.*;
