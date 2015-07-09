@@ -95,6 +95,8 @@ namespace KinectPV2{
 		uint32_t *	  depthRaw_16_Data;
 		uint32_t *	  depthRaw_256_Data;
 
+		uint16_t *    depthRaw_16_temp;
+
 		uint32_t *	  depthMaskData;
 
 

@@ -55,8 +55,7 @@ public class PointCloudColorTest extends PApplet {
 		
 		kinect.enableDepthImg(true);
 		kinect.enableColorImg(true);
-		kinect.enableColorChannel(true);
-		//kinect.enablePointCloud(true);
+		kinect.enableColorPointCloud(true);
 
 		kinect.init();
 		

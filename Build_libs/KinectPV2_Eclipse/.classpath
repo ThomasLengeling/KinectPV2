@@ -5,7 +5,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="KinectPV2_Eclipse/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.7.0_51"/>
 	<classpathentry kind="lib" path="lib/Processing_2.2.1/core.jar"/>
 	<classpathentry kind="lib" path="lib/Processing_2.2.1/gluegen-rt-natives-linux-amd64.jar"/>
 	<classpathentry kind="lib" path="lib/Processing_2.2.1/gluegen-rt-natives-linux-armv6hf.jar"/>

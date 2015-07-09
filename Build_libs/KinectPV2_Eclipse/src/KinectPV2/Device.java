@@ -527,12 +527,14 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	}
 
 	/**
-	 * Enable or disable enableColorChannel 3 independent color channels 1920 x
-	 * 1080 x 3 from 0-1 Ideally for openGL calls
+	 * Enable or disable color Point cloud.
+	 * Which is used to obtain getPointCloudColorPos() and getColorChannelBuffer();
+	 * The FloatBuffer getColorChannelBuffer is a 3 independent color channels of 1920 x 1080 x 3,
+	 * Values form between 0 and 1,  ideally for openGL calls
 	 * 
 	 * @param toggle
 	 */
-	public void enableColorChannel(boolean toggle) {
+	public void enableColorPointCloud(boolean toggle) {
 		jniEnableColorChannel(toggle);
 	}
 
@@ -680,8 +682,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	// ENABLE FRAMES
 	private native void 	jniEnableColorFrame(boolean toggle);
 
-	private native void 	jniEnableColorChannelsFrame(boolean toggle);
-
 	private native void 	jniEnableDepthFrame(boolean toggle);
 
 	private native void 	jniEnableDepthMaskFrame(boolean toggle);
@@ -706,8 +706,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	
 
 	// COLOR CHANNEL
-	private native void 	jniEnableColorChannel(boolean toggle);
-
+	private native void     jniEnableColorChannel(boolean toggle);
+	
 	private native float[] 	jniGetColorChannel();
 
 	

@@ -77,6 +77,7 @@ public void draw() {
   //data size
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
 
+  //pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * (Float.SIZE/8), pointCloudBuffer);
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 

@@ -45,6 +45,9 @@ namespace KinectPV2{
 		depthRaw_16_Data  = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 		depthRaw_256_Data = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
 
+		//depth raw used to pass to mappers transformation
+		depthRaw_16_temp  = (uint16_t *)malloc(frame_size_depth * sizeof(uint16_t));
+
 
 		//INFRARED
 		infraredData = (uint32_t *)malloc(frame_size_depth * sizeof(uint32_t));
@@ -548,6 +551,7 @@ namespace KinectPV2{
 		SafeDeletePointer(bodyTrackData);
 		SafeDeletePointer(depthRaw_16_Data);
 		SafeDeletePointer(depthRaw_256_Data);
+		SafeDeletePointer(depthRaw_16_temp);
 		SafeDeletePointer(pointCloudColorData);
 		SafeDeletePointer(pointCloudPosData);
 		SafeDeletePointer(colorCameraPos);
@@ -561,6 +565,7 @@ namespace KinectPV2{
 		SafeDeletePointer(pointCloudDepthNormalized);
 		SafeDeletePointer(hdFaceVertex);
 		SafeDeletePointer(hdFaceDeformations);
+
 
 		SafeDeletePointer(bodyTrackIds);
 		SafeDeletePointer(bodyTackDataUser_1);
@@ -686,7 +691,7 @@ namespace KinectPV2{
 							if (SUCCEEDED(hr) && pBufferColor && kCoordinateMapper)
 							{
 
-								hr = kCoordinateMapper->MapColorFrameToCameraSpace(frame_size_depth, reinterpret_cast<UINT16*>(depthRaw_16_Data), frame_size_color, mCamaraSpacePointColor);
+								hr = kCoordinateMapper->MapColorFrameToCameraSpace(frame_size_depth, reinterpret_cast<UINT16*>(depthRaw_16_temp), frame_size_color, mCamaraSpacePointColor);
 
 								if (SUCCEEDED(hr) && mCamaraSpacePointColor != NULL){
 									int indexColor = 0;
@@ -875,6 +880,8 @@ namespace KinectPV2{
 
 								depthRaw_16_Data[depthIndex] = static_cast<uint32_t>(depth);
 								depthRaw_256_Data[depthIndex] = static_cast<uint32_t>(intensity);
+
+								depthRaw_16_temp[depthIndex] = uint16_t( depth);// (uint16_t(((float)intensity * 0.056666f)));
 
 								//(value/4500)*255 ->  0.056666f
 								depth_16_Data[depthIndex]  = colorByte2Int(uint32_t( ((float)depth * 0.056666f) ));

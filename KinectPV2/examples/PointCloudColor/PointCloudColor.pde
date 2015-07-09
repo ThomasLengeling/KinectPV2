@@ -10,11 +10,10 @@ Point Cloud Color Example using low level openGL calls and Shaders
 import java.nio.FloatBuffer;
 
 import KinectPV2.*;
-import javax.media.opengl.GL;
 
 private KinectPV2 kinect;
 
-float a = 180;
+float a = 3;
 int zval = 350;
 float scaleVal = 990;
 float rotY = 0;
@@ -36,12 +35,8 @@ public void setup() {
 
   kinect.enableDepthImg(true);
   kinect.enableColorImg(true);
-  kinect.enableColorChannel(true);
-  kinect.enablePointCloud(true);
+  kinect.enableColorPointCloud(true);
 
-  // kinect.enableDepthImg(true);
-  // kinect.enableColorImg(true);
-  //kinect.enablePointCloudColor(true);
 
   kinect.init();
 
@@ -52,12 +47,19 @@ public void draw() {
   background(0);
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
-
-  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
-  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
+ 
+  pushMatrix();
+  translate(width / 2, height / 2, zval);
+  scale(scaleVal, -1 * scaleVal, scaleVal);
+  rotate(a, 0.0f, 1.0f, 0.0f);
+  
 
   pgl = beginPGL();
   sh.bind();
+  
+  
+  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
   colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
@@ -65,10 +67,10 @@ public void draw() {
   pgl.enableVertexAttribArray(vertLoc);
   pgl.enableVertexAttribArray(colorLoc);
 
-  int vertData = kinect.WIDTHColor * kinect.WIDTHColor;
-
-  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3, pointCloudBuffer);
-  pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 3, colorBuffer);
+  int vertData = kinect.WIDTHColor * kinect.HEIGHTColor;
+  
+  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
+  pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 0, colorBuffer);
 
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 
@@ -77,6 +79,8 @@ public void draw() {
 
   sh.unbind(); 
   endPGL();
+  
+  popMatrix();
 
 
   stroke(255, 0, 0);
@@ -109,12 +113,12 @@ public void keyPressed() {
   }
 
   if (key == 'q') {
-    a += 1;
-    println(a);
+    a += 0.1;
+    println("angle "+a);
   }
   if (key == 'w') {
-    a -= 1;
-    println(a);
+    a -= 0.1;
+    println("angle "+a);
   }
 
   if (key == 'c') {
