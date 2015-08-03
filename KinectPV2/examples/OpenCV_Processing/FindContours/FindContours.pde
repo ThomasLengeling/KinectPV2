@@ -14,15 +14,15 @@ int minD = 50; //50cm
 
 boolean    contourBodyIndex = false;
 
-void setup() { 
-  size(512*3, 424, P3D);
+void setup() {
+  size(1536, 424, P3D);
   opencv = new OpenCV(this, 512, 424);
   kinect = new KinectPV2(this);
-  
+
   kinect.enableDepthImg(true);
   kinect.enableBodyTrackImg(true);
   kinect.enablePointCloud(true);
-  
+
   //kinect.enableDepthImg(true);
   kinect.init();
 }
@@ -34,7 +34,7 @@ void draw() {
   strokeWeight(3);
 
   image(kinect.getDepthImage(), 0, 0);
-  
+
   //change contour extraction from bodyIndexImg or to Depth
   if (contourBodyIndex)
     image(kinect.getBodyTrackImage(), 512, 0);
@@ -95,7 +95,7 @@ void keyPressed() {
     else
      threshold = 40;
   }
-  
+
   if (key == 'a') {
     threshold+=1;
   }

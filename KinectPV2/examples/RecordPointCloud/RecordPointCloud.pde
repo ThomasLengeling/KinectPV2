@@ -1,9 +1,10 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
- Point Cloud example using openGL and Shaders
+
+ How to record Point Cloud Data and store it in several obj files.
  */
 
 import java.nio.*;
@@ -21,29 +22,37 @@ float a = 1.2;
 int zval = 50;
 float scaleVal = 260;
 
+
+
 //Distance Threashold
-int maxD = 4000; // 4m
-int minD = 0;  //  0m
+int maxD = 4500; // 4.5 m
+int minD = 0;  //  50 cm
 
+int numFrames =  30 * 60; // 1m of recording
 
-public void setup() {
-  size(1280, 720, P3D);
+ArrayList<Frame> mFrames;
+
+void setup() {
+  size(512*2, 424, P3D);
 
   kinect = new KinectPV2(this);
 
+  mFrames = new ArrayList<Frame>();
+
+  //Enable point cloud
   kinect.enableDepthImg(true);
-
   kinect.enablePointCloud(true);
-
-  kinect.setLowThresholdPC(minD);
-  kinect.setHighThresholdPC(maxD);
 
   kinect.init();
 
   sh = loadShader("frag.glsl", "vert.glsl");
+
+  //set framerate to 30
+  frameRate(30);
 }
 
-public void draw() {
+void draw() {
+  background(0);
   background(0);
 
   //draw the depth capture images
@@ -61,12 +70,23 @@ public void draw() {
 
   //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
-  
-  for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
-   float value = pointCloudBuffer.get(i);
+
+    //data size
+  int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
+
+  stroke(255);
+  beginShape(POINTS);
+  for (int i = 0; i < vertData * 3 - 3; i++) {
+    //if ( i % 500 == 0) {
+      float x =  pointCloudBuffer.get(i + 0);
+      float y =  pointCloudBuffer.get(i + 1);
+      float z =  pointCloudBuffer.get(i + 2);
+      vertex(x, y, z);
+   // }
   }
+  endShape();
 
-
+/*
   pgl = beginPGL();
   sh.bind();
 
@@ -77,8 +97,7 @@ public void draw() {
 
   pgl.enableVertexAttribArray(vertLoc);
 
-  //data size
-  int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
+
 
   //pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * (Float.SIZE/8), pointCloudBuffer);
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
@@ -86,8 +105,9 @@ public void draw() {
 
   pgl.disableVertexAttribArray(vertLoc);
 
-  sh.unbind(); 
+  sh.unbind();
   endPGL();
+  */
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);

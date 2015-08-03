@@ -3,7 +3,7 @@ Thomas Sanchez Lengeling.
 http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
- 
+
 Mask test, number of users and find user test
 */
 
@@ -14,7 +14,7 @@ KinectPV2 kinect;
 boolean foundUsers = false;
 
 void setup() {
-  size(512*2, 424);
+  size(1024, 424);
 
   kinect = new KinectPV2(this);
 
@@ -29,10 +29,10 @@ void draw() {
 
   image(kinect.getBodyTrackImage(), 0, 0);
   image(kinect.getDepthImage(), 512, 0);
- 
+
     //raw body data 0-6 users 255 nothing
   int [] rawData = kinect.getRawBodyTrack();
-  
+
   foundUsers = false;
   for(int i = 0; i < rawData.length; i++){
     if(rawData[i] != 255){
@@ -48,7 +48,7 @@ void draw() {
   text(kinect.getNumOfUsers(), 50, 50);
   text("Found User: "+foundUsers, 50, 70);
   text(frameRate, 50, 90);
-    
+
 }
 
 void mousePressed() {

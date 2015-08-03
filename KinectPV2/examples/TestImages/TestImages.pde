@@ -3,7 +3,7 @@ Thomas Sanchez Lengeling.
 http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
- 
+
 Test all Images
 */
 
@@ -12,7 +12,7 @@ import KinectPV2.*;
 KinectPV2 kinect;
 
 public void setup() {
-  size(512*3, 424*2);
+  size(1536, 848);
   kinect = new KinectPV2(this);
   kinect.enableColorImg(true);
   kinect.enableDepthImg(true);

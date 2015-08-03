@@ -3,8 +3,8 @@ Thomas Sanchez Lengeling.
 http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
- 
-Point Cloud example in a 2d Image, with threshold example 
+
+Point Cloud example in a 2d Image, with threshold example
 */
 
 import KinectPV2.KJoint;
@@ -17,7 +17,7 @@ int maxD = 4500; // 4.5mx
 int minD = 0;  //  50cm
 
 void setup() {
-  size(512*2, 424, P3D);
+  size(1024, 424, P3D);
 
   kinect = new KinectPV2(this);
 
@@ -35,8 +35,8 @@ void draw() {
   image(kinect.getDepthImage(), 0, 0);
 
   /* Get the point cloud as a PImage
-   * Each pixel of the PointCloudDepthImage correspondes to the value 
-   * of the Z in the Point Cloud or distances, the values of 
+   * Each pixel of the PointCloudDepthImage correspondes to the value
+   * of the Z in the Point Cloud or distances, the values of
    *  the Point cloud are mapped from (0 - 4500) mm  to gray color (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);

@@ -1,9 +1,9 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
- 
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  Body Test with the number of users
  */
 
@@ -14,7 +14,7 @@ KinectPV2 kinect;
 boolean foundUsers = false;
 
 void setup() {
-  size(320*4, 240*2);
+  size(1280, 480);
 
   kinect = new KinectPV2(this);
 
