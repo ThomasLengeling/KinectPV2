@@ -24,12 +24,19 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 #### Reference and tutorial coming soon
 
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
-#### Install 
+#### Install Processing 3.0
 
 - Install [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - Copy KinectPV2 folder to your processing libraries sketch folder. 
 - Enjoy
 
+For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com/ThomasLengeling/KinectPV2/releases/tag/0.7.2).
+
+#### Know issues
+
+- Missing "msvcp110.dll", or  "Kinect20.Face.dll: Can't find dependent libraries on thread"
+    - Install [Visual 2012 C++ Redistributable Packages](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
+    - Check if the Kinect v2 SDK 2.0 is installed correctly.
 
 ---
 
