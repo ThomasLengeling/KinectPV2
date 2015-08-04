@@ -18,7 +18,7 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 - [Kinect SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - 64bit computer with a dedicated USB 3.0.
 - Windows 8, 8.1
-- [Processing 3.0 or 2.2.1](http://processing.org/)
+- [Processing 3.0](http://processing.org/)
 - Update your latest video card driver
 
 #### Reference and tutorial coming soon
@@ -26,8 +26,10 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
 #### Install Processing 3.0
 
-- Install [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
-- Copy KinectPV2 folder to your processing libraries sketch folder. 
+-
+- Install the [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
+    - Install the library using ProcessingContributed Library Manager
+    - Manual install, download the latest KinectPV2 version from the releases tab, and copy the KinectPV2 folder into your processing libraries sketch folder. 
 - Enjoy
 
 For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com/ThomasLengeling/KinectPV2/releases/tag/0.7.2).
