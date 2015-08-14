@@ -1,18 +1,18 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
-
-KinectPV2, Kinect for Windows v2 library for processing
+ http://codigogenerativo.com/
  
-Skeleton depth tracking example
-*/
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ Skeleton depth tracking example
+ */
 
+import java.util.ArrayList;
 import KinectPV2.KJoint;
 import KinectPV2.*;
 
 KinectPV2 kinect;
 
-Skeleton [] skeleton;
 
 void setup() {
   size(512, 424, P3D);
@@ -24,7 +24,6 @@ void setup() {
   kinect.enableSkeletonDepthMap(true);
 
   kinect.init();
-
 }
 
 void draw() {
@@ -32,14 +31,16 @@ void draw() {
 
   image(kinect.getDepthMaskImage(), 0, 0);
 
-  skeleton =  kinect.getSkeletonDepthMap();
+  //get the skeletons as an Arraylist of KSkeletons
+  ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonDepthMap();
 
   //individual JOINTS
-  for (int i = 0; i < skeleton.length; i++) {
-    if (skeleton[i].isTracked()) {
-      KJoint[] joints = skeleton[i].getJoints();
+  for (int i = 0; i < skeletonArray.size(); i++) {
+    KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+    if (skeleton.isTracked()) {
+      KJoint[] joints = skeleton.getJoints();
 
-      color col  = skeleton[i].getIndexColor();
+      color col  = skeleton.getIndexColor();
       fill(col);
       stroke(col);
 

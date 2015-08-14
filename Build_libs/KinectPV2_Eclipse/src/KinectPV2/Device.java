@@ -357,12 +357,17 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 *
 	 * @return Skeleton []
 	 */
-	public KSkeleton[] getSkeleton3d() {
+	public ArrayList<KSkeleton> getSkeleton3d() {
+		ArrayList<KSkeleton> arraySkeleton = new ArrayList<KSkeleton>();
 		float[] rawData = jniGetSkeleton3D();
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeleton3d[i].createSkeletonData(rawData, i);
+			int indexJoint = i * (JointType_Count+1) * 9 + (JointType_Count+1) * 9 - 1;
+			if(rawData[indexJoint] == 1.0){
+				skeleton3d[i].createSkeletonData(rawData, i);
+				arraySkeleton.add(skeleton3d[i]);
+			}
 		}
-		return skeleton3d;
+		return arraySkeleton;
 	}
 
 	/**

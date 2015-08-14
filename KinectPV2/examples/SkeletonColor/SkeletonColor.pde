@@ -1,19 +1,18 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
-
-KinectPV2, Kinect for Windows v2 library for processing
-
-Skeleton color map example.
-Skeleton (x,y) positions are mapped to match the color Frame
-*/
+ http://codigogenerativo.com/
+ 
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ Skeleton color map example.
+ Skeleton (x,y) positions are mapped to match the color Frame
+ */
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
 
 KinectPV2 kinect;
 
-Skeleton [] skeleton;
 
 void setup() {
   size(1920, 1080, P3D);
@@ -31,14 +30,15 @@ void draw() {
 
   image(kinect.getColorImage(), 0, 0, width, height);
 
-  skeleton =  kinect.getSkeletonColorMap();
+  ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonColorMap();
 
   //individual JOINTS
-  for (int i = 0; i < skeleton.length; i++) {
-    if (skeleton[i].isTracked()) {
-      KJoint[] joints = skeleton[i].getJoints();
+  for (int i = 0; i < skeletonArray.size(); i++) {
+    KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+    if (skeleton.isTracked()) {
+      KJoint[] joints = skeleton.getJoints();
 
-      color col  = skeleton[i].getColorIndex();
+      color col  = skeleton.getIndexColor();
       fill(col);
       stroke(col);
       drawBody(joints);

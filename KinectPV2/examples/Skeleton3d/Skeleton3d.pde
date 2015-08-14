@@ -1,19 +1,17 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
-
-KinectPV2, Kinect for Windows v2 library for processing
+ http://codigogenerativo.com/
  
-3D Skeleton.
-Some features a not implemented, such as orientation
-*/
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ 3D Skeleton.
+ Some features a not implemented, such as orientation
+ */
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
 
 KinectPV2 kinect;
-
-Skeleton [] skeleton;
 
 
 float zVal = 300;
@@ -37,24 +35,26 @@ void draw() {
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
 
-  skeleton =  kinect.getSkeleton3d();
-
   //translate the scene to the center 
   pushMatrix();
   translate(width/2, height/2, 0);
   scale(zVal);
   rotateX(rotX);
 
-  for (int i = 0; i < skeleton.length; i++) {
-    if (skeleton[i].isTracked()) {
-      KJoint[] joints = skeleton[i].getJoints();
+  ArrayList<KSkeleton> skeletonArray =  kinect.getSkeleton3d();
+
+  //individual JOINTS
+  for (int i = 0; i < skeletonArray.size(); i++) {
+    KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+    if (skeleton.isTracked()) {
+      KJoint[] joints = skeleton.getJoints();
 
       //draw different color for each hand state
       drawHandState(joints[KinectPV2.JointType_HandRight]);
       drawHandState(joints[KinectPV2.JointType_HandLeft]);
 
       //Draw body
-      color col  = skeleton[i].getColorIndex();
+      color col  = skeleton.getIndexColor();
       stroke(col);
       drawBody(joints);
     }
@@ -64,25 +64,6 @@ void draw() {
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);
-}
-
-//use different color for each skeleton tracked
-color getIndexColor(int index) {
-  color col = color(255);
-  if (index == 0)
-    col = color(255, 0, 0);
-  if (index == 1)
-    col = color(0, 255, 0);
-  if (index == 2)
-    col = color(0, 0, 255);
-  if (index == 3)
-    col = color(255, 255, 0);
-  if (index == 4)
-    col = color(0, 255, 255);
-  if (index == 5)
-    col = color(255, 0, 255);
-
-  return col;
 }
 
 
