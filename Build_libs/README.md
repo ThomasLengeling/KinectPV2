@@ -1,7 +1,7 @@
 
 ## Kinect4W 2.0 library build files for Processing
 
-Compiled librariesfor [Kinect4W 2.0](https://github.com/ThomasLengeling/KinectPV2) 
+Compiled libraries for [Kinect4W 2.0](https://github.com/ThomasLengeling/KinectPV2) 
 
 ##### Build
 
