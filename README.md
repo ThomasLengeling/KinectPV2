@@ -22,26 +22,19 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 - Update your latest video card driver.
 - Install DirectX 11.
 
-#### Reference and tutorial coming soon
+#### Reference and tutorial
 
-[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
+[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) tutorial with a couple of useful examples. 
+
 
 ### Install for Processing 3.0
 
--
 - Install the [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
     - Install the library using Processing Contributed Library Manager
     - Manual install, download the latest KinectPV2 version from the releases tab, and copy the KinectPV2 folder into your processing libraries sketch folder. 
 - Enjoy
 
 For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com/ThomasLengeling/KinectPV2/releases/tag/0.7.2).
-
-#### Know issues
-
-- Missing "msvcp110.dll", or  "Kinect20.Face.dll: Can't find dependent libraries on thread"
-    - Install [Visual 2012 C++ Redistributable Packages](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
-    - Check if the Kinect v2 SDK 2.0 is installed correctly.
-- Problems with the video, not showing, update your video card driver and install DirectX 11.
 
 #### Examples
 
@@ -69,6 +62,15 @@ For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com
 To build the library from source, look at the Build_libs folder
 - KinectPV2_vc2012, builds the .dll library with JNI code.
 - KinectPV2_Eclipse, builds the .jar library for processing.
+
+
+#### Know issues
+
+- Missing "msvcp110.dll", or  "Kinect20.Face.dll: Can't find dependent libraries on thread"
+    - Install [Visual 2012 C++ Redistributable Packages](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
+    - Check if the Kinect v2 SDK 2.0 is installed correctly.
+- Problems with the video, not showing, update your video card driver and install DirectX 11.
+
 
 ---
 
