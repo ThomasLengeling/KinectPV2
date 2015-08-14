@@ -44,7 +44,7 @@ public class PointCloudDepthTest extends PApplet {
 	//max 8000cm and min 5cm
 	
 	public static void main(String[] args) {
-		PApplet.main(new String[] { "tests.PointCloudDepthTest"});
+		PApplet.main(new String[] { "test.PointCloudDepthTest"});
 	}
 	
 	public void settings(){
@@ -81,7 +81,7 @@ public class PointCloudDepthTest extends PApplet {
 		FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 		
 	
-	
+	/*
 		PJOGL pgl = (PJOGL)beginPGL();
 		GL2 gl2 = pgl.gl.getGL2();
 
@@ -99,7 +99,7 @@ public class PointCloudDepthTest extends PApplet {
 	  	gl2.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 	  	gl2.glDisable(GL2.GL_BLEND);
 	  	endPGL();
-	
+	*/
 
 		stroke(255, 0, 0);
 		text(frameRate, 50, height - 50);

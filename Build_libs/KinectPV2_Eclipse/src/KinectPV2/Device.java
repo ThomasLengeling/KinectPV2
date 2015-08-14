@@ -70,9 +70,9 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	private Image pointCloudDepthImg;
 
 	// SKELETON
-	private Skeleton[] skeletonDepth;
-	private Skeleton[] skeleton3d;
-	private Skeleton[] skeletonColor;
+	private KSkeleton[] skeletonDepth;
+	private KSkeleton[] skeleton3d;
+	private KSkeleton[] skeletonColor;
 
 	private HDFaceData[] HDFace;
 
@@ -136,19 +136,19 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 				* HEIGHTColor * 3);
 
 		// SETUP SKELETON
-		skeletonDepth = new Skeleton[BODY_COUNT];
+		skeletonDepth = new KSkeleton[BODY_COUNT];
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeletonDepth[i] = new Skeleton();
+			skeletonDepth[i] = new KSkeleton();
 		}
 
-		skeleton3d = new Skeleton[BODY_COUNT];
+		skeleton3d = new KSkeleton[BODY_COUNT];
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeleton3d[i] = new Skeleton();
+			skeleton3d[i] = new KSkeleton();
 		}
 
-		skeletonColor = new Skeleton[BODY_COUNT];
+		skeletonColor = new KSkeleton[BODY_COUNT];
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeletonColor[i] = new Skeleton();
+			skeletonColor[i] = new KSkeleton();
 		}
 
 		// SETUP FACEDATA
@@ -357,7 +357,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 *
 	 * @return Skeleton []
 	 */
-	public Skeleton[] getSkeleton3d() {
+	public KSkeleton[] getSkeleton3d() {
 		float[] rawData = jniGetSkeleton3D();
 		for (int i = 0; i < BODY_COUNT; i++) {
 			skeleton3d[i].createSkeletonData(rawData, i);
@@ -372,12 +372,17 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 *
 	 * @return Skeleton []
 	 */
-	public Skeleton[] getSkeletonDepthMap() {
+	public ArrayList<KSkeleton> getSkeletonDepthMap() {
+		ArrayList<KSkeleton> arraySkeleton = new ArrayList<KSkeleton>();
 		float[] rawData = jniGetSkeletonDepth();
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeletonDepth[i].createSkeletonData(rawData, i);
+			int indexJoint = i * (JointType_Count+1) * 9 + (JointType_Count+1) * 9 - 1;
+			if(rawData[indexJoint] == 1.0){
+				skeletonDepth[i].createSkeletonData(rawData, i);
+				arraySkeleton.add(skeletonDepth[i]);
+			}
 		}
-		return skeletonDepth;
+		return arraySkeleton;
 	}
 
 	/**
@@ -386,7 +391,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 *
 	 * @return Skeleton []
 	 */
-	public Skeleton[] getSkeletonColorMap() {
+	public KSkeleton[] getSkeletonColorMap() {
 		float[] rawData = jniGetSkeletonColor();
 		for (int i = 0; i < BODY_COUNT; i++) {
 			skeletonColor[i].createSkeletonData(rawData, i);

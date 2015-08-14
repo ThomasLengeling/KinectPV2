@@ -1,20 +1,27 @@
 package test;
 
+import java.util.ArrayList;
+
 import KinectPV2.KJoint;
 import KinectPV2.KinectPV2;
-import KinectPV2.Skeleton;
+import KinectPV2.KSkeleton;
 import processing.core.*;
 
 
 public class SkeletonDepthTest  extends PApplet{
 
 	KinectPV2 kinect;
-
-	Skeleton [] skeleton;
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.SkeletonDepthTest"});
+	}
+	
+	public void settings(){
+		size(512*2, 424, P3D);
+	}
+	
 
 	public void setup() {
-	  size(512*2, 424, P3D);
-
 	  kinect = new KinectPV2(this);
 
 	  //Enables depth and Body tracking (mask image)
@@ -33,21 +40,21 @@ public class SkeletonDepthTest  extends PApplet{
 	  image(kinect.getBodyTrackImage(), 0, 0);
 	  image(kinect.getDepthMaskImage(), 512, 0);
 	 // image(kinect.getDepthImage(), 0, 0);
-	  skeleton =  kinect.getSkeletonDepthMap();
+	  ArrayList skeletonArray =  kinect.getSkeletonDepthMap();
 
 	  //individual JOINTS
-	  
-	  for (int i = 0; i < skeleton.length; i++) {
-	   if (skeleton[i].isTracked()) {
-	      KJoint[] joints = skeleton[i].getJoints();
+	  for (int i = 0; i < skeletonArray.size(); i++) {
+		  KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+		  if (skeleton.isTracked()) {
+			  KJoint[] joints = skeleton.getJoints();
 
-	      int col  = skeleton[i].getIndexColor();
-	      fill(col);
-	      stroke(col);
+			  int col  = skeleton.getIndexColor();
+			  fill(col);
+			  stroke(col);
 
-	      drawBody(joints);
-	      drawHandState(joints[KinectPV2.JointType_HandRight]);
-	      drawHandState(joints[KinectPV2.JointType_HandLeft]);
+			  drawBody(joints);
+	      	drawHandState(joints[KinectPV2.JointType_HandRight]);
+	      	drawHandState(joints[KinectPV2.JointType_HandLeft]);
 	    }
 	  }
 	  

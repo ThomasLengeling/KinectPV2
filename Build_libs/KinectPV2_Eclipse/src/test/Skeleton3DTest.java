@@ -23,6 +23,8 @@
 
 package test;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 import KinectPV2.*;
@@ -31,7 +33,6 @@ public class Skeleton3DTest extends PApplet {
 
 	KinectPV2 kinect;
 
-	Skeleton[] skeleton;
 
 	float zVal = 300;
 	float rotX = PI;
@@ -57,7 +58,7 @@ public class Skeleton3DTest extends PApplet {
 		//image(kinect.getColorImage(), 0, 0, 320, 240);
 		image(kinect.getDepthImage(), 0, 0, 320, 240);
 		
-		skeleton = kinect.getSkeletonDepthMap();
+		ArrayList skeletonArray =  kinect.getSkeletonDepthMap();
 
 		// translate the scene to the center
 		//pushMatrix();
@@ -65,15 +66,17 @@ public class Skeleton3DTest extends PApplet {
 		//scale(zVal);
 		//rotateX(rotX);
 
-		for (int i = 0; i < skeleton.length; i++) {
-			if (skeleton[i].isTracked()) {
-				KJoint[] joints = skeleton[i].getJoints();
+
+		for (int i = 0; i < skeletonArray.size(); i++) {
+			KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+			if (skeleton.isTracked()) {
+				KJoint[] joints = skeleton.getJoints();
 
 				// draw different color for each hand state
 				drawHandState(joints[KinectPV2.JointType_HandRight]);
 				drawHandState(joints[KinectPV2.JointType_HandLeft]);
 				// Draw body
-				int col = getIndexColor(i);
+				int col = skeleton.getIndexColor();
 				stroke(col);
 				drawBody(joints);
 

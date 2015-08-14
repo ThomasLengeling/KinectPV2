@@ -54,7 +54,7 @@ void draw() {
       drawHandState(joints[KinectPV2.JointType_HandLeft]);
 
       //Draw body
-      color col  = getIndexColor(i);
+      color col  = skeleton[i].getColorIndex();
       stroke(col);
       drawBody(joints);
     }

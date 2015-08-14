@@ -39,7 +39,7 @@ void draw() {
     if (skeleton[i].isTracked()) {
       KJoint[] joints = skeleton[i].getJoints();
 
-      color col  = getIndexColor(i);
+      color col  = skeleton[i].getIndexColor();
       fill(col);
       stroke(col);
 
@@ -52,26 +52,6 @@ void draw() {
   fill(255, 0, 0);
   text(frameRate, 50, 50);
 }
-
-//use different color for each skeleton tracked
-color getIndexColor(int index) {
-  color col = color(255);
-  if (index == 0)
-    col = color(255, 0, 0);
-  if (index == 1)
-    col = color(0, 255, 0);
-  if (index == 2)
-    col = color(0, 0, 255);
-  if (index == 3)
-    col = color(255, 255, 0);
-  if (index == 4)
-    col = color(0, 255, 255);
-  if (index == 5)
-    col = color(255, 0, 255);
-
-  return col;
-}
-
 
 //DRAW BODY
 void drawBody(KJoint[] joints) {

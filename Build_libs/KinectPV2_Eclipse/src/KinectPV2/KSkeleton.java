@@ -29,7 +29,7 @@ THE SOFTWARE.
  * @author Thomas Sanchez Lengeling
  *
  */
-public class Skeleton implements SkeletonProperties{
+public class KSkeleton implements SkeletonProperties{
 
 
 	protected KJoint [] kJoints;
@@ -41,7 +41,7 @@ public class Skeleton implements SkeletonProperties{
 	
 	int colorIndex;
 
-	Skeleton(){
+	KSkeleton(){
 		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
 			kJoints[i] = new KJoint(0,0,0, new KQuaternion(), 0);
@@ -112,6 +112,7 @@ public class Skeleton implements SkeletonProperties{
 		}
 
 		if(tracked){
+			//set color index of the skeleton
 			colorIndex = i;
 			for(int j = 0; j < JointType_Count; ++j){
 				int index1 = j * 9;

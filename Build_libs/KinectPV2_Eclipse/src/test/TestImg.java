@@ -1,7 +1,7 @@
 package test;
 
 import KinectPV2.KinectPV2;
-import KinectPV2.Skeleton;
+import KinectPV2.KSkeleton;
 import KinectPV2.FaceData;
 import processing.core.*;
 
@@ -9,7 +9,7 @@ public class TestImg extends PApplet {
 
 	private KinectPV2 kinect;
 
-	Skeleton [] skeleton;
+	KSkeleton [] skeleton;
 	
 	FaceData [] faceData;
 	

@@ -31,7 +31,7 @@ public class SkeletonColorTest extends PApplet{
 
 	KinectPV2 kinect;
 
-	Skeleton [] skeleton;
+	KSkeleton [] skeleton;
 
 	public void setup() {
 	  size(1920, 1080, P3D);

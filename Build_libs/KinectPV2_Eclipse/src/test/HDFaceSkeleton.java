@@ -2,7 +2,7 @@ package test;
 
 import KinectPV2.KJoint;
 import KinectPV2.KinectPV2;
-import KinectPV2.Skeleton;
+import KinectPV2.KSkeleton;
 import KinectPV2.HDFaceData;
 import processing.core.*;
 
@@ -34,7 +34,7 @@ public class HDFaceSkeleton extends PApplet {
 
 	KinectPV2 kinect;
 
-	Skeleton []  skeleton;
+	KSkeleton []  skeleton;
 	
 	public void setup() {
 		size(1920, 1080, P3D);
