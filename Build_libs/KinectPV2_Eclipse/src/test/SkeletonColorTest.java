@@ -23,18 +23,24 @@
 
 package test;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 import KinectPV2.*;
 	
 public class SkeletonColorTest extends PApplet{
 
-
 	KinectPV2 kinect;
-
-	KSkeleton [] skeleton;
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.SkeletonColorTest"});
+	}
+	
+	public void settings(){
+		size(1920, 1080, P3D);
+	}
 
 	public void setup() {
-	  size(1920, 1080, P3D);
 
 	  kinect = new KinectPV2(this);
 
@@ -49,21 +55,22 @@ public class SkeletonColorTest extends PApplet{
 
 	  image(kinect.getColorImage(), 0, 0, width, height);
 
-	  skeleton =  kinect.getSkeletonColorMap();
+	  ArrayList skeletonArray =  kinect.getSkeletonDepthMap();
 
 	  //individual JOINTS
-	  for (int i = 0; i < skeleton.length; i++) {
-	    if (skeleton[i].isTracked()) {
-	      KJoint[] joints = skeleton[i].getJoints();
+	  for (int i = 0; i < skeletonArray.size(); i++) {
+		  KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+		  if (skeleton.isTracked()) {
+			  KJoint[] joints = skeleton.getJoints();
 
-	      int col  = getIndexColor(i);
-	      fill(col);
-	      stroke(col);
-	      drawBody(joints);
+			  int col  = skeleton.getIndexColor();
+			  fill(col);
+			  stroke(col);
+			  drawBody(joints);
 	      
-	      //draw different color for each hand state
-	      drawHandState(joints[KinectPV2.JointType_HandRight]);
-	      drawHandState(joints[KinectPV2.JointType_HandLeft]);
+			  //draw different color for each hand state
+			  drawHandState(joints[KinectPV2.JointType_HandRight]);
+			  drawHandState(joints[KinectPV2.JointType_HandLeft]);
 	    }
 	  }
 

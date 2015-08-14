@@ -391,12 +391,17 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 *
 	 * @return Skeleton []
 	 */
-	public KSkeleton[] getSkeletonColorMap() {
+	public ArrayList<KSkeleton> getSkeletonColorMap() {
+		ArrayList<KSkeleton> arraySkeleton = new ArrayList<KSkeleton>();
 		float[] rawData = jniGetSkeletonColor();
 		for (int i = 0; i < BODY_COUNT; i++) {
-			skeletonColor[i].createSkeletonData(rawData, i);
+			int indexJoint = i * (JointType_Count+1) * 9 + (JointType_Count+1) * 9 - 1;
+			if(rawData[indexJoint] == 1.0){
+				skeletonColor[i].createSkeletonData(rawData, i);
+				arraySkeleton.add(skeletonColor[i]);
+			}
 		}
-		return skeletonColor;
+		return arraySkeleton;
 	}
 
 	// FACE DATA
