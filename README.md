@@ -25,11 +25,12 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 #### Reference and tutorial coming soon
 
 [Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) with tutorial and some couple of useful things. 
-#### Install Processing 3.0
+
+### Install for Processing 3.0
 
 -
 - Install the [Kinect for Windows SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
-    - Install the library using ProcessingContributed Library Manager
+    - Install the library using Processing Contributed Library Manager
     - Manual install, download the latest KinectPV2 version from the releases tab, and copy the KinectPV2 folder into your processing libraries sketch folder. 
 - Enjoy
 
@@ -79,7 +80,7 @@ To build the library from source, look at the Build_libs folder
 
 ---
 
-#### Simple Device
+### Simple Device
 
 To include the library into a processing sketh you just need to import it and initialize it.
 
