@@ -140,26 +140,7 @@ public class Skeleton3DTest extends PApplet {
 		fill(255, 0, 0);
 		text(frameRate, 50, 50);
 	}
-
-	// use different color for each skeleton tracked
-	int getIndexColor(int index) {
-		  int col = color(255);
-		  if (index == 0)
-		    col = color(0, 0, 255);
-		  else  if (index == 1)
-		    col = color(0, 255, 0);
-		  else if (index == 2)
-		    col = color(255, 0, 0);
-		  else if (index == 3)
-		    col = color(255, 255, 0);
-		  else if (index == 4)
-		    col = color(255, 0, 255);
-		  else if (index == 5)
-		    col = color(0, 255, 255);
-
-		  return col;
-	}
-
+	
 	PVector extractRotationInDegrees(KQuaternion pQuaternion) {
 		float x = pQuaternion.getX();
 		float y = pQuaternion.getY();
@@ -185,8 +166,9 @@ public class Skeleton3DTest extends PApplet {
 				* (dRoll > 0.0f ? 1.0f : -1.0f)) / increment)
 				* (increment);
 		return new PVector(kPitch, kYaw, kRoll);
-
 	}
+	
+
 
 	void drawBody(KJoint[] joints) {
 		drawBone(joints, KinectPV2.JointType_Head, KinectPV2.JointType_Neck);

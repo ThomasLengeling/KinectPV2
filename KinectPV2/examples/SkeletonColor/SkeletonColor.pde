@@ -3,7 +3,7 @@ Thomas Sanchez Lengeling.
 http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
- 
+
 Skeleton color map example.
 Skeleton (x,y) positions are mapped to match the color Frame
 */
@@ -19,7 +19,7 @@ void setup() {
   size(1920, 1080, P3D);
 
   kinect = new KinectPV2(this);
-  
+
   kinect.enableSkeletonColorMap(true);
   kinect.enableColorImg(true);
 
@@ -38,11 +38,11 @@ void draw() {
     if (skeleton[i].isTracked()) {
       KJoint[] joints = skeleton[i].getJoints();
 
-      color col  = getIndexColor(i);
+      color col  = skeleton[i].getColorIndex();
       fill(col);
       stroke(col);
       drawBody(joints);
-      
+
       //draw different color for each hand state
       drawHandState(joints[KinectPV2.JointType_HandRight]);
       drawHandState(joints[KinectPV2.JointType_HandLeft]);
@@ -51,25 +51,6 @@ void draw() {
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);
-}
-
-//use different color for each skeleton tracked
-color getIndexColor(int index) {
-  color col = color(255);
-  if (index == 0)
-    col = color(255, 0, 0);
-  if (index == 1)
-    col = color(0, 255, 0);
-  if (index == 2)
-    col = color(0, 0, 255);
-  if (index == 3)
-    col = color(255, 255, 0);
-  if (index == 4)
-    col = color(0, 255, 255);
-  if (index == 5)
-    col = color(255, 0, 255);
-
-  return col;
 }
 
 //DRAW BODY
@@ -83,7 +64,7 @@ void drawBody(KJoint[] joints) {
   drawBone(joints, KinectPV2.JointType_SpineBase, KinectPV2.JointType_HipRight);
   drawBone(joints, KinectPV2.JointType_SpineBase, KinectPV2.JointType_HipLeft);
 
-  // Right Arm    
+  // Right Arm
   drawBone(joints, KinectPV2.JointType_ShoulderRight, KinectPV2.JointType_ElbowRight);
   drawBone(joints, KinectPV2.JointType_ElbowRight, KinectPV2.JointType_WristRight);
   drawBone(joints, KinectPV2.JointType_WristRight, KinectPV2.JointType_HandRight);

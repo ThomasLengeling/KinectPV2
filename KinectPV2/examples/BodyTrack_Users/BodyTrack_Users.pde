@@ -30,7 +30,6 @@ void draw() {
   image(kinect.getBodyTrackImage(), 0, 0, 320, 240);
   image(kinect.getDepthMaskImage(), 0, 240, 320, 240);
 
-
   ArrayList<PImage> bodyTrackList = kinect.getBodyTrackUser();
 
   for (int i = 0; i < bodyTrackList.size(); i++) {
@@ -40,7 +39,6 @@ void draw() {
     else
       image(bodyTrackImg, 320 + 240*(i - 3), 424, 320, 240 );
   }
-
 
   fill(0);
   textSize(16);

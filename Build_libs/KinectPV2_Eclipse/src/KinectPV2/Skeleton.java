@@ -1,5 +1,6 @@
 package KinectPV2;
 
+
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -29,29 +30,31 @@ THE SOFTWARE.
  *
  */
 public class Skeleton implements SkeletonProperties{
-	
-	
+
+
 	protected KJoint [] kJoints;
-	
+
 	protected int leftHandState;
 	protected int rightHandState;
-	
+
 	private boolean tracked;
 	
+	int colorIndex;
+
 	Skeleton(){
 		kJoints  = new KJoint[JointType_Count + 1];
 		for(int i = 0; i < JointType_Count + 1; i++){
 			kJoints[i] = new KJoint(0,0,0, new KQuaternion(), 0);
 		}
 	}
-	
+
 	/*
 	 * if the current skeleton is being tracked
 	 */
 	public boolean isTracked(){
 		return tracked;
 	}
-	
+
 	/**
 	 * get the array of joints of the skeleton
 	 * @return  KJoint []
@@ -59,7 +62,7 @@ public class Skeleton implements SkeletonProperties{
 	public KJoint [] getJoints(){
 		return kJoints;
 	}
-	
+
 	/**
 	 * get Left Hand State of the skeleton
 	 * @return int leftHandState
@@ -67,7 +70,7 @@ public class Skeleton implements SkeletonProperties{
 	public int getLeftHandState(){
 		return leftHandState;
 	}
-	
+
 	/**
 	 * get Right Hand State of the skeleton
 	 * @return int rightHandState
@@ -75,7 +78,30 @@ public class Skeleton implements SkeletonProperties{
 	public int getRightHandState(){
 		return rightHandState;
 	}
+
+	//use different color for each skeleton tracked
+	public int getIndexColor() {
+	  int col = color(255, 255, 255);
+	  if (colorIndex == 0)
+	    col = color(255, 0, 0);
+	  if (colorIndex == 1)
+	    col = color(0, 255, 0);
+	  if (colorIndex == 2)
+	    col = color(0, 0, 255);
+	  if (colorIndex == 3)
+	    col = color(255, 255, 0);
+	  if (colorIndex == 4)
+	    col = color(0, 255, 255);
+	  if (colorIndex == 5)
+	    col = color(255, 0, 255);
+
+	  return col;
+	}
 	
+	private final int color(int v1, int v2, int v3) {
+	      return 0xff000000 | (v1 << 16) | (v2 << 8) | v3;
+	  }
+
 	protected void createSkeletonData(float [] rawData, int i){
 		int index2 = i * (JointType_Count+1) * 9;
 		int indexJoint = index2 + (JointType_Count+1) * 9 - 1;
@@ -84,22 +110,23 @@ public class Skeleton implements SkeletonProperties{
 		}else{
 			tracked = false;
 		}
-		
+
 		if(tracked){
-			for(int j = 0; j < JointType_Count; ++j){			
+			colorIndex = i;
+			for(int j = 0; j < JointType_Count; ++j){
 				int index1 = j * 9;
 				kJoints[j].pos.x = rawData[index2 + index1 + 0];
 				kJoints[j].pos.y = rawData[index2 + index1 + 1];
 				kJoints[j].pos.z = rawData[index2 + index1 + 2];
-				
+
 				kJoints[j].orientation.w = rawData[index2 + index1 + 3];
 				kJoints[j].orientation.x = rawData[index2 + index1 + 4];
 				kJoints[j].orientation.y = rawData[index2 + index1 + 5];
 				kJoints[j].orientation.z = rawData[index2 + index1 + 6];
-				
+
 				int state =   (int)rawData[index2 + index1 + 7];
 				int type  =   (int)rawData[index2 + index1 + 8];
-				
+
 				kJoints[j].state = state;
 				kJoints[j].type  = type;
 				if(type == JointType_HandLeft)

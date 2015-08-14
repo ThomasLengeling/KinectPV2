@@ -41,7 +41,7 @@ public class SkeletonDepthTest  extends PApplet{
 	   if (skeleton[i].isTracked()) {
 	      KJoint[] joints = skeleton[i].getJoints();
 
-	      int col  = getIndexColor(i);
+	      int col  = skeleton[i].getIndexColor();
 	      fill(col);
 	      stroke(col);
 
