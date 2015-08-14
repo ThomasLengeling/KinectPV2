@@ -14,13 +14,13 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 
 ####Requirements
 
-- A Kinect for Windows v2 Device (K4W2)
+- A Kinect for Windows v2 Device (K4W2).
 - [Kinect SDK v2](http://www.microsoft.com/en-us/kinectforwindows/default.aspx)
 - 64bit computer with a dedicated USB 3.0.
-- Windows 8, 8.1
+- Windows 10, 8, 8.1
 - [Processing 3.0](http://processing.org/)
-- Update your latest video card driver
-- Install DirectX 11 
+- Update your latest video card driver.
+- Install DirectX 11.
 
 #### Reference and tutorial coming soon
 
@@ -40,8 +40,7 @@ For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com
 - Missing "msvcp110.dll", or  "Kinect20.Face.dll: Can't find dependent libraries on thread"
     - Install [Visual 2012 C++ Redistributable Packages](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
     - Check if the Kinect v2 SDK 2.0 is installed correctly.
-- Missing directX 11, update your video card driver and install directX 11
----
+- Problems with the video, not showing, update your video card driver and install DirectX 11.
 
 #### Examples
 
