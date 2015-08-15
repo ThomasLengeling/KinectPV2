@@ -1,9 +1,9 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
- 
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  Simple Face tracking, up-to 6 users with mode identifier
  */
 
@@ -25,6 +25,7 @@ void setup() {
   //for face detection base on the infrared Img
   kinect.enableInfraredImg(true);
 
+  //enable face detection
   kinect.enableFaceDetection(true);
 
   kinect.init();
@@ -107,7 +108,7 @@ public void getFaceMapColorData() {
 }
 
 public void getFaceMapInfraredData() {
-  
+
   ArrayList<FaceData> faceData =  kinect.getFaceData();
 
   for (int i = 0; i < faceData.size(); i++) {
@@ -191,7 +192,7 @@ String getStateTypeAsString(int state, int type) {
     str = "WearingGlasses";
     break;
   }
-  
+
   switch(state) {
   case KinectPV2.DetectionResult_Unknown:
     str += ": Unknown";

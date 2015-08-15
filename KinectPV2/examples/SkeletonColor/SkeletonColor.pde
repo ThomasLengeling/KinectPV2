@@ -99,6 +99,7 @@ void drawBody(KJoint[] joints) {
   drawJoint(joints, KinectPV2.JointType_Head);
 }
 
+//draw joint
 void drawJoint(KJoint[] joints, int jointType) {
   pushMatrix();
   translate(joints[jointType].getX(), joints[jointType].getY(), joints[jointType].getZ());
@@ -106,6 +107,7 @@ void drawJoint(KJoint[] joints, int jointType) {
   popMatrix();
 }
 
+//draw bone
 void drawBone(KJoint[] joints, int jointType1, int jointType2) {
   pushMatrix();
   translate(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ());
@@ -114,6 +116,7 @@ void drawBone(KJoint[] joints, int jointType1, int jointType2) {
   line(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ(), joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
 }
 
+//draw hand state
 void drawHandState(KJoint joint) {
   noStroke();
   handState(joint.getState());

@@ -40,9 +40,10 @@ void draw() {
      foundUsers = true;
      break;
     }
+
   }
 
-
+  //display the number of users detected 
   fill(255, 0, 0);
   text(kinect.getNumOfUsers(), 50, 50);
   text("Found User: "+foundUsers, 50, 70);

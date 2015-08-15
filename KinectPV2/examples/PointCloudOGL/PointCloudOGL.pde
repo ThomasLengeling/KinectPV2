@@ -63,12 +63,11 @@ public void draw() {
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
   // obtain XYZ the values of the point cloud
-  //for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
-  // float x = pointCloudBuffer.get(i*3 + 0);
-  // float y = pointCloudBuffer.get(i*3 + 1);
-  // float z = pointCloudBuffer.get(i*3 + 2);
+  // for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
+  //    float x = pointCloudBuffer.get(i*3 + 0);
+  //    float y = pointCloudBuffer.get(i*3 + 1);
+  //    float z = pointCloudBuffer.get(i*3 + 2);
   // }
-
 
   pgl = beginPGL();
   sh.bind();
@@ -97,7 +96,6 @@ public void draw() {
 }
 
 public void mousePressed() {
-
   println(frameRate);
   // saveFrame();
 }

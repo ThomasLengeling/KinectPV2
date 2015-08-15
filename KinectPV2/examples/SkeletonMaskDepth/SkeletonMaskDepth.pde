@@ -34,7 +34,7 @@ void draw() {
   //get the skeletons as an Arraylist of KSkeletons
   ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonDepthMap();
 
-  //individual JOINTS
+  //individual joints
   for (int i = 0; i < skeletonArray.size(); i++) {
     KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
     //if the skeleton is being tracked compute the skleton joints
@@ -55,7 +55,7 @@ void draw() {
   text(frameRate, 50, 50);
 }
 
-//DRAW BODY
+//draw the body
 void drawBody(KJoint[] joints) {
   drawBone(joints, KinectPV2.JointType_Head, KinectPV2.JointType_Neck);
   drawBone(joints, KinectPV2.JointType_Neck, KinectPV2.JointType_SpineShoulder);
@@ -102,6 +102,7 @@ void drawBody(KJoint[] joints) {
   drawJoint(joints, KinectPV2.JointType_Head);
 }
 
+//draw a single joint
 void drawJoint(KJoint[] joints, int jointType) {
   pushMatrix();
   translate(joints[jointType].getX(), joints[jointType].getY(), joints[jointType].getZ());
@@ -109,6 +110,7 @@ void drawJoint(KJoint[] joints, int jointType) {
   popMatrix();
 }
 
+//draw a bone from two joints
 void drawBone(KJoint[] joints, int jointType1, int jointType2) {
   pushMatrix();
   translate(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ());
@@ -117,7 +119,7 @@ void drawBone(KJoint[] joints, int jointType1, int jointType2) {
   line(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ(), joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
 }
 
-//draw a ellipse depending on the state of the hand
+//draw a ellipse depending on the hand state
 void drawHandState(KJoint joint) {
   noStroke();
   handState(joint.getState());

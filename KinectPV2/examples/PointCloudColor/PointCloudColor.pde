@@ -38,7 +38,6 @@ public void setup() {
   kinect.enableColorImg(true);
   kinect.enableColorPointCloud(true);
 
-
   kinect.init();
 
   //shader

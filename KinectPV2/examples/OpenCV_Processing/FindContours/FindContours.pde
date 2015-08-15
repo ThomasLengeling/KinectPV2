@@ -23,7 +23,6 @@ void setup() {
   kinect.enableBodyTrackImg(true);
   kinect.enablePointCloud(true);
 
-  //kinect.enableDepthImg(true);
   kinect.init();
 }
 
