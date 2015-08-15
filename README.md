@@ -53,7 +53,7 @@ For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com
 - HDColor, 1920 x 1080 RGB frame.
 - DepthTest, Depth test with raw depth data.
 - CoordinateMapperRGBDepth, example broken, check 0.7.2 version.
-- RecordPointCloud, simple OBJ recording of the point cloud.
+- RecordPointCloud, simple OBJ recording of the point cloud positions.
 - [OpenCV](https://github.com/atduskgreg/opencv-processing) examples:
   - Live Capture App
   - Find Contours with depth or bodyIndex
