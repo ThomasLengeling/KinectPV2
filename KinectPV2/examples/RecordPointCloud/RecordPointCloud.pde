@@ -1,12 +1,13 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
-
+ 
  KinectPV2, Kinect for Windows v2 library for processing
-
+ 
  How to record Point Cloud Data and store it in several obj files.
  */
 
+import java.util.ArrayList;
 import java.nio.*;
 import KinectPV2.*;
 
@@ -18,26 +19,28 @@ PShader sh;
 int  vertLoc;
 
 //transformations
-float a = 1.2;
-int zval = 50;
-float scaleVal = 260;
-
-
+float a = 7;
+int zval = -50;
+float scaleVal = 220;
 
 //Distance Threashold
 int maxD = 4500; // 4.5 m
 int minD = 0;  //  50 cm
 
-int numFrames =  30 * 60; // 1m of recording
+int numFrames =  30; // 1m of recording
+int frameCounter = 0;
+boolean recordFrame = false;
+boolean doneRecording = false;
 
-ArrayList<Frame> mFrames;
+ArrayList<FrameBuffer> mFrames;
 
 void setup() {
-  size(512*2, 424, P3D);
+  size(1024, 768, P3D);
 
   kinect = new KinectPV2(this);
 
-  mFrames = new ArrayList<Frame>();
+  //create arrayList
+  mFrames = new ArrayList<FrameBuffer>();
 
   //Enable point cloud
   kinect.enableDepthImg(true);
@@ -71,22 +74,31 @@ void draw() {
   //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
-    //data size
+  if (recordFrame) {
+    if ( frameCounter < numFrames) {
+      FrameBuffer frameBuffer = new FrameBuffer(pointCloudBuffer);
+      frameBuffer.setFrameId(frameCounter);
+      mFrames.add(frameBuffer);
+    } else {
+      recordFrame = false;
+      doneRecording = true;
+    }
+    frameCounter++;
+  }
+
+  //recor the frames
+  if (doneRecording) {
+    for (int i = 0; i < mFrames.size(); i++) {
+      FrameBuffer fBuffer =  (FrameBuffer)mFrames.get(i);
+      fBuffer.saveOBJFrame();
+    }
+    doneRecording = false;
+    println("Done Recording frames: "+numFrames);
+  }
+
+  //data size
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
 
-  stroke(255);
-  beginShape(POINTS);
-  for (int i = 0; i < vertData * 3 - 3; i++) {
-    //if ( i % 500 == 0) {
-      float x =  pointCloudBuffer.get(i + 0);
-      float y =  pointCloudBuffer.get(i + 1);
-      float z =  pointCloudBuffer.get(i + 2);
-      vertex(x, y, z);
-   // }
-  }
-  endShape();
-
-/*
   pgl = beginPGL();
   sh.bind();
 
@@ -97,8 +109,6 @@ void draw() {
 
   pgl.enableVertexAttribArray(vertLoc);
 
-
-
   //pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * (Float.SIZE/8), pointCloudBuffer);
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
   pgl.drawArrays(PGL.POINTS, 0, vertData);
@@ -107,7 +117,7 @@ void draw() {
 
   sh.unbind();
   endPGL();
-  */
+
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
@@ -115,6 +125,7 @@ void draw() {
 
 public void mousePressed() {
 
+  recordFrame = true;
   println(frameRate);
   // saveFrame();
 }
