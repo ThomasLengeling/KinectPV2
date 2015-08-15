@@ -4,7 +4,7 @@ KinectPV2
 ### Kinect for Windows v2 library for Processing
 
 ---
-Version 0.7.4
+Version 0.7.5
 
 Library is curretly on develop with the Windows SDK Version 1409 (9/16/2014)
 
@@ -38,28 +38,29 @@ For Processing 2.2.1 please use the [KinectPV2 0.7.2 version](https://github.com
 
 #### Examples
 
-- TestImages, Test all Frames/Images for the Kinect
-- SkeletonMaskDepth, Skeleton positions are mapped to match the depth and body index frames
-- SkeletonColor, Skeleton is mapped to match the color frame
+- TestImages, Test all Frames/Images for the Kinect.
+- SkeletonMaskDepth, Skeleton positions are mapped to match the depth and body index frames.
+- SkeletonColor, Skeleton is mapped to match the color frame.
 - Skeleton3d, 3d Skeleton example needs love.
-- SimpleFaceTracking, simple face tracking with mode detection
-- PointCloudOGL, Point cloud depth render using openGL and shaders
-- PointCloudDepth, point cloud in a single 2d Image and threshold example
-- PointCloudColor, Point cloud in color, using openGL and shaders
-- MaskTest, Body Index test, and body index with depth
-- Mask_findUsers, find number of users base on body index information
-- MapDepthToColor, depth to color mapping, depth frame is aligned with color frame
-- HDFaceVertex, Face vertices are match with the color frame
-- HDColor, 1920 x 1080 RGB frame
+- SimpleFaceTracking, simple face tracking with mode detection.
+- PointCloudOGL, Point cloud depth render using openGL and shaders.
+- PointCloudDepth, point cloud in a single 2d Image and threshold example.
+- PointCloudColor, Point cloud in color, using openGL and shaders.
+- MaskTest, Body Index test, and body index with depth.
+- Mask_findUsers, find number of users base on body index information.
+- MapDepthToColor, depth to color mapping, depth frame is aligned with color frame.
+- HDFaceVertex, Face vertices are match with the color frame.
+- HDColor, 1920 x 1080 RGB frame.
 - DepthTest, Depth test with raw depth data.
-- CoordinateMapperRGBDepth, example broken, check 0.7.2 version
+- CoordinateMapperRGBDepth, example broken, check 0.7.2 version.
+- RecordPointCloud, simple OBJ recording of the point cloud.
 - [OpenCV](https://github.com/atduskgreg/opencv-processing) examples:
   - Live Capture App
   - Find Contours with depth or bodyIndex
 
 #### Build
 
-To build the library from source, look at the Build_libs folder
+To build the KinectPV2 library from source code, look at the Build_libs folder
 - KinectPV2_vc2012, builds the .dll library with JNI code.
 - KinectPV2_Eclipse, builds the .jar library for processing.
 
@@ -69,7 +70,7 @@ To build the library from source, look at the Build_libs folder
 - Missing "msvcp110.dll", or  "Kinect20.Face.dll: Can't find dependent libraries on thread"
     - Install [Visual 2012 C++ Redistributable Packages](https://www.microsoft.com/en-us/download/details.aspx?id=30679).
     - Check if the Kinect v2 SDK 2.0 is installed correctly.
-- Problems with the video, not showing, update your video card driver and install DirectX 11.
+- Problems with the video, update your video card driver and install DirectX 11.
 
 
 ---
