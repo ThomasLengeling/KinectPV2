@@ -1,9 +1,9 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
-
+ 
  KinectPV2, Kinect for Windows v2 library for processing
-
+ 
  How to record Point Cloud Data and store it in several obj files.
  Record with 'r'
  */
@@ -103,35 +103,33 @@ void draw() {
   sh.unbind();
   endPGL();
 
-
-  //allocate numFrames into an array
-  allocateFrames();
+  //allocate the current pointCloudBuffer into an array of FloatBuffers
+  allocateFrame(pointCloudBuffer);
 
   //when the allocation is done write the obj frames
   writeFrames();
-
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
 }
 
 //allocate all the frame in a temporary array
-void allocateFrames(){
+void allocateFrame(FloatBuffer buffer) {
   if (recordFrame) {
-  if ( frameCounter < numFrames) {
-    FrameBuffer frameBuffer = new FrameBuffer(pointCloudBuffer);
-    frameBuffer.setFrameId(frameCounter);
-    mFrames.add(frameBuffer);
-  } else {
-    recordFrame = false;
-    doneRecording = true;
-  }
-  frameCounter++;
+    if ( frameCounter < numFrames) {
+      FrameBuffer frameBuffer = new FrameBuffer(buffer);
+      frameBuffer.setFrameId(frameCounter);
+      mFrames.add(frameBuffer);
+    } else {
+      recordFrame = false;
+      doneRecording = true;
+    }
+    frameCounter++;
   }
 }
 
 //Write all the frames recorded
-void writeFrames(){
+void writeFrames() {
   if (doneRecording) {
     for (int i = 0; i < mFrames.size(); i++) {
       FrameBuffer fBuffer =  (FrameBuffer)mFrames.get(i);
@@ -151,7 +149,7 @@ public void mousePressed() {
 public void keyPressed() {
 
   //start recording 30 frames with 'r'
-  if(key == 'r'){
+  if (key == 'r') {
     recordFrame = true;
   }
   if (key == 'a') {
