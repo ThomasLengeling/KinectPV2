@@ -1,5 +1,7 @@
 package test;
 
+import java.util.ArrayList;
+
 import KinectPV2.FaceFeatures;
 import KinectPV2.KinectPV2;
 import KinectPV2.FaceData;
@@ -11,12 +13,17 @@ import processing.core.*;
 public class Face extends PApplet {
 
 	private KinectPV2 kinect;
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.Face"});
+	}
+	
+	public void settings(){
+		size(1920, 1080, P3D);
+	}
 		
 	
-	public void setup() {
-		  size(1920, 1080, P3D);
-		
-		
+	public void setup() {		
 		  kinect = new KinectPV2(this);
 		  kinect.enableColorImg(true);
 		  kinect.enableInfraredImg(true);
@@ -51,15 +58,16 @@ public class Face extends PApplet {
 	}
 	
 	public void getFaceMapColorData() {
-		 FaceData [] faceData =  kinect.getFaceData();
+		 ArrayList<FaceData> faceData =  kinect.getFaceData();
 
-		  for (int i = 0; i < faceData.length; i++) {
-		    if (faceData[i].isFaceTracked()) {
-		      PVector [] facePointsColor = faceData[i].getFacePointsColorMap();
+		  for (int i = 0; i < faceData.size(); i++) {
+			  FaceData faceD = faceData.get(i);
+		    if (faceD.isFaceTracked()) {
+		      PVector [] facePointsColor = faceD.getFacePointsColorMap();
 
-		      KRectangle rectFace = faceData[i].getBoundingRectColor();
+		      KRectangle rectFace = faceD.getBoundingRectColor();
 
-		      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
+		      FaceFeatures [] faceFeatures = faceD.getFaceFeatures();
 
 		      PVector nosePos = new PVector();
 		      noStroke();
@@ -94,43 +102,44 @@ public class Face extends PApplet {
 	}
 	
 	  public void getFaceMapInfraredData(){
-		 FaceData [] faceData =  kinect.getFaceData();
+		  ArrayList<FaceData> faceData =  kinect.getFaceData();
 
-		  for (int i = 0; i < faceData.length; i++) {
-		    if (faceData[i].isFaceTracked()) {
-		      PVector [] facePointsInfrared = faceData[i].getFacePointsInfraredMap();
+		  for (int i = 0; i < faceData.size(); i++) {
+			  FaceData faceD = faceData.get(i);
+			  if (faceD.isFaceTracked()) {
+				  PVector [] facePointsInfrared = faceD.getFacePointsInfraredMap();
 
-		      KRectangle rectFace = faceData[i].getBoundingRectInfrared();
+				  KRectangle rectFace = faceD.getBoundingRectInfrared();
 
-		      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
-
-		      PVector nosePos = new PVector();
-		      noStroke();
-
-		      int col = getIndexColor(i);
-
-		      fill(col);   
-		      for (int j = 0; j < facePointsInfrared.length; j++) {
-		        if (j == KinectPV2.Face_Nose)
-		          nosePos.set(facePointsInfrared[j].x, facePointsInfrared[j].y);
-
-		        ellipse(facePointsInfrared[j].x, facePointsInfrared[j].y, 15, 15);
-		      }
-
-		      if (nosePos.x != 0 && nosePos.y != 0)
-		        for (int j = 0; j < 8; j++) {
-		          int st   = faceFeatures[j].getState();
-		          int type = faceFeatures[j].getFeatureType();
-
-		          String str = getStateTypeAsString(st, type);
-
-		          fill(255);
-		          text(str, nosePos.x + 150, nosePos.y - 70 + j*25);
-		        }
-		      stroke(255, 0, 0);
-		      noFill();
-		      rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
-		    }
+			      FaceFeatures [] faceFeatures = faceD.getFaceFeatures();
+	
+			      PVector nosePos = new PVector();
+			      noStroke();
+	
+			      int col = getIndexColor(i);
+	
+			      fill(col);   
+			      for (int j = 0; j < facePointsInfrared.length; j++) {
+			        if (j == KinectPV2.Face_Nose)
+			          nosePos.set(facePointsInfrared[j].x, facePointsInfrared[j].y);
+	
+			        ellipse(facePointsInfrared[j].x, facePointsInfrared[j].y, 15, 15);
+			      }
+	
+			      if (nosePos.x != 0 && nosePos.y != 0)
+			        for (int j = 0; j < 8; j++) {
+			          int st   = faceFeatures[j].getState();
+			          int type = faceFeatures[j].getFeatureType();
+	
+			          String str = getStateTypeAsString(st, type);
+	
+			          fill(255);
+			          text(str, nosePos.x + 150, nosePos.y - 70 + j*25);
+			        }
+			      stroke(255, 0, 0);
+			      noFill();
+			      rect(rectFace.getX(), rectFace.getY(), rectFace.getWidth(), rectFace.getHeight());
+			  }
 		  }
 
 	  }

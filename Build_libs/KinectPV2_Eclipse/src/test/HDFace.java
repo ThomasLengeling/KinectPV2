@@ -1,5 +1,7 @@
 package test;
 
+import java.util.ArrayList;
+
 import KinectPV2.KinectPV2;
 import KinectPV2.HDFaceData;
 import processing.core.*;
@@ -31,10 +33,16 @@ import processing.core.*;
 public class HDFace extends PApplet {
 
 	KinectPV2 kinect;
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.HDFace"});
+	}
+	
+	public void settings(){
+		size(1920, 1080, P3D);
+	}
 
 	public void setup() {
-		size(1920, 1080);
-
 		kinect = new KinectPV2(this);
 		kinect.enableColorImg(true);
 		
@@ -46,17 +54,18 @@ public class HDFace extends PApplet {
 		background(0);
 
 		// DRAW COLOR IMAGE MAP
-		//image(kinect.getColorImage(), 0, 0);
+		image(kinect.getColorImage(), 0, 0);
 
-		HDFaceData[] hdFaceData = kinect.getHDFaceVertex();
+		ArrayList<HDFaceData> hdFaceData = kinect.getHDFaceVertex();
 
 		stroke(0, 255, 0);
-		for (int j = 0; j < KinectPV2.BODY_COUNT; j++) {
+		for (int i = 0; i < hdFaceData.size(); i++) {
 			beginShape(POINTS);
-			if (hdFaceData[j].isTracked()) {
-				for (int i = 0; i < KinectPV2.HDFaceVertexCount; i++) {
-					float x = hdFaceData[j].getX(i);
-					float y = hdFaceData[j].getY(i);
+			HDFaceData HDfaceData = (HDFaceData)hdFaceData.get(i);
+			if (HDfaceData.isTracked()) {
+				for (int j = 0; j < KinectPV2.HDFaceVertexCount; j++) {
+					float x = HDfaceData.getX(j);
+					float y = HDfaceData.getY(j);
 					vertex(x, y);
 				}
 			}

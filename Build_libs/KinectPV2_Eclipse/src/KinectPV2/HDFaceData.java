@@ -48,10 +48,12 @@ public class HDFaceData implements FaceProperties{
 			faceTracked = true;
 		else
 			faceTracked = false;
-		for(int i = 0; i < HDFaceVertexCount; i++) {
-			HDFaceVertex[i].x = rawData[index * iFace + i * 2 + 0];
-			HDFaceVertex[i].y = rawData[index * iFace + i * 2 + 1];
-		}	
+		if(faceTracked){
+			for(int i = 0; i < HDFaceVertexCount; i++) {
+				HDFaceVertex[i].x = rawData[index * iFace + i * 2 + 0];
+				HDFaceVertex[i].y = rawData[index * iFace + i * 2 + 1];
+			}
+		}
 	}
 	
 	public PVector [] getHDFaceVertex(){

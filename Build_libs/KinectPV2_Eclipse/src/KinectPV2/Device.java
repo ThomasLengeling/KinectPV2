@@ -427,15 +427,31 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	 * Obtain Vertex positions corresponding the HD Color frame
 	 * @return
 	 */
-	public HDFaceData[] getHDFaceVertex() {
+	public ArrayList<HDFaceData> getHDFaceVertex() {
+		ArrayList<HDFaceData> HDFArray = new ArrayList<HDFaceData>();
 		float[] rawData = jniGetHDFaceDetection();
-		for (int i = 0; i < BODY_COUNT; i++)
+		for (int i = 0; i < BODY_COUNT; i++){
 			HDFace[i].createHDFaceVertexData(rawData, i);
-		return HDFace;
+			if(HDFace[i].isTracked()){
+				HDFArray.add(HDFace[i]);
+			}
+		}
+		return HDFArray;
 	}
 
-	public FaceData[] getFaceData() {
-		return faceData;
+	/**
+	 * Obtain the face data, 5 face points and mode detection from each user
+	 * @return ArrayList of FaceData
+	 */
+	public ArrayList<FaceData>  getFaceData() {
+		ArrayList<FaceData> faceArray = new ArrayList<FaceData>();
+
+		for (int i = 0; i < BODY_COUNT; i++){
+			if(faceData[i].isFaceTracked()){
+				faceArray.add(faceData[i]);
+			}
+		}
+		return faceArray;
 	}
 
 	// POINT CLOUDS
