@@ -100,7 +100,7 @@ public class KSkeleton implements SkeletonProperties{
 	
 	private final int color(int v1, int v2, int v3) {
 	      return 0xff000000 | (v1 << 16) | (v2 << 8) | v3;
-	  }
+	 }
 
 	protected void createSkeletonData(float [] rawData, int i){
 		int index2 = i * (JointType_Count+1) * 9;

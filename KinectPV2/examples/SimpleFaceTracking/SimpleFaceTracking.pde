@@ -1,11 +1,11 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
-
-KinectPV2, Kinect for Windows v2 library for processing
-
-Simple Face tracking, up-to 6 users with mode identifier
-*/
+ http://codigogenerativo.com/
+ 
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ Simple Face tracking, up-to 6 users with mode identifier
+ */
 
 
 import KinectPV2.*;
@@ -58,25 +58,27 @@ void draw() {
 
 public void getFaceMapColorData() {
   //get the face data
-  FaceData [] faceData =  kinect.getFaceData();
+  ArrayList<FaceData> faceData =  kinect.getFaceData();
 
-  for (int i = 0; i < faceData.length; i++) {
-    if (faceData[i].isFaceTracked()) {
+  for (int i = 0; i < faceData.size(); i++) {
+    FaceData faceD = faceData.get(i);
+    if (faceD.isFaceTracked()) {
 
       //obtain the face data from the colo frame
-      PVector [] facePointsColor = faceData[i].getFacePointsColorMap();
+      PVector [] facePointsColor = faceD.getFacePointsColorMap();
 
-      KRectangle rectFace = faceData[i].getBoundingRectColor();
+      KRectangle rectFace = faceD.getBoundingRectColor();
 
-      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
+      FaceFeatures [] faceFeatures = faceD.getFaceFeatures();
+
+      //get the color of th user
+      int col = faceD.getIndexColor();
+
+      fill(col);
 
       //nose position
       PVector nosePos = new PVector();
       noStroke();
-
-      int col = getIndexColor(i);
-
-      fill(col);
 
       //update the nose positions
       for (int j = 0; j < facePointsColor.length; j++) {
@@ -105,22 +107,26 @@ public void getFaceMapColorData() {
 }
 
 public void getFaceMapInfraredData() {
-  FaceData [] faceData =  kinect.getFaceData();
+  
+  ArrayList<FaceData> faceData =  kinect.getFaceData();
 
-  for (int i = 0; i < faceData.length; i++) {
-    if (faceData[i].isFaceTracked()) {
+  for (int i = 0; i < faceData.size(); i++) {
+    FaceData faceD = faceData.get(i);
 
+    if (faceD.isFaceTracked()) {
       //get the face data from the infrared frame
-      PVector [] facePointsInfrared = faceData[i].getFacePointsInfraredMap();
+      PVector [] facePointsInfrared = faceD.getFacePointsInfraredMap();
 
-      KRectangle rectFace = faceData[i].getBoundingRectInfrared();
+      KRectangle rectFace = faceD.getBoundingRectInfrared();
 
-      FaceFeatures [] faceFeatures = faceData[i].getFaceFeatures();
+      FaceFeatures [] faceFeatures = faceD.getFaceFeatures();
 
+      //get the color of th user
+      int col = faceD.getIndexColor();
+
+      //for nose information
       PVector nosePos = new PVector();
       noStroke();
-
-      int col = getIndexColor(i);
 
       fill(col);
       for (int j = 0; j < facePointsInfrared.length; j++) {
@@ -148,24 +154,6 @@ public void getFaceMapInfraredData() {
   }
 }
 
-
-color getIndexColor(int index) {
-  color col = color(255);
-  if (index == 0)
-    col = color(255, 0, 0);
-  if (index == 1)
-    col = color(0, 255, 0);
-  if (index == 2)
-    col = color(0, 0, 255);
-  if (index == 3)
-    col = color(255, 255, 0);
-  if (index == 4)
-    col = color(0, 255, 255);
-  if (index == 5)
-    col = color(255, 0, 255);
-
-  return col;
-}
 
 //Face properties
 String getStateTypeAsString(int state, int type) {
@@ -203,7 +191,7 @@ String getStateTypeAsString(int state, int type) {
     str = "WearingGlasses";
     break;
   }
-
+  
   switch(state) {
   case KinectPV2.DetectionResult_Unknown:
     str += ": Unknown";

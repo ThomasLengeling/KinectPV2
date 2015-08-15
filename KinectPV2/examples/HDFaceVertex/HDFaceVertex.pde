@@ -1,12 +1,12 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
-
-KinectPV2, Kinect for Windows v2 library for processing
-
-HD Face tracking.
-Vertex Face positions are mapped to the Color Frame or to the Infrared Frame
-*/
+ http://codigogenerativo.com/
+ 
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ HD Face tracking.
+ Vertex Face positions are mapped to the Color Frame or to the Infrared Frame
+ */
 import KinectPV2.*;
 
 KinectPV2 kinect;
@@ -18,6 +18,7 @@ void setup() {
 
   //enable HD Face detection
   kinect.enableHDFaceDetection(true);
+  kinect.enableColorImg(true); //to draw the color image
   kinect.init();
 }
 
@@ -29,19 +30,25 @@ void draw() {
 
   //Obtain the Vertex Face Points
   // 1347 Vertex Points for each user.
-  HDFaceData []  hdFaceData = kinect.getHDFaceVertex();
+  ArrayList<HDFaceData> hdFaceData = kinect.getHDFaceVertex();
 
-  stroke(0, 255, 0);
-  for (int j = 0; j < KinectPV2.BODY_COUNT; j++) {
-    beginShape(POINTS);
-    if (hdFaceData[j].isTracked()) {
+
+  for (int j = 0; j < hdFaceData.size(); j++) {
+
+    //obtain a the HDFace object with all the vertex data
+    HDFaceData HDfaceData = (HDFaceData)hdFaceData.get(j);
+
+    if (HDfaceData.isTracked()) {
+
+      //draw the vertex points
+      stroke(0, 255, 0);
+      beginShape(POINTS);
       for (int i = 0; i < KinectPV2.HDFaceVertexCount; i++) {
-        float x = hdFaceData[j].getX(i);
-        float y = hdFaceData[j].getY(i);
+        float x = HDfaceData.getX(i);
+        float y = HDfaceData.getY(i);
         vertex(x, y);
       }
+      endShape();
     }
-    endShape();
   }
-  
 }

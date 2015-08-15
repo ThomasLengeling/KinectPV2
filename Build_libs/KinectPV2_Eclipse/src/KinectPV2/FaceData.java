@@ -49,6 +49,8 @@ public class FaceData implements FaceProperties{
 	float yaw;
 	float roll;
 	
+	int userIndex;
+	
 	FaceData(){
 		faceColorPoints = new PVector[5];
 		for(int i = 0; i < faceColorPoints.length; i++)
@@ -79,6 +81,7 @@ public class FaceData implements FaceProperties{
 			faceTracked = true;
 		
 		if(faceTracked){
+			userIndex = iFace;
 			for(int i = 0; i < 5; i++){
 				faceColorPoints[i].x = rawFaceColorData[index + i*2 + 0];
 				faceColorPoints[i].y = rawFaceColorData[index + i*2 + 1];
@@ -113,6 +116,31 @@ public class FaceData implements FaceProperties{
 			}
 		}
 	}
+	
+	/*
+	 * Get color of the user
+	*/
+	public int getIndexColor() {
+	  int col = color(255, 255, 255);
+	  if (userIndex == 0)
+	    col = color(255, 0, 0);
+	  if (userIndex == 1)
+	    col = color(0, 255, 0);
+	  if (userIndex == 2)
+	    col = color(0, 0, 255);
+	  if (userIndex == 3)
+	    col = color(255, 255, 0);
+	  if (userIndex == 4)
+	    col = color(0, 255, 255);
+	  if (userIndex == 5)
+	    col = color(255, 0, 255);
+
+	  return col;
+	}
+	
+	private final int color(int v1, int v2, int v3) {
+	      return 0xff000000 | (v1 << 16) | (v2 << 8) | v3;
+	 }
 	
 	/**
 	 * Get Face Features
