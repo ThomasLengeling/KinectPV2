@@ -3,7 +3,7 @@ Thomas Sanchez Lengeling.
 http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
- 
+
 Simple HD Color test
 */
 import KinectPV2.*;
@@ -22,6 +22,7 @@ void setup() {
 void draw() {
   background(0);
 
+  //obtain the color image from the kinect v2
   image(kinect.getColorImage(), 0, 0, 1920, 1080);
 
   fill(255, 0, 0);

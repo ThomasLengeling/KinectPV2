@@ -4,7 +4,7 @@ http://codigogenerativo.com/
 
 KinectPV2, Kinect for Windows v2 library for processing
 
-Depth Test
+Depth  and infrared Test
 */
 
 import KinectPV2.*;
@@ -24,8 +24,13 @@ void setup() {
 void draw() {
   background(0);
 
+  //obtain the depth frame, 8 bit gray scale format
   image(kinect.getDepthImage(), 0, 0);
+
+  //obtain the depth frame as strips of 256 gray scale values
   image(kinect.getDepth256Image(), 512, 0);
+
+  //infrared data
   image(kinect.getInfraredImage(), 0, 424);
   image(kinect.getInfraredLongExposureImage(), 512, 424);
 

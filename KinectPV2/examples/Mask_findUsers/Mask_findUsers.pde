@@ -30,11 +30,12 @@ void draw() {
   image(kinect.getBodyTrackImage(), 0, 0);
   image(kinect.getDepthImage(), 512, 0);
 
-    //raw body data 0-6 users 255 nothing
+  //raw body data 0-6 users 255 nothing
   int [] rawData = kinect.getRawBodyTrack();
 
   foundUsers = false;
-  for(int i = 0; i < rawData.length; i++){
+  //iterate through 1/5th of the data
+  for(int i = 0; i < rawData.length; i+=5){
     if(rawData[i] != 255){
      //found something
      foundUsers = true;

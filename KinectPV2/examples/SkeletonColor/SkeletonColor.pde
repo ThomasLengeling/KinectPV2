@@ -1,9 +1,9 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
- 
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  Skeleton color map example.
  Skeleton (x,y) positions are mapped to match the color Frame
  */

@@ -34,7 +34,7 @@ void draw() {
   int [] rawData = kinect.getRawBodyTrack();
 
   foundUsers = false;
-  for(int i = 0; i < rawData.length; i++){
+  for(int i = 0; i < rawData.length; i+=5){
     if(rawData[i] != 255){
      //found something
      foundUsers = true;

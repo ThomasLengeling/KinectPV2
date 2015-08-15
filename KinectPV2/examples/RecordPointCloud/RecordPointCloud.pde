@@ -1,10 +1,11 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
- 
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  How to record Point Cloud Data and store it in several obj files.
+ Record with 'r'
  */
 
 import java.util.ArrayList;
@@ -27,12 +28,17 @@ float scaleVal = 220;
 int maxD = 4500; // 4.5 m
 int minD = 0;  //  50 cm
 
-int numFrames =  30; // 1m of recording
-int frameCounter = 0;
-boolean recordFrame = false;
+
+int numFrames =  30; // 30 frames  = 1s of recording
+int frameCounter = 0; // frame counter
+
+boolean recordFrame = false;  //recording flag
 boolean doneRecording = false;
 
+//Array where all the frames are allocated
 ArrayList<FrameBuffer> mFrames;
+
+
 
 void setup() {
   size(1024, 768, P3D);
@@ -74,27 +80,6 @@ void draw() {
   //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
-  if (recordFrame) {
-    if ( frameCounter < numFrames) {
-      FrameBuffer frameBuffer = new FrameBuffer(pointCloudBuffer);
-      frameBuffer.setFrameId(frameCounter);
-      mFrames.add(frameBuffer);
-    } else {
-      recordFrame = false;
-      doneRecording = true;
-    }
-    frameCounter++;
-  }
-
-  //recor the frames
-  if (doneRecording) {
-    for (int i = 0; i < mFrames.size(); i++) {
-      FrameBuffer fBuffer =  (FrameBuffer)mFrames.get(i);
-      fBuffer.saveOBJFrame();
-    }
-    doneRecording = false;
-    println("Done Recording frames: "+numFrames);
-  }
 
   //data size
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
@@ -119,18 +104,56 @@ void draw() {
   endPGL();
 
 
+  //allocate numFrames into an array
+  allocateFrames();
+
+  //when the allocation is done write the obj frames
+  writeFrames();
+
+
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
 }
 
+//allocate all the frame in a temporary array
+void allocateFrames(){
+  if (recordFrame) {
+  if ( frameCounter < numFrames) {
+    FrameBuffer frameBuffer = new FrameBuffer(pointCloudBuffer);
+    frameBuffer.setFrameId(frameCounter);
+    mFrames.add(frameBuffer);
+  } else {
+    recordFrame = false;
+    doneRecording = true;
+  }
+  frameCounter++;
+  }
+}
+
+//Write all the frames recorded
+void writeFrames(){
+  if (doneRecording) {
+    for (int i = 0; i < mFrames.size(); i++) {
+      FrameBuffer fBuffer =  (FrameBuffer)mFrames.get(i);
+      fBuffer.saveOBJFrame();
+    }
+    doneRecording = false;
+    println("Done Recording frames: "+numFrames);
+  }
+}
+
 public void mousePressed() {
 
-  recordFrame = true;
   println(frameRate);
   // saveFrame();
 }
 
 public void keyPressed() {
+
+  //start recording 30 frames with 'r'
+  if(key == 'r'){
+    recordFrame = true;
+  }
   if (key == 'a') {
     zval +=1;
     println(zval);

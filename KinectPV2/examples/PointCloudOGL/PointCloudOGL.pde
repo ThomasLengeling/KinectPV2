@@ -2,7 +2,7 @@
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  Point Cloud example using openGL and Shaders
  */
 
@@ -61,10 +61,13 @@ public void draw() {
 
   //get the points in 3d space
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
-  
-  for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
-   float value = pointCloudBuffer.get(i);
-  }
+
+  // obtain XYZ the values of the point cloud
+  //for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
+  // float x = pointCloudBuffer.get(i*3 + 0);
+  // float y = pointCloudBuffer.get(i*3 + 1);
+  // float z = pointCloudBuffer.get(i*3 + 2);
+  // }
 
 
   pgl = beginPGL();
@@ -86,7 +89,7 @@ public void draw() {
 
   pgl.disableVertexAttribArray(vertLoc);
 
-  sh.unbind(); 
+  sh.unbind();
   endPGL();
 
   stroke(255, 0, 0);

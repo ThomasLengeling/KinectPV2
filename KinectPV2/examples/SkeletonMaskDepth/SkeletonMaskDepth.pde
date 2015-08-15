@@ -1,9 +1,9 @@
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
- 
+
  KinectPV2, Kinect for Windows v2 library for processing
- 
+
  Skeleton depth tracking example
  */
 
@@ -37,6 +37,7 @@ void draw() {
   //individual JOINTS
   for (int i = 0; i < skeletonArray.size(); i++) {
     KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+    //if the skeleton is being tracked compute the skleton joints
     if (skeleton.isTracked()) {
       KJoint[] joints = skeleton.getJoints();
 
@@ -65,7 +66,7 @@ void drawBody(KJoint[] joints) {
   drawBone(joints, KinectPV2.JointType_SpineBase, KinectPV2.JointType_HipRight);
   drawBone(joints, KinectPV2.JointType_SpineBase, KinectPV2.JointType_HipLeft);
 
-  // Right Arm    
+  // Right Arm
   drawBone(joints, KinectPV2.JointType_ShoulderRight, KinectPV2.JointType_ElbowRight);
   drawBone(joints, KinectPV2.JointType_ElbowRight, KinectPV2.JointType_WristRight);
   drawBone(joints, KinectPV2.JointType_WristRight, KinectPV2.JointType_HandRight);
@@ -89,6 +90,7 @@ void drawBody(KJoint[] joints) {
   drawBone(joints, KinectPV2.JointType_KneeLeft, KinectPV2.JointType_AnkleLeft);
   drawBone(joints, KinectPV2.JointType_AnkleLeft, KinectPV2.JointType_FootLeft);
 
+  //Single joints
   drawJoint(joints, KinectPV2.JointType_HandTipLeft);
   drawJoint(joints, KinectPV2.JointType_HandTipRight);
   drawJoint(joints, KinectPV2.JointType_FootLeft);
@@ -115,6 +117,7 @@ void drawBone(KJoint[] joints, int jointType1, int jointType2) {
   line(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ(), joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
 }
 
+//draw a ellipse depending on the state of the hand
 void drawHandState(KJoint joint) {
   noStroke();
   handState(joint.getState());
@@ -132,6 +135,7 @@ Different hand state
  KinectPV2.HandState_NotTracked
  */
 
+//Depending on the hand state change the color
 void handState(int handState) {
   switch(handState) {
   case KinectPV2.HandState_Open:
