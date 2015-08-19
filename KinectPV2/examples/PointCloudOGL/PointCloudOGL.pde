@@ -11,8 +11,6 @@ import KinectPV2.*;
 
 KinectPV2 kinect;
 
-PGL pgl;
-PShader sh;
 
 int  vertLoc;
 
@@ -25,6 +23,9 @@ float scaleVal = 260;
 int maxD = 4000; // 4m
 int minD = 0;  //  0m
 
+//openGL object and shader
+PGL     pgl;
+PShader sh;
 
 public void setup() {
   size(1280, 720, P3D);
@@ -68,37 +69,46 @@ public void draw() {
   //    float y = pointCloudBuffer.get(i*3 + 1);
   //    float z = pointCloudBuffer.get(i*3 + 2);
   // }
-
+  
+  //begin openGL calls and bind the shader
   pgl = beginPGL();
   sh.bind();
 
+  //obtain the vertex location in the shaders.
+  //useful to know what shader to use when drawing the vertex positions
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
 
-  //color for each POINT of the point cloud
+  //default color for each point is white.
+  //change the color for each point here
   sh.set("fragColor", 1.0f, 1.0f, 1.0f, 1.0f);
 
   pgl.enableVertexAttribArray(vertLoc);
 
   //data size
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
-
-  //pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * (Float.SIZE/8), pointCloudBuffer);
+  
+  //attach the vertex positions to the video card
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
+  
+  //draw the point buffer as a set of POINTS
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 
+  //disable the vertex positions
   pgl.disableVertexAttribArray(vertLoc);
 
+  //finish drawing
   sh.unbind();
   endPGL();
+  
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
 }
 
 public void mousePressed() {
-  println(frameRate);
   // saveFrame();
 }
+
 
 public void keyPressed() {
   if (key == 'a') {

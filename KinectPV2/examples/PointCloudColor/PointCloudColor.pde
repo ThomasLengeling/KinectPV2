@@ -14,9 +14,14 @@ import KinectPV2.*;
 private KinectPV2 kinect;
 
 //values for the 3d scene
+//rotation
 float a = 3;
-int zval = 350;
+//z scale value
+int   zval     = 350;
+//value to scale the point cloud
 float scaleVal = 990;
+
+//rotation
 float rotY = 0;
 float rotZ = 0;
 float rotX = PI;
@@ -26,7 +31,11 @@ float depthVal = 0;
 int vertLoc;
 int colorLoc;
 
+//openGL instances
+//render ot openGL object
 PGL pgl;
+
+//create a shader
 PShader sh;
 
 public void setup() {
@@ -40,7 +49,7 @@ public void setup() {
 
   kinect.init();
 
-  //shader
+  //create shader object with a vertex shader and a fragment shader
   sh = loadShader("frag.glsl", "vert.glsl");
 }
 
@@ -54,7 +63,7 @@ public void draw() {
   scale(scaleVal, -1 * scaleVal, scaleVal);
   rotate(a, 0.0f, 1.0f, 0.0f);
 
-
+  //render to the openGL object
   pgl = beginPGL();
   sh.bind();
 
@@ -64,9 +73,12 @@ public void draw() {
   //get the color for each point of the cloud Points
   FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
+  //send the the vertex positions (point cloud) and color down the render pipeline
+  //positions are render in the vertex shader, and color in the fragment shader
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
   colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
 
+  //enable drawing to the vertex and color buffer
   pgl.enableVertexAttribArray(vertLoc);
   pgl.enableVertexAttribArray(colorLoc);
 
@@ -74,13 +86,18 @@ public void draw() {
 
   pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
   pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 0, colorBuffer);
-
+    
+  //draw the point cloud as a set of points
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 
+  //disable drawing
   pgl.disableVertexAttribArray(vertLoc);
   pgl.disableVertexAttribArray(colorLoc);
 
+  
+  //close the shader
   sh.unbind();
+  //close the openGL object
   endPGL();
 
   popMatrix();

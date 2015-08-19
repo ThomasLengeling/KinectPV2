@@ -8,6 +8,9 @@ Thomas Sanchez Lengeling.
  */
 
 
+/*
+
+*/
 import KinectPV2.*;
 
 KinectPV2 kinect;
@@ -131,6 +134,7 @@ public void getFaceMapInfraredData() {
 
       fill(col);
       for (int j = 0; j < facePointsInfrared.length; j++) {
+        //obtain the position of the nose
         if (j == KinectPV2.Face_Nose)
           nosePos.set(facePointsInfrared[j].x, facePointsInfrared[j].y);
 
@@ -157,6 +161,18 @@ public void getFaceMapInfraredData() {
 
 
 //Face properties
+// Happy
+// Engaged
+// LeftEyeClosed
+// RightEyeClosed
+// LookingAway
+// MouthMoved
+// MouthOpen
+// WearingGlasses
+// Each one can be  
+//      Unknown
+//      Yes
+//      No
 String getStateTypeAsString(int state, int type) {
   String  str ="";
   switch(type) {

@@ -34,14 +34,14 @@ void draw() {
 
   image(kinect.getDepthImage(), 0, 0);
 
-  /* Get the point cloud as a PImage
-   * Each pixel of the PointCloudDepthImage correspondes to the value
-   * of the Z in the Point Cloud or distances, the values of
-   *  the Point cloud are mapped from (0 - 4500) mm  to gray color (0 - 255)
+  /* obtain the point cloud as a PImage
+   * Each pixel of the PointCloudDepthImage corresponds to the Z value
+   * of Point Cloud i.e. distances.
+   * The Point cloud values are mapped from (0 - 4500) mm  to gray color format (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);
 
-  //raw Data int valeus from [0 - 4500]
+  //obtain the raw depth data in integers from [0 - 4500]
   int [] rawData = kinect.getRawDepthData();
 
   //Threahold of the point Cloud.
