@@ -128,10 +128,8 @@ public void draw() {
   // unbind VBOs
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
-
-
   //draw the point cloud as a set of points
-  pgl.drawArrays(PGL.POINTS, 0, 3);
+  pgl.drawArrays(PGL.POINTS, 0, vertData);
 
   //disable drawing
   pgl.disableVertexAttribArray(vertLoc);

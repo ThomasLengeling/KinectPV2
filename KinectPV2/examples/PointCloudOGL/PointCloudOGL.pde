@@ -2,7 +2,7 @@
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
  KinectPV2, Kinect for Windows v2 library for processing
-
+ 
  Point Cloud example using openGL and Shaders
  */
 
@@ -27,6 +27,9 @@ int minD = 0;  //  0m
 PGL     pgl;
 PShader sh;
 
+//VBO buffer location in the GPU
+int vertexVboId;
+
 public void setup() {
   size(1280, 720, P3D);
 
@@ -42,6 +45,17 @@ public void setup() {
   kinect.init();
 
   sh = loadShader("frag.glsl", "vert.glsl");
+
+
+  PGL pgl = beginPGL();
+
+  IntBuffer intBuffer = IntBuffer.allocate(1);
+  pgl.genBuffers(1, intBuffer);
+
+  //memory location of the VBO
+  vertexVboId = intBuffer.get(0);
+
+  endPGL();
 }
 
 public void draw() {
@@ -69,7 +83,7 @@ public void draw() {
   //    float y = pointCloudBuffer.get(i*3 + 1);
   //    float z = pointCloudBuffer.get(i*3 + 2);
   // }
-  
+
   //begin openGL calls and bind the shader
   pgl = beginPGL();
   sh.bind();
@@ -86,10 +100,19 @@ public void draw() {
 
   //data size
   int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
+
+  //bind vertex positions to the VBO
+  {
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
+    // fill VBO with data
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    // associate currently bound VBO with shader attribute
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+  }
   
-  //attach the vertex positions to the video card
-  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
-  
+   // unbind VBOs
+  pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+
   //draw the point buffer as a set of POINTS
   pgl.drawArrays(PGL.POINTS, 0, vertData);
 
@@ -99,7 +122,7 @@ public void draw() {
   //finish drawing
   sh.unbind();
   endPGL();
-  
+
 
   stroke(255, 0, 0);
   text(frameRate, 50, height - 50);
