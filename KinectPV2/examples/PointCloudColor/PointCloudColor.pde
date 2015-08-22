@@ -124,10 +124,11 @@ public void draw() {
     // associate currently bound VBO with shader attribute
     pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
   }
-
-
- // unbind VBOs
+  
+  // unbind VBOs
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+
+
 
   //draw the point cloud as a set of points
   pgl.drawArrays(PGL.POINTS, 0, 3);

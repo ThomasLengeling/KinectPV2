@@ -189,6 +189,12 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 			(new Thread(this)).start();
 		}
 	}
+	
+	public void closeDevice(){
+		runningKinect = false;
+		stopDevice();
+		cleanDevice();
+	}
 
 	// IMAGES
 	/**
