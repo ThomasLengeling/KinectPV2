@@ -1,13 +1,13 @@
 /*
 Thomas Sanchez Lengeling.
-http://codigogenerativo.com/
+ http://codigogenerativo.com/
+ 
+ KinectPV2, Kinect for Windows v2 library for processing
+ 
+ Point Cloud Color Example using low level openGL calls and Shaders
+ */
 
-KinectPV2, Kinect for Windows v2 library for processing
-
-Point Cloud Color Example using low level openGL calls and Shaders
-*/
-
-import java.nio.FloatBuffer;
+import java.nio.*;
 
 import KinectPV2.*;
 
@@ -38,6 +38,11 @@ PGL pgl;
 //create a shader
 PShader sh;
 
+
+//VBO buffer location in the GPU
+int vertexVboId;
+int colorVboId;
+
 public void setup() {
   size(1280, 720, P3D);
 
@@ -51,6 +56,20 @@ public void setup() {
 
   //create shader object with a vertex shader and a fragment shader
   sh = loadShader("frag.glsl", "vert.glsl");
+
+
+  //create VBO
+
+  PGL pgl = beginPGL();
+
+  IntBuffer intBuffer = IntBuffer.allocate(2);
+  pgl.genBuffers(2, intBuffer);
+
+  //memory location of the VBO
+  vertexVboId = intBuffer.get(0);
+  colorVboId = intBuffer.get(1);
+
+  endPGL();
 }
 
 public void draw() {
@@ -58,6 +77,8 @@ public void draw() {
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
 
+
+  // The geometric transformations will be automatically passed to the shader
   pushMatrix();
   translate(width / 2, height / 2, zval);
   scale(scaleVal, -1 * scaleVal, scaleVal);
@@ -83,18 +104,39 @@ public void draw() {
   pgl.enableVertexAttribArray(colorLoc);
 
   int vertData = kinect.WIDTHColor * kinect.HEIGHTColor;
+  int vertexOffset =  3 * Float.BYTES;
+  int colorOffset  =  3 * Float.BYTES;
 
-  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
-  pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 0, colorBuffer);
-    
+  // vertex
+  {
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
+    // fill VBO with data
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    // associate currently bound VBO with shader attribute
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+  }
+
+  // color
+  {
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, colorVboId);
+    // fill VBO with data
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
+    // associate currently bound VBO with shader attribute
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+  }
+
+
+ // unbind VBOs
+  pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+
   //draw the point cloud as a set of points
-  pgl.drawArrays(PGL.POINTS, 0, vertData);
+  pgl.drawArrays(PGL.POINTS, 0, 3);
 
   //disable drawing
   pgl.disableVertexAttribArray(vertLoc);
   pgl.disableVertexAttribArray(colorLoc);
 
-  
+
   //close the shader
   sh.unbind();
   //close the openGL object
