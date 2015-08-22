@@ -97,7 +97,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 	private boolean startSensor;
 	
-	private String Version = "0.7.4";
+	private String Version = "0.7.6";
 
 	/**
 	 * Start device

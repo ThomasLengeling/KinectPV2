@@ -117,9 +117,34 @@ public class FaceData implements FaceProperties{
 		}
 	}
 	
-	/*
+	/**
+	 * Get the pitch rotation of the face
+	 * @return Pitch in degrees
+	 */
+	public float getPitch(){
+		return pitch;
+	}
+	
+	/**
+	 * Get the yaw rotation of the face
+	 * @return Yaw in degrees
+	 */
+	public float getYaw(){
+		return yaw;
+	}
+	
+	/**
+	 * Get the roll rotation of the face
+	 * @return Roll in degress
+	 */
+	public float getRoll(){
+		return roll;
+	}
+	
+	/**
 	 * Get color of the user
-	*/
+	 * @return
+	 */
 	public int getIndexColor() {
 	  int col = color(255, 255, 255);
 	  if (userIndex == 0)
