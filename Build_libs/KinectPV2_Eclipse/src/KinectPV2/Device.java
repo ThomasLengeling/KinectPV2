@@ -96,7 +96,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	private long ptr;
 
 	private boolean startSensor;
-	
+
 	private String Version = "0.7.6";
 
 	/**
@@ -189,7 +189,7 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 			(new Thread(this)).start();
 		}
 	}
-	
+
 	public void closeDevice(){
 		runningKinect = false;
 		stopDevice();
@@ -219,7 +219,6 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 	public int [] getRawColor(){
 		return colorImg.rawIntData;
 	}
-
 
 	/**
 	 * Get Depth Image as PImage 512 x 424

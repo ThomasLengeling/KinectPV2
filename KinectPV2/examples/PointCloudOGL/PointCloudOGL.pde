@@ -15,8 +15,8 @@ KinectPV2 kinect;
 int  vertLoc;
 
 //transformations
-float a = 1.2;
-int zval = 50;
+float a = 1.9;
+int zval = -200;
 float scaleVal = 260;
 
 //Distance Threashold
@@ -45,7 +45,6 @@ public void setup() {
   kinect.init();
 
   sh = loadShader("frag.glsl", "vert.glsl");
-
 
   PGL pgl = beginPGL();
 
@@ -105,16 +104,16 @@ public void draw() {
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER,  3 * Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
-    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false,  Float.BYTES * 3, 0 );
   }
   
    // unbind VBOs
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
   //draw the point buffer as a set of POINTS
-  pgl.drawArrays(PGL.POINTS, 0, vertData);
+  pgl.drawArrays(PGL.POINTS, 0, vertData*3);
 
   //disable the vertex positions
   pgl.disableVertexAttribArray(vertLoc);

@@ -73,6 +73,9 @@ public void setup() {
 }
 
 public void draw() {
+  
+
+  
   background(0);
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
@@ -84,9 +87,10 @@ public void draw() {
   scale(scaleVal, -1 * scaleVal, scaleVal);
   rotate(a, 0.0f, 1.0f, 0.0f);
 
-  //render to the openGL object
+     //render to the openGL object
   pgl = beginPGL();
   sh.bind();
+
 
   //obtain the point cloud positions
   FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
@@ -139,13 +143,15 @@ public void draw() {
   //close the shader
   sh.unbind();
   //close the openGL object
-  endPGL();
+    endPGL();
 
   popMatrix();
 
 
   stroke(255, 0, 0);
   text(frameRate, 50, height- 50);
+  
+
 }
 
 public void mousePressed() {
