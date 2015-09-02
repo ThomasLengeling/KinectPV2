@@ -91,10 +91,6 @@ public void draw() {
   //useful to know what shader to use when drawing the vertex positions
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
 
-  //default color for each point is white.
-  //change the color for each point here
-  sh.set("fragColor", 1.0f, 1.0f, 1.0f, 1.0f);
-
   pgl.enableVertexAttribArray(vertLoc);
 
   //data size times 3 for each XYZ coordinate

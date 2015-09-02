@@ -62,6 +62,7 @@ public void setup() {
 
   PGL pgl = beginPGL();
 
+  // allocate buffer big enough to get all VBO ids back
   IntBuffer intBuffer = IntBuffer.allocate(2);
   pgl.genBuffers(2, intBuffer);
 
@@ -73,9 +74,9 @@ public void setup() {
 }
 
 public void draw() {
-  
 
-  
+
+
   background(0);
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
@@ -87,7 +88,7 @@ public void draw() {
   scale(scaleVal, -1 * scaleVal, scaleVal);
   rotate(a, 0.0f, 1.0f, 0.0f);
 
-     //render to the openGL object
+  //render to the openGL object
   pgl = beginPGL();
   sh.bind();
 
@@ -101,33 +102,33 @@ public void draw() {
   //send the the vertex positions (point cloud) and color down the render pipeline
   //positions are render in the vertex shader, and color in the fragment shader
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
-  colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
-
-  //enable drawing to the vertex and color buffer
   pgl.enableVertexAttribArray(vertLoc);
+  
+  
+  //enable drawing to the vertex and color buffer
+  colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
   pgl.enableVertexAttribArray(colorLoc);
 
   int vertData = kinect.WIDTHColor * kinect.HEIGHTColor * 3;
-
 
   //vertex
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
-    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false,  Float.BYTES * 3, 0);
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
   }
-  
+
   // color
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, colorVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
     pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
   }
-  
+
   // unbind VBOs
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
@@ -147,7 +148,6 @@ public void draw() {
 
   stroke(255, 0, 0);
   text(frameRate, 50, height- 50);
-  
 }
 
 public void mousePressed() {
