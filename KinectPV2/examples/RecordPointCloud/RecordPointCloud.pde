@@ -100,9 +100,6 @@ void draw() {
 
   vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
 
-  //color for each POINT of the point cloud
-  sh.set("fragColor", 1.0f, 1.0f, 1.0f, 1.0f);
-
   pgl.enableVertexAttribArray(vertLoc);
 
   //vertex
@@ -114,7 +111,7 @@ void draw() {
     pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
   }
   
-     // unbind VBOs
+  // unbind VBOs
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
   pgl.drawArrays(PGL.POINTS, 0, vertData);
