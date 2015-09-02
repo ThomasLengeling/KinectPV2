@@ -107,26 +107,25 @@ public void draw() {
   pgl.enableVertexAttribArray(vertLoc);
   pgl.enableVertexAttribArray(colorLoc);
 
-  int vertData = kinect.WIDTHColor * kinect.HEIGHTColor;
-  int vertexOffset =  3 * Float.BYTES;
-  int colorOffset  =  3 * Float.BYTES;
+  int vertData = kinect.WIDTHColor * kinect.HEIGHTColor * 3;
 
-  // vertex
+
+  //vertex
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
-    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false,  Float.BYTES * 3, 0);
   }
-
+  
   // color
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, colorVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
-    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 3 * Float.BYTES, 0);
+    pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
   }
   
   // unbind VBOs
@@ -139,19 +138,16 @@ public void draw() {
   pgl.disableVertexAttribArray(vertLoc);
   pgl.disableVertexAttribArray(colorLoc);
 
-
   //close the shader
   sh.unbind();
   //close the openGL object
-    endPGL();
+  endPGL();
 
   popMatrix();
-
 
   stroke(255, 0, 0);
   text(frameRate, 50, height- 50);
   
-
 }
 
 public void mousePressed() {
