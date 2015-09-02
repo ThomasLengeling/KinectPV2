@@ -73,6 +73,13 @@ public class Face extends PApplet {
 		      noStroke();
 
 		      int col = getIndexColor(i);
+		      
+		      //head orientation
+		      float pitch = faceD.getPitch();
+		      float yaw   = faceD.getYaw();
+		      float roll  = faceD.getRoll();
+		      
+		      //System.out.println("processing "+pitch+" "+yaw+" "+roll);
 
 		      fill(col);   
 		      for (int j = 0; j < facePointsColor.length; j++) {

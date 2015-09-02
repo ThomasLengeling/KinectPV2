@@ -4,11 +4,11 @@
 using namespace std;
 
 static const DWORD c_FaceFrameFeatures =
-FaceFrameFeatures::FaceFrameFeatures_BoundingBoxInColorSpace
+  FaceFrameFeatures::FaceFrameFeatures_BoundingBoxInColorSpace
+| FaceFrameFeatures::FaceFrameFeatures_RotationOrientation
 | FaceFrameFeatures::FaceFrameFeatures_BoundingBoxInInfraredSpace
 | FaceFrameFeatures::FaceFrameFeatures_PointsInInfraredSpace
 | FaceFrameFeatures::FaceFrameFeatures_PointsInColorSpace
-| FaceFrameFeatures::FaceFrameFeatures_RotationOrientation
 | FaceFrameFeatures::FaceFrameFeatures_Happy
 | FaceFrameFeatures::FaceFrameFeatures_RightEyeClosed
 | FaceFrameFeatures::FaceFrameFeatures_LeftEyeClosed
@@ -1384,8 +1384,8 @@ namespace KinectPV2{
 										faceInfraredData[index + 2] = faceBoxInfrared.Right - faceBoxInfrared.Left;
 										faceInfraredData[index + 3] = faceBoxInfrared.Bottom - faceBoxInfrared.Top;
 
-										int pitch, yaw, roll;
-										ExtractRotationInDegrees(&faceRotation, &pitch, &yaw, &roll);
+										float pitch, yaw, roll;
+										ExtractRotationInDegrees(&faceRotation, pitch, yaw, roll);
 
 										faceColorData[index + 4] = pitch;
 										faceColorData[index + 5] = yaw;
@@ -1919,7 +1919,7 @@ namespace KinectPV2{
 		return hr;
 	}
 
-	void Device::ExtractRotationInDegrees(const Vector4* pQuaternion, int* pPitch, int* pYaw, int* pRoll)
+	void Device::ExtractRotationInDegrees(const Vector4* pQuaternion, float & pPitch, float & pYaw, float & pRoll)
 	{
 		double x = pQuaternion->x;
 		double y = pQuaternion->y;
@@ -1931,6 +1931,12 @@ namespace KinectPV2{
 		dPitch = atan2(2 * (y * z + w * x), w * w - x * x - y * y + z * z) / M_PI * 180.0;
 		dYaw = asin(2 * (w * y - x * z)) / M_PI * 180.0;
 		dRoll = atan2(2 * (x * y + w * z), w * w + x * x - y * y - z * z) / M_PI * 180.0;
+
+		pPitch = dPitch;
+		pYaw = dYaw;
+		pRoll = dRoll;
+
+		//cout << pPitch << " " << pYaw << " " << pRoll << std::endl;
 
 		// clamp rotation values in degrees to a specified range of values to control the JNI_GetDepth_16_Data -1.0)) / increment) * static_cast<int>(increment);
 	}

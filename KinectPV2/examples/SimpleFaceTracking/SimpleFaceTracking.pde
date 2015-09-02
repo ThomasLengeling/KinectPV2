@@ -91,6 +91,13 @@ public void getFaceMapColorData() {
 
         ellipse(facePointsColor[j].x, facePointsColor[j].y, 15, 15);
       }
+      
+      //head orientation
+      float pitch = faceD.getPitch();
+      float yaw   = faceD.getYaw();
+      float roll  = faceD.getRoll();
+      
+     // println(pitch+" "+yaw+" "+roll);
 
       //Feature detection of the user
       if (nosePos.x != 0 && nosePos.y != 0)

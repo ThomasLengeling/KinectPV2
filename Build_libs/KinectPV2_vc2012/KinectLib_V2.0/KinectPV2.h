@@ -276,7 +276,7 @@ namespace KinectPV2{
 		int								colorByte2Int(int gray);
 		int								colorFloat2Int(float gray);
 		HRESULT							UpdateBodyData(IBody** ppBodies);
-		static void						ExtractRotationInDegrees(const Vector4* pQuaternion, int* pPitch, int* pYaw, int* pRoll);
+		static void						ExtractRotationInDegrees(const Vector4* pQuaternion, float & pPitch, float & pYaw, float & pRoll);
 		float							lmap(float val, float inMin, float inMax, float outMin, float outMax);
 
 		float							constrain(float val, float min, float max);
