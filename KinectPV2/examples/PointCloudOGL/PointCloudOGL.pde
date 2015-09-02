@@ -97,14 +97,14 @@ public void draw() {
 
   pgl.enableVertexAttribArray(vertLoc);
 
-  //data size
-  int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth;
+  //data size times 3 for each XYZ coordinate
+  int vertData = kinect.WIDTHDepth * kinect.HEIGHTDepth * 3;
 
   //bind vertex positions to the VBO
   {
     pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
     // fill VBO with data
-    pgl.bufferData(PGL.ARRAY_BUFFER,  3 * Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+    pgl.bufferData(PGL.ARRAY_BUFFER,   Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
     // associate currently bound VBO with shader attribute
     pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false,  Float.BYTES * 3, 0 );
   }
@@ -113,7 +113,7 @@ public void draw() {
   pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
   //draw the point buffer as a set of POINTS
-  pgl.drawArrays(PGL.POINTS, 0, vertData*3);
+  pgl.drawArrays(PGL.POINTS, 0, vertData);
 
   //disable the vertex positions
   pgl.disableVertexAttribArray(vertLoc);
