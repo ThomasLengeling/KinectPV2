@@ -52,7 +52,7 @@ along with KinectPV2.0 library for Processing.  If not, see
 
 #define M_PI 3.14159265358979323846
 
-#define VERSION			"0.7.3"
+#define VERSION			"0.7.6"
 
 static const int         cColorWidth = 1920;
 static const int         cColorHeight = 1080;

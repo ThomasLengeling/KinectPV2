@@ -20,6 +20,8 @@ public void setup() {
   kinect.enableInfraredLongExposureImg(true);
   kinect.enableBodyTrackImg(true);
   kinect.enableDepthMaskImg(true);
+  
+  frameRate(60);
 
   kinect.init();
 }

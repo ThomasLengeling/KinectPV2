@@ -403,6 +403,10 @@ namespace KinectPV2{
 					std::cout << "Enable HDFace" << std::endl;
 				}
 			}
+			else{
+				std::cerr << "Problem with the Device" << std::endl;
+				return false;
+			}
 		}
 		else{
 			std::cerr << "Problem with the Device" << std::endl;
@@ -477,7 +481,7 @@ namespace KinectPV2{
 			mThreadCoodinateMapper = std::thread(&Device::coordinateMapperProcess, this);
 		}
 
-		std::cout << "Done Kinect V2" << endl;
+		std::cout << "Done Kinect V2 " << endl;
 
 		return true;
 	}
@@ -1018,7 +1022,7 @@ namespace KinectPV2{
 							while (pBuffer < pBufferEnd)
 							{
 								USHORT ir = *pBuffer;
-								BYTE intensity = static_cast<BYTE>(ir >> 6);
+								BYTE intensity = static_cast<BYTE>(ir >> 8);
 								infraredLongExposureData[longExposureIndex] = colorByte2Int((uint32_t)intensity);
 								++pBuffer; //unsigned int
 								++longExposureIndex;
