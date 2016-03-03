@@ -89,11 +89,10 @@ To include the library into a processing sketh you just need to import it and in
 
 ```java
 import KinectPV2.*;
-KinectV2 kinect;
+KinectPV2 kinect;
 
 void setup() {
-
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   //Start up methods go here
   kinect.init();
 }
@@ -119,7 +118,7 @@ To obtain the color Image, depth Image, infrared Image, bodyIndex Image and long
 just initialize in the setup()
 
 ```java
-  kinect = new KinectV2(this);
+  kinect = new KinectPV2(this);
   kinect.enableColorImg(true);
   kinect.init();
 ```
