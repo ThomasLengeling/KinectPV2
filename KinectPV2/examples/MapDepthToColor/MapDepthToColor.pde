@@ -33,6 +33,7 @@ void setup() {
   kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
   kinect.enableColorImg(true);
+  kinect.enablePointCloud(true);
 
   kinect.init();
 }
