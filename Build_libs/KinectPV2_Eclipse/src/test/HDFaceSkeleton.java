@@ -1,5 +1,7 @@
 package test;
 
+import java.util.ArrayList;
+
 import KinectPV2.KJoint;
 import KinectPV2.KinectPV2;
 import KinectPV2.KSkeleton;
@@ -53,39 +55,47 @@ public class HDFaceSkeleton extends PApplet {
 
 		// DRAW COLOR IMAGE MAP
 		// image(kinect.getColorImage(), 0, 0);
+		
+		  //Obtain the Vertex Face Points
+		  // 1347 Vertex Points for each user.
+		  ArrayList<HDFaceData> hdFaceData = kinect.getHDFaceVertex();
 
-		HDFaceData[] hdFaceData = kinect.getHDFaceVertex();
+		  for (int j = 0; j < hdFaceData.size(); j++) {
+		    //obtain a the HDFace object with all the vertex data
+		    HDFaceData HDfaceData = (HDFaceData)hdFaceData.get(j);
 
-		stroke(0, 255, 0);
-		for (int j = 0; j < KinectPV2.BODY_COUNT; j++) {
-			beginShape(POINTS);
-			if (hdFaceData[j].isTracked()) {
-				for (int i = 0; i < KinectPV2.HDFaceVertexCount; i++) {
-					float x = hdFaceData[j].getX(i);
-					float y = hdFaceData[j].getY(i);
-					vertex(x, y);
-				}
-			}
-			endShape();
-		}
+		    if (HDfaceData.isTracked()) {
 
-		skeleton =  kinect.getSkeletonColorMap();
-		  
-		// individual JOINTS
-		for (int i = 0; i < skeleton.length; i++) {
-			if (skeleton[i].isTracked()) {
-				KJoint[] joints = skeleton[i].getJoints();
+		      //draw the vertex points
+		      stroke(0, 255, 0);
+		      beginShape(POINTS);
+		      for (int i = 0; i < KinectPV2.HDFaceVertexCount; i++) {
+		        float x = HDfaceData.getX(i);
+		        float y = HDfaceData.getY(i);
+		        vertex(x, y);
+		      }
+		      endShape();
+		    }
+		  }
 
-				int col = getIndexColor(i);
-				fill(col);
-				stroke(col);
-				drawBody(joints);
+		  ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonColorMap();
 
-				// draw different color for each hand state
-				drawHandState(joints[KinectPV2.JointType_HandRight]);
-				drawHandState(joints[KinectPV2.JointType_HandLeft]);
-			}
-		}
+		  //individual JOINTS
+		  for (int i = 0; i < skeletonArray.size(); i++) {
+		    KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+		    if (skeleton.isTracked()) {
+		      KJoint[] joints = skeleton.getJoints();
+
+		      int col  = skeleton.getIndexColor();
+		      fill(col);
+		      stroke(col);
+		      drawBody(joints);
+
+		      //draw different color for each hand state
+		      drawHandState(joints[KinectPV2.JointType_HandRight]);
+		      drawHandState(joints[KinectPV2.JointType_HandLeft]);
+		    }
+		  }
 		
 		 fill(255, 0, 0);
 		 text(frameRate, 50, 50);

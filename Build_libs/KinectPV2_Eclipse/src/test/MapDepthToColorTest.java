@@ -73,7 +73,6 @@ public class MapDepthToColorTest extends PApplet {
 		}
 		depthToColorImg.updatePixels();
 	
-
 		image(depthToColorImg, 0, 424);
 		image(kinect.getColorImage(), 0, 0, 512, 424);
 		image(kinect.getDepthImage(), 512, 0);

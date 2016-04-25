@@ -37,9 +37,16 @@ public class PointCloudColorTest extends PApplet {
 
 	private KinectPV2 kinect;
 
+
+	//values for the 3d scene
+	//rotation
 	float a = 3;
-	int zval = 350;
+	//z scale value
+	int   zval     = 350;
+	//value to scale the point cloud
 	float scaleVal = 990;
+
+	//rotation
 	float rotY = 0;
 	float rotZ = 0;
 	float rotX = PI;
@@ -48,9 +55,19 @@ public class PointCloudColorTest extends PApplet {
 
 	int vertLoc;
 	int colorLoc;
+	
+	//VBO buffer location in the GPU
+	int vertexVboId;
+	int colorVboId;
 
+
+	//openGL instances
+	//render ot openGL object
 	PGL pgl;
+
+	//create a shader
 	PShader sh;
+
 	
 	public static void main(String[] args) {
 		PApplet.main(new String[] { "test.PointCloudColorTest"});
@@ -73,47 +90,90 @@ public class PointCloudColorTest extends PApplet {
 		  kinect.init();
 		 
 		  sh = loadShader("frag.glsl", "vert.glsl");
+		  
+		  PGL pgl = beginPGL();
+
+		  // allocate buffer big enough to get all VBO ids back
+		  IntBuffer intBuffer = IntBuffer.allocate(2);
+		  pgl.genBuffers(2, intBuffer);
+
+		  //memory location of the VBO
+		  vertexVboId = intBuffer.get(0);
+		  colorVboId = intBuffer.get(1);
+
+		  endPGL();
 	}
 
 	public void draw() {
+
 		  background(0);
 
 		  image(kinect.getColorImage(), 0, 0, 320, 240);
-		 
+
+
+		  // The geometric transformations will be automatically passed to the shader
 		  pushMatrix();
 		  translate(width / 2, height / 2, zval);
 		  scale(scaleVal, -1 * scaleVal, scaleVal);
 		  rotate(a, 0.0f, 1.0f, 0.0f);
-		  
 
+		  //render to the openGL object
 		  pgl = beginPGL();
 		  sh.bind();
-		  
-		  
+
+
+		  //obtain the point cloud positions
 		  FloatBuffer pointCloudBuffer = kinect.getPointCloudColorPos();
+
+		  //get the color for each point of the cloud Points
 		  FloatBuffer colorBuffer      = kinect.getColorChannelBuffer();
 
+		  //send the the vertex positions (point cloud) and color down the render pipeline
+		  //positions are render in the vertex shader, and color in the fragment shader
 		  vertLoc = pgl.getAttribLocation(sh.glProgram, "vertex");
-		  colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
-
 		  pgl.enableVertexAttribArray(vertLoc);
+		  
+		  
+		  //enable drawing to the vertex and color buffer
+		  colorLoc = pgl.getAttribLocation(sh.glProgram, "color");
 		  pgl.enableVertexAttribArray(colorLoc);
 
-		  int vertData = kinect.WIDTHColor * kinect.HEIGHTColor;
-		  
-		  pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, 0, pointCloudBuffer);
-		  pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, 0, colorBuffer);
+		  int vertData = kinect.WIDTHColor * kinect.HEIGHTColor * 3;
 
+		  //vertex
+		  {
+		    pgl.bindBuffer(PGL.ARRAY_BUFFER, vertexVboId);
+		    // fill VBO with data
+		    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, pointCloudBuffer, PGL.DYNAMIC_DRAW);
+		    // associate currently bound VBO with shader attribute
+		    pgl.vertexAttribPointer(vertLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
+		  }
+
+		  // color
+		  {
+		    pgl.bindBuffer(PGL.ARRAY_BUFFER, colorVboId);
+		    // fill VBO with data
+		    pgl.bufferData(PGL.ARRAY_BUFFER, Float.BYTES * vertData, colorBuffer, PGL.DYNAMIC_DRAW);
+		    // associate currently bound VBO with shader attribute
+		    pgl.vertexAttribPointer(colorLoc, 3, PGL.FLOAT, false, Float.BYTES * 3, 0);
+		  }
+
+		  // unbind VBOs
+		  pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+
+		  //draw the point cloud as a set of points
 		  pgl.drawArrays(PGL.POINTS, 0, vertData);
 
+		  //disable drawing
 		  pgl.disableVertexAttribArray(vertLoc);
 		  pgl.disableVertexAttribArray(colorLoc);
 
-		  sh.unbind(); 
+		  //close the shader
+		  sh.unbind();
+		  //close the openGL object
 		  endPGL();
-		  
-		  popMatrix();
 
+		  popMatrix();
 
 		  stroke(255, 0, 0);
 		  text(frameRate, 50, height- 50);

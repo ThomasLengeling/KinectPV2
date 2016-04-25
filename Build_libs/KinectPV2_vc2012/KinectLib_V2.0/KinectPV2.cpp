@@ -924,6 +924,9 @@ namespace KinectPV2{
 											pointCloudPosData[cameraSpaceIndex++] = NULL;
 											pointCloudPosData[cameraSpaceIndex++] = NULL;
 
+											mapDepthToColorData[deptToColorIndex++] = NULL;
+											mapDepthToColorData[deptToColorIndex++] = NULL;
+
 											pointCloudDepthImage[depthIndex] = colorByte2Int((uint32_t)0);
 											//pointCloudDepthImage[depthIndex] = NULL;
 										}
