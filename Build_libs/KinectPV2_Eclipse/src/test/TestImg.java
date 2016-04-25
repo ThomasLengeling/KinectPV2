@@ -13,9 +13,16 @@ public class TestImg extends PApplet {
 	
 	FaceData [] faceData;
 	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "test.TestImg"});
+	}
+	
+	public void settings(){
+		size(512*3, 424*2, P3D);
+	}
+
 	
 	public void setup() {
-		size(512*3, 424*2, P3D);
 		
 		kinect = new KinectPV2(this);
 		
@@ -26,6 +33,7 @@ public class TestImg extends PApplet {
 		kinect.enableBodyTrackImg(true);
 
 		kinect.init();
+		
 	}
 	
 	public void draw() {
@@ -42,5 +50,15 @@ public class TestImg extends PApplet {
 		
 		fill(255, 0, 0);
 		text(frameRate, 50, 50);
+	}
+	
+	
+	public void keyPressed(){
+		if(key == '1'){
+			kinect.closeDevice();	
+		}
+		if(key == '2'){
+			kinect.init();	
+		}
 	}
 }

@@ -47,7 +47,6 @@ public class KinectPV2 extends Device{
 	}
 
 	public void dispose() {
-		System.out.println("EXIT");
 		runningKinect = false;
 		stopDevice();
 		cleanDevice();

@@ -199,7 +199,7 @@ namespace KinectPV2{
 
 		//STOP FUNCTIONS
 		void	disable();
-		void    cleanMemory();
+		bool    cleanMemory();
 
 
 		bool	update();

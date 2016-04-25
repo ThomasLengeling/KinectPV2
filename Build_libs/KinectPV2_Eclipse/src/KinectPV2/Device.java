@@ -175,21 +175,29 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 
 	protected void initDevice() {
 		startSensor = jniInit();
-		//String load = jniVersion();
-		//System.out.println("Version: " + load);
-		System.out.println("Version: " + Version);
 
 		if (startSensor == false) {
 			System.out.println("ERROR STARTING KINECT V2");
 			parent.exit();
 		}
+		
+		System.out.println("Version: " + Version);
 
 		if (startSensor) {
 			runningKinect = true;
 			(new Thread(this)).start();
 		}
 	}
+	
+	/**
+	 * Check if device is open 
+	 * @return
 
+	public boolean isDeviceStarted(){
+		return startSensor;
+	}
+	 */
+	
 	public void closeDevice(){
 		runningKinect = false;
 		stopDevice();
@@ -713,8 +721,8 @@ public class Device implements Constants, FaceProperties, SkeletonProperties,
 		jniStopDevice();
 	}
 
-	protected void cleanDevice() {
-		jniStopSignal();
+	protected boolean cleanDevice() {
+		return jniStopSignal();
 	}
 
 	// ------JNI FUNCTIONS
