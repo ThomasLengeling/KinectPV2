@@ -19,6 +19,10 @@ float a = 1.9;
 int zval = -200;
 float scaleVal = 260;
 
+
+//value to scale the depth point when accessing each individual point in the PC.
+float scaleDepthPoint = 100.0;
+
 //Distance Threashold
 int maxD = 4000; // 4m
 int minD = 0;  //  0m
@@ -77,11 +81,17 @@ public void draw() {
   FloatBuffer pointCloudBuffer = kinect.getPointCloudDepthPos();
 
   // obtain XYZ the values of the point cloud
-  // for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i++){
-  //    float x = pointCloudBuffer.get(i*3 + 0);
-  //    float y = pointCloudBuffer.get(i*3 + 1);
-  //    float z = pointCloudBuffer.get(i*3 + 2);
-  // }
+  /*
+  stroke(0, 0, 0);
+  for(int i = 0; i < kinect.WIDTHDepth * kinect.HEIGHTDepth; i+=3){
+      float x = pointCloudBuffer.get(i*3 + 0) * scaleDepthPoint;
+      float y = pointCloudBuffer.get(i*3 + 1) * scaleDepthPoint;
+      float z = pointCloudBuffer.get(i*3 + 2) * scaleDepthPoint;
+      
+   
+      point(x, y, z);
+   }
+   */
 
   //begin openGL calls and bind the shader
   pgl = beginPGL();
@@ -130,30 +140,30 @@ public void mousePressed() {
 
 public void keyPressed() {
   if (key == 'a') {
-    zval +=1;
-    println(zval);
+    zval +=10;
+    println("Z Value "+zval);
   }
   if (key == 's') {
-    zval -= 1;
-    println(zval);
+    zval -= 10;
+    println("Z Value "+zval);
   }
 
   if (key == 'z') {
     scaleVal += 0.1;
-    println(scaleVal);
+    println("Scale scene: "+scaleVal);
   }
   if (key == 'x') {
     scaleVal -= 0.1;
-    println(scaleVal);
+    println("Scale scene: "+scaleVal);
   }
 
   if (key == 'q') {
     a += 0.1;
-    println(a);
+    println("rotate scene: "+ a);
   }
   if (key == 'w') {
     a -= 0.1;
-    println(a);
+    println("rotate scene: "+a);
   }
 
   if (key == '1') {
@@ -175,4 +185,15 @@ public void keyPressed() {
     maxD -= 10;
     println("Change max: "+maxD);
   }
+  
+  if(key == 'c'){
+    scaleDepthPoint += 1;
+    println("Change Scale Depth Point: "+scaleDepthPoint);
+  }
+  
+    if(key == 'v'){
+    scaleDepthPoint -= 1;
+    println("Change Scale Depth Point: "+scaleDepthPoint);
+  }
+  
 }
