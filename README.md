@@ -85,7 +85,7 @@ To build the KinectPV2 library from source code, look at the Build_libs folder
 
 ### Simple Device
 
-To include the library into a processing sketh you just need to import it and initialize it.
+To include the library into a processing sketch you just need to import it and initialize it.
 
 ```java
 import KinectPV2.*;
