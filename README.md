@@ -24,7 +24,7 @@ Library for Mac check out  the [OpenKinect-for-Processing library](https://githu
 
 #### Reference and tutorial
 
-[Webpage](http://codigogenerativo.com/kinect-2-0-library-for-processing/) tutorial with a couple of useful examples. 
+[Webpage](http://codigogenerativo.com/code/kinectpv2-k4w2-processing-library/) tutorial with a couple of useful examples. 
 
 
 ### Install for Processing 3.0
