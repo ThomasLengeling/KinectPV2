@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="KinectPV2_Eclipse/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tom/Documents/Programacion/Processing/processing-3.0.2/core/library/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

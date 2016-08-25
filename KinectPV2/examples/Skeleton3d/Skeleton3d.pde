@@ -1,32 +1,17 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
+Thomas Sanchez Lengeling.
+ http://codigogenerativo.com/
+ 
  KinectPV2, Kinect for Windows v2 library for processing
  
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
+ 3D Skeleton.
+ Some features a not implemented, such as orientation
  */
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
 
 KinectPV2 kinect;
-
-Skeleton [] skeleton;
 
 
 float zVal = 300;
@@ -39,9 +24,8 @@ void setup() {
 
   kinect.enableColorImg(true);
 
-  kinect.enableSkeleton(true );
-  //enable 3d Skeleton with (x,y,z) position
-  kinect.enableSkeleton3dMap(true);
+  //enable 3d  with (x,y,z) position
+  kinect.enableSkeleton3DMap(true);
 
   kinect.init();
 }
@@ -51,24 +35,26 @@ void draw() {
 
   image(kinect.getColorImage(), 0, 0, 320, 240);
 
-  skeleton =  kinect.getSkeleton3d();
-
   //translate the scene to the center 
   pushMatrix();
   translate(width/2, height/2, 0);
   scale(zVal);
   rotateX(rotX);
 
-  for (int i = 0; i < skeleton.length; i++) {
-    if (skeleton[i].isTracked()) {
-      KJoint[] joints = skeleton[i].getJoints();
+  ArrayList<KSkeleton> skeletonArray =  kinect.getSkeleton3d();
+
+  //individual JOINTS
+  for (int i = 0; i < skeletonArray.size(); i++) {
+    KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
+    if (skeleton.isTracked()) {
+      KJoint[] joints = skeleton.getJoints();
 
       //draw different color for each hand state
       drawHandState(joints[KinectPV2.JointType_HandRight]);
       drawHandState(joints[KinectPV2.JointType_HandLeft]);
 
       //Draw body
-      color col  = getIndexColor(i);
+      color col  = skeleton.getIndexColor();
       stroke(col);
       drawBody(joints);
     }
@@ -78,25 +64,6 @@ void draw() {
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);
-}
-
-//use different color for each skeleton tracked
-color getIndexColor(int index) {
-  color col = color(255);
-  if (index == 0)
-    col = color(255, 0, 0);
-  if (index == 1)
-    col = color(0, 255, 0);
-  if (index == 2)
-    col = color(0, 0, 255);
-  if (index == 3)
-    col = color(255, 255, 0);
-  if (index == 4)
-    col = color(0, 255, 255);
-  if (index == 5)
-    col = color(255, 0, 255);
-
-  return col;
 }
 
 
@@ -178,4 +145,3 @@ void handState(int handState) {
     break;
   }
 }
-

@@ -1,25 +1,11 @@
 /*
- Copyright (C) 2014  Thomas Sanchez Lengeling.
- KinectPV2, Kinect for Windows v2 library for processing
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
- */
+Thomas Sanchez Lengeling.
+http://codigogenerativo.com/
+
+KinectPV2, Kinect for Windows v2 library for processing
+
+Point Cloud example in a 2d Image, with threshold example
+*/
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
@@ -27,17 +13,20 @@ import KinectPV2.*;
 KinectPV2 kinect;
 
 //Distance Threashold
-float maxD = 4.0f; //meters
-float minD = 1.0f;
+int maxD = 4500; // 4.5mx
+int minD = 0;  //  50cm
 
 void setup() {
-  size(512*2, 424, P3D);
+  size(1024, 424, P3D);
 
   kinect = new KinectPV2(this);
 
   //Enable point cloud
+  kinect.enableDepthImg(true);
   kinect.enablePointCloud(true);
+
   kinect.init();
+
 }
 
 void draw() {
@@ -45,15 +34,15 @@ void draw() {
 
   image(kinect.getDepthImage(), 0, 0);
 
-  /* Get the point cloud as a PImage
-   * Each pixel of the PointCloudDepthImage correspondes to the value 
-   * of the Z in the Point Cloud or distances, the values of 
-   *  the Point cloud are mapped from (0.0 - 8.0)  to gray color (0 - 255)
+  /* obtain the point cloud as a PImage
+   * Each pixel of the PointCloudDepthImage corresponds to the Z value
+   * of Point Cloud i.e. distances.
+   * The Point cloud values are mapped from (0 - 4500) mm  to gray color format (0 - 255)
    */
   image(kinect.getPointCloudDepthImage(), 512, 0);
-  
-  //get each pixel as int [] 512 x 424
-  //int [] rawData = kinect.getRawPointCloudDepth();
+
+  //obtain the raw depth data in integers from [0 - 4500]
+  int [] rawData = kinect.getRawDepthData();
 
   //Threahold of the point Cloud.
   kinect.setLowThresholdPC(minD);
@@ -62,22 +51,22 @@ void draw() {
 
 void keyPressed() {
   if (key == '1') {
-    minD += 0.01;
+    minD += 10;
     println("Change min: "+minD);
   }
 
   if (key == '2') {
-    minD -= 0.01;
+    minD -= 10;
     println("Change min: "+minD);
   }
 
   if (key == '3') {
-    maxD += 0.01;
+    maxD += 10;
     println("Change max: "+maxD);
   }
 
   if (key == '4') {
-    maxD -= 0.01;
+    maxD -=10;
     println("Change max: "+maxD);
   }
 }
