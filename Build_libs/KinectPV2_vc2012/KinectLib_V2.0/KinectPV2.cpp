@@ -621,7 +621,7 @@ namespace KinectPV2{
 
 	bool Device::update()
 	{
-
+        return true;
 	}
 
 	void Device::colorProcess()
