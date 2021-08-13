@@ -139,7 +139,7 @@ Raw Data is only available for the color, depth ad bodytrack frames/images. Once
   //values for [0 - 256] strip
   int [] rawData256 = kinect.getRawDepth256Data();
   
-  //raw body data 0-6 users 255 nothing
+  //raw body data 0-5 users 255 nothing
   int [] rawData = kinect.getRawBodyTrack();
   
   //unpacket color values
